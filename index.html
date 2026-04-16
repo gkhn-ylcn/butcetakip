@@ -61,7 +61,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Tahoma,Geneva
 .acc-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .acc-type{font-size:11px;color:var(--text3);margin-top:1px;}
 .acc-bal{font-size:14px;font-weight:700;text-align:right;flex-shrink:0;}
-.tx-card{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(50,54,96,.4);cursor:pointer;}
+.tx-card{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(50,54,96,.4);cursor:pointer;}
 .tx-card:last-child{border-bottom:none;}
 .tx-card.virt{opacity:.78;border-left:3px solid var(--yellow);padding-left:8px;}
 .tx-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
@@ -142,7 +142,6 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .sum-row .sum-val{font-size:13px;font-weight:700;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .page.active>*{animation:fadeIn .22s ease forwards;}
-/* Kategori arama */
 .cat-wrap{position:relative;}
 .cat-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rsm);padding:9px 11px 9px 30px;color:var(--text);font-family:inherit;font-size:14px;outline:none;transition:border-color .2s;}
 .cat-input:focus{border-color:var(--accent);}
@@ -154,13 +153,11 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .cat-opt:hover{background:var(--card);}
 .cat-opt .cg{font-size:10px;color:var(--text3);margin-left:auto;}
 .cat-sel-box{display:none;background:var(--card);border:1px solid var(--accent);border-radius:var(--rsm);padding:8px 11px;font-size:13px;align-items:center;gap:8px;cursor:pointer;min-height:38px;}
-/* Dönem kartları */
 .donem-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:8px 0;}
 .donem-card{background:var(--bg3);border-radius:var(--rsm);padding:10px;}
 .donem-card.cur{border:1px solid rgba(248,113,113,.3);}
 .donem-card.nxt{border:1px solid rgba(251,191,36,.25);}
 .donem-card.fut{border:1px solid rgba(100,116,139,.2);}
-/* Kategori ayarlar */
 .cat-grp-hdr{display:flex;align-items:center;justify-content:space-between;padding:8px 0 3px;}
 .cat-grp-lbl{font-size:10px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
 .cat-item{display:flex;align-items:center;gap:8px;padding:7px 5px;border-radius:6px;}
@@ -204,6 +201,16 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   </div>
 
   <div class="page" id="page-transactions">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px">
+      <div style="display:flex;align-items:center;background:var(--bg3);border-radius:var(--rsm);padding:4px;flex:1;justify-content:space-between">
+        <button class="btn btn-ghost btn-sm" onclick="changeTxMonth(-1)" style="padding:6px;width:30px">◀</button>
+        <span id="tx-month-label" style="font-size:13px;font-weight:600">Ay</span>
+        <button class="btn btn-ghost btn-sm" onclick="changeTxMonth(1)" style="padding:6px;width:30px">▶</button>
+      </div>
+      <select class="form-input" id="tx-acc-filter" style="flex:1;padding:8px" onchange="changeTxAcc(this.value)">
+        <option value="">Tüm Hesaplar</option>
+      </select>
+    </div>
     <div class="tab-bar">
       <button class="tab-btn active" onclick="filterTx('hepsi',this)">Hepsi</button>
       <button class="tab-btn" onclick="filterTx('gelir',this)">Gelir</button>
@@ -258,22 +265,26 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       <div class="modal-title" id="modal-tx-title" style="margin:0">Yeni İşlem</div>
       <button id="tx-copy-btn" class="btn btn-success btn-sm" style="display:none" onclick="copyTx()">⧉ Kopyala</button>
     </div>
+    
     <div class="type-toggle">
       <button class="type-btn" id="txtype-gelir" onclick="setTxType('gelir',this)">📈 Gelir</button>
       <button class="type-btn active-gider" id="txtype-gider" onclick="setTxType('gider',this)">📉 Gider</button>
       <button class="type-btn" id="txtype-transfer" onclick="setTxType('transfer',this)">🔄 Transfer</button>
     </div>
+
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Tarih</label><input class="form-input" type="date" id="tx-date"></div>
+      <div class="form-group"><label class="form-label">Para Birimi</label><select class="form-input" id="tx-currency"><option value="TRY">₺ TRY</option><option value="USD">$ USD</option><option value="EUR">€ EUR</option><option value="GBP">£ GBP</option><option value="ALTIN">🥇 Altın (gr)</option></select></div>
+    </div>
+
+    <div class="form-group"><label class="form-label">Hesap</label><select class="form-input" id="tx-account"></select></div>
+    <div class="form-group" id="tx-account2-group" style="display:none"><label class="form-label">Hedef Hesap</label><select class="form-input" id="tx-account2"></select></div>
+
     <div class="form-row">
       <div class="form-group"><label class="form-label">Firma / Mağaza</label><input class="form-input" type="text" id="tx-firma" placeholder="Örn: Migros"></div>
       <div class="form-group"><label class="form-label">Tutar</label><input class="form-input" type="number" id="tx-amount" placeholder="0,00" step="0.01"></div>
     </div>
-    <div class="form-group"><label class="form-label">Açıklama <span style="font-weight:400;text-transform:none;font-size:11px;color:var(--text3)">(isteğe bağlı)</span></label><input class="form-input" type="text" id="tx-desc" placeholder="Ek not, detay..."></div>
-    <div class="form-row">
-      <div class="form-group"><label class="form-label">Para Birimi</label><select class="form-input" id="tx-currency"><option value="TRY">₺ TRY</option><option value="USD">$ USD</option><option value="EUR">€ EUR</option><option value="GBP">£ GBP</option><option value="ALTIN">🥇 Altın (gr)</option></select></div>
-      <div class="form-group"><label class="form-label">Tarih</label><input class="form-input" type="date" id="tx-date"></div>
-    </div>
-    <div class="form-group"><label class="form-label">Hesap</label><select class="form-input" id="tx-account"></select></div>
-    <div class="form-group" id="tx-account2-group" style="display:none"><label class="form-label">Hedef Hesap</label><select class="form-input" id="tx-account2"></select></div>
+    
     <div class="form-group">
       <label class="form-label">Kategori</label>
       <div class="cat-wrap" id="cat-wrap">
@@ -287,6 +298,9 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       </div>
       <input type="hidden" id="tx-category">
     </div>
+
+    <div class="form-group"><label class="form-label">Açıklama <span style="font-weight:400;text-transform:none;font-size:11px;color:var(--text3)">(isteğe bağlı)</span></label><input class="form-input" type="text" id="tx-desc" placeholder="Ek not, detay..."></div>
+    
     <div class="form-group" id="taksit-check-group">
       <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px">
         <input type="checkbox" id="tx-istaksit" onchange="toggleTaksit(this.checked)" style="width:15px;height:15px"> Taksitli işlem
@@ -295,6 +309,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     <div id="taksit-group" style="display:none">
       <div class="form-group"><label class="form-label">Toplam Taksit Sayısı</label><input class="form-input" type="number" id="tx-taksit-sayi" placeholder="12" min="2" max="360"></div>
     </div>
+
     <input type="hidden" id="tx-edit-id">
     <div style="display:flex;gap:7px;margin-top:10px">
       <button id="tx-del-btn" class="btn btn-danger btn-sm" style="display:none;flex:1" onclick="deleteTxConfirm()">🗑️</button>
@@ -324,13 +339,18 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       </div>
     </div>
     <div class="form-group"><label class="form-label">Renk</label><div class="color-picker-row" id="acc-color-picker"></div></div>
+    
     <div class="form-group" style="margin-top:4px">
-      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;padding:10px 12px;background:var(--bg3);border-radius:var(--rsm);border:1px solid var(--border)">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;padding:10px 12px;background:var(--bg3);border-radius:var(--rsm);border:1px solid var(--border);margin-bottom:6px">
         <input type="checkbox" id="acc-net-dahil" checked style="width:16px;height:16px;accent-color:var(--accent)">
         <span>Net varlığa dahil et</span>
       </label>
-      <div style="font-size:11px;color:var(--text3);margin-top:4px;padding:0 2px">Kapalıysa bu hesap ana sayfadaki Net Varlık toplamını etkilemez</div>
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;padding:10px 12px;background:var(--bg3);border-radius:var(--rsm);border:1px solid var(--border)">
+        <input type="checkbox" id="acc-ozet-dahil" checked style="width:16px;height:16px;accent-color:var(--accent)">
+        <span>Varlık özetine dahil et</span>
+      </label>
     </div>
+
     <input type="hidden" id="acc-edit-id">
     <div style="display:flex;gap:7px;margin-top:10px">
       <button class="btn btn-ghost btn-sm" style="flex:1" onclick="closeModal('modal-account')">İptal</button>
@@ -390,196 +410,36 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 
 <script>
 const DEFAULT_CATS = [
-  // ── GELİR ──
-  // Maaş & Ücret
   {id:'g01',name:'Aylık Maaş',icon:'💼',type:'gelir',parent:'Maaş & Ücret'},
   {id:'g02',name:'Prim / İkramiye',icon:'💼',type:'gelir',parent:'Maaş & Ücret'},
-  {id:'g03',name:'Fazla Mesai',icon:'💼',type:'gelir',parent:'Maaş & Ücret'},
-  {id:'g04',name:'Avans',icon:'💼',type:'gelir',parent:'Maaş & Ücret'},
-  {id:'g05',name:'Yıllık İzin Ücreti',icon:'💼',type:'gelir',parent:'Maaş & Ücret'},
-  // Serbest Meslek
   {id:'g06',name:'Serbest Çalışma',icon:'🏢',type:'gelir',parent:'Serbest Meslek & İş'},
-  {id:'g07',name:'Danışmanlık',icon:'🏢',type:'gelir',parent:'Serbest Meslek & İş'},
-  {id:'g08',name:'Proje / Sipariş Geliri',icon:'🏢',type:'gelir',parent:'Serbest Meslek & İş'},
-  {id:'g09',name:'Fatura Tahsilatı',icon:'🏢',type:'gelir',parent:'Serbest Meslek & İş'},
-  {id:'g10',name:'Ortaklık Kâr Payı',icon:'🏢',type:'gelir',parent:'Serbest Meslek & İş'},
-  // Kira & Mülk
   {id:'g11',name:'Konut Kira Geliri',icon:'🏠',type:'gelir',parent:'Kira & Mülk Geliri'},
-  {id:'g12',name:'İşyeri Kira Geliri',icon:'🏠',type:'gelir',parent:'Kira & Mülk Geliri'},
-  {id:'g13',name:'Araç Kiralama Geliri',icon:'🏠',type:'gelir',parent:'Kira & Mülk Geliri'},
-  {id:'g14',name:'Airbnb / Kısa Kiralama',icon:'🏠',type:'gelir',parent:'Kira & Mülk Geliri'},
-  // Yatırım & Finans
   {id:'g15',name:'Mevduat Faizi',icon:'📈',type:'gelir',parent:'Yatırım & Finans'},
-  {id:'g16',name:'Hisse Temettüsü',icon:'📈',type:'gelir',parent:'Yatırım & Finans'},
-  {id:'g17',name:'Hisse Satış Kârı',icon:'📈',type:'gelir',parent:'Yatırım & Finans'},
-  {id:'g18',name:'Fon Getirisi',icon:'📈',type:'gelir',parent:'Yatırım & Finans'},
-  {id:'g19',name:'Kripto Para Geliri',icon:'📈',type:'gelir',parent:'Yatırım & Finans'},
-  {id:'g20',name:'Altın / Döviz Kârı',icon:'📈',type:'gelir',parent:'Yatırım & Finans'},
-  {id:'g21',name:'Bono / Tahvil Faizi',icon:'📈',type:'gelir',parent:'Yatırım & Finans'},
-  // Sosyal Yardım
   {id:'g22',name:'Aile / Akraba Yardımı',icon:'🎁',type:'gelir',parent:'Sosyal Yardım & Destek'},
-  {id:'g23',name:'Devlet Yardımı',icon:'🎁',type:'gelir',parent:'Sosyal Yardım & Destek'},
-  {id:'g24',name:'Burs',icon:'🎁',type:'gelir',parent:'Sosyal Yardım & Destek'},
-  {id:'g25',name:'Nafaka (Alınan)',icon:'🎁',type:'gelir',parent:'Sosyal Yardım & Destek'},
-  {id:'g26',name:'Hediye (Para)',icon:'🎁',type:'gelir',parent:'Sosyal Yardım & Destek'},
-  // Satış Gelirleri
   {id:'g27',name:'İkinci El Eşya Satışı',icon:'💰',type:'gelir',parent:'Satış Gelirleri'},
-  {id:'g28',name:'Araç Satışı',icon:'💰',type:'gelir',parent:'Satış Gelirleri'},
-  {id:'g29',name:'Gayrimenkul Satışı',icon:'💰',type:'gelir',parent:'Satış Gelirleri'},
-  {id:'g30',name:'El Sanatları / Ürün Satışı',icon:'💰',type:'gelir',parent:'Satış Gelirleri'},
-  // Dijital & Online
-  {id:'g31',name:'İçerik / YouTube Geliri',icon:'📱',type:'gelir',parent:'Dijital & Online Gelir'},
-  {id:'g32',name:'Affiliate Geliri',icon:'📱',type:'gelir',parent:'Dijital & Online Gelir'},
-  {id:'g33',name:'Uygulama / Oyun Geliri',icon:'📱',type:'gelir',parent:'Dijital & Online Gelir'},
-  {id:'g34',name:'Online Kurs Satışı',icon:'📱',type:'gelir',parent:'Dijital & Online Gelir'},
-  // İade & Geri Ödemeler
-  {id:'g35',name:'Vergi İadesi',icon:'🔄',type:'gelir',parent:'İade & Geri Ödemeler'},
-  {id:'g36',name:'Sigorta Tazminatı',icon:'🔄',type:'gelir',parent:'İade & Geri Ödemeler'},
-  {id:'g37',name:'Ürün İadesi',icon:'🔄',type:'gelir',parent:'İade & Geri Ödemeler'},
-  {id:'g38',name:'Borç Tahsilatı',icon:'🔄',type:'gelir',parent:'İade & Geri Ödemeler'},
-  {id:'g39',name:'Depozito İadesi',icon:'🔄',type:'gelir',parent:'İade & Geri Ödemeler'},
-  // Diğer Gelirler
   {id:'g40',name:'Piyango / Ödül',icon:'🎯',type:'gelir',parent:'Diğer Gelirler'},
-  {id:'g41',name:'Miras / Vasiyet',icon:'🎯',type:'gelir',parent:'Diğer Gelirler'},
-  {id:'g42',name:'Hibe / Grant',icon:'🎯',type:'gelir',parent:'Diğer Gelirler'},
-  {id:'g43',name:'Tanımlanamayan Gelir',icon:'🎯',type:'gelir',parent:'Diğer Gelirler'},
-
-  // ── GİDER ──
-  // Konut & Yaşam
   {id:'gi01',name:'Kira',icon:'🏠',type:'gider',parent:'Konut & Yaşam'},
   {id:'gi02',name:'Aidat',icon:'🏠',type:'gider',parent:'Konut & Yaşam'},
   {id:'gi03',name:'Elektrik',icon:'🏠',type:'gider',parent:'Konut & Yaşam'},
   {id:'gi04',name:'Doğalgaz / LPG',icon:'🏠',type:'gider',parent:'Konut & Yaşam'},
   {id:'gi05',name:'Su',icon:'🏠',type:'gider',parent:'Konut & Yaşam'},
   {id:'gi06',name:'İnternet',icon:'🏠',type:'gider',parent:'Konut & Yaşam'},
-  {id:'gi07',name:'Telefon (Sabit)',icon:'🏠',type:'gider',parent:'Konut & Yaşam'},
-  {id:'gi08',name:'Ev Bakım / Tadilat',icon:'🏠',type:'gider',parent:'Konut & Yaşam'},
-  {id:'gi09',name:'Mobilya & Dekorasyon',icon:'🏠',type:'gider',parent:'Konut & Yaşam'},
-  {id:'gi10',name:'Temizlik Ürünleri',icon:'🏠',type:'gider',parent:'Konut & Yaşam'},
-  // Market & Gıda
   {id:'gi11',name:'Günlük Market',icon:'🛒',type:'gider',parent:'Market & Gıda'},
-  {id:'gi12',name:'Haftalık / Aylık Market',icon:'🛒',type:'gider',parent:'Market & Gıda'},
-  {id:'gi13',name:'Sebze & Meyve',icon:'🛒',type:'gider',parent:'Market & Gıda'},
-  {id:'gi14',name:'Et & Balık',icon:'🛒',type:'gider',parent:'Market & Gıda'},
-  {id:'gi15',name:'Su / İçecek',icon:'🛒',type:'gider',parent:'Market & Gıda'},
-  // Yeme & İçme
   {id:'gi16',name:'Restoran / Lokanta',icon:'🍽️',type:'gider',parent:'Yeme & İçme (Dışarıda)'},
-  {id:'gi17',name:'Kafe & Kahve',icon:'🍽️',type:'gider',parent:'Yeme & İçme (Dışarıda)'},
-  {id:'gi18',name:'Fast Food',icon:'🍽️',type:'gider',parent:'Yeme & İçme (Dışarıda)'},
-  {id:'gi19',name:'Yemek Siparişi (Online)',icon:'🍽️',type:'gider',parent:'Yeme & İçme (Dışarıda)'},
-  {id:'gi20',name:'İş Yemeği / Temsil',icon:'🍽️',type:'gider',parent:'Yeme & İçme (Dışarıda)'},
-  // Ulaşım
   {id:'gi21',name:'Yakıt (Benzin / Motorin)',icon:'🚗',type:'gider',parent:'Ulaşım'},
   {id:'gi22',name:'Toplu Taşıma',icon:'🚗',type:'gider',parent:'Ulaşım'},
-  {id:'gi23',name:'Taksi / Uber',icon:'🚗',type:'gider',parent:'Ulaşım'},
-  {id:'gi24',name:'Araç Bakım / Servis',icon:'🚗',type:'gider',parent:'Ulaşım'},
-  {id:'gi25',name:'Araç Tamiri',icon:'🚗',type:'gider',parent:'Ulaşım'},
-  {id:'gi26',name:'Oto Sigorta',icon:'🚗',type:'gider',parent:'Ulaşım'},
-  {id:'gi27',name:'Araç Muayenesi',icon:'🚗',type:'gider',parent:'Ulaşım'},
-  {id:'gi28',name:'Otopark / HGS / OGS',icon:'🚗',type:'gider',parent:'Ulaşım'},
-  {id:'gi29',name:'Uçak / Tren / Otobüs Bileti',icon:'🚗',type:'gider',parent:'Ulaşım'},
-  // Sağlık
   {id:'gi30',name:'Doktor / Muayene',icon:'🏥',type:'gider',parent:'Sağlık'},
   {id:'gi31',name:'İlaç & Eczane',icon:'🏥',type:'gider',parent:'Sağlık'},
-  {id:'gi32',name:'Diş Tedavisi',icon:'🏥',type:'gider',parent:'Sağlık'},
-  {id:'gi33',name:'Göz / Gözlük / Lens',icon:'🏥',type:'gider',parent:'Sağlık'},
-  {id:'gi34',name:'Tahlil / Röntgen / MR',icon:'🏥',type:'gider',parent:'Sağlık'},
-  {id:'gi35',name:'Özel Hastane / Ameliyat',icon:'🏥',type:'gider',parent:'Sağlık'},
-  {id:'gi36',name:'Sağlık Sigortası (Özel)',icon:'🏥',type:'gider',parent:'Sağlık'},
-  {id:'gi37',name:'Vitamin & Takviye',icon:'🏥',type:'gider',parent:'Sağlık'},
-  {id:'gi38',name:'Psikoloji / Terapi',icon:'🏥',type:'gider',parent:'Sağlık'},
-  {id:'gi39',name:'Fizyoterapi / Masaj',icon:'🏥',type:'gider',parent:'Sağlık'},
-  // Giyim & Bakım
   {id:'gi40',name:'Kıyafet & Ayakkabı',icon:'👗',type:'gider',parent:'Giyim & Kişisel Bakım'},
-  {id:'gi41',name:'Çanta & Aksesuar',icon:'👗',type:'gider',parent:'Giyim & Kişisel Bakım'},
-  {id:'gi42',name:'Kuaför & Berber',icon:'👗',type:'gider',parent:'Giyim & Kişisel Bakım'},
-  {id:'gi43',name:'Kozmetik & Parfüm',icon:'👗',type:'gider',parent:'Giyim & Kişisel Bakım'},
-  {id:'gi44',name:'Kuru Temizleme',icon:'👗',type:'gider',parent:'Giyim & Kişisel Bakım'},
-  {id:'gi45',name:'Spor / İş Kıyafeti',icon:'👗',type:'gider',parent:'Giyim & Kişisel Bakım'},
-  // Eğitim
   {id:'gi46',name:'Okul Harcı / Ücreti',icon:'📚',type:'gider',parent:'Eğitim & Gelişim'},
-  {id:'gi47',name:'Dershane / Kurs',icon:'📚',type:'gider',parent:'Eğitim & Gelişim'},
-  {id:'gi48',name:'Dil Kursu',icon:'📚',type:'gider',parent:'Eğitim & Gelişim'},
-  {id:'gi49',name:'Online Eğitim / Kurs',icon:'📚',type:'gider',parent:'Eğitim & Gelişim'},
-  {id:'gi50',name:'Kitap & Yayın',icon:'📚',type:'gider',parent:'Eğitim & Gelişim'},
-  {id:'gi51',name:'Kırtasiye & Malzeme',icon:'📚',type:'gider',parent:'Eğitim & Gelişim'},
-  {id:'gi52',name:'Okul Servis & Ulaşım',icon:'📚',type:'gider',parent:'Eğitim & Gelişim'},
-  // Eğlence & Hobi
   {id:'gi53',name:'Sinema / Tiyatro / Konser',icon:'🎬',type:'gider',parent:'Eğlence & Hobi'},
-  {id:'gi54',name:'Netflix / Dijital Abonelik',icon:'🎬',type:'gider',parent:'Eğlence & Hobi'},
-  {id:'gi55',name:'Oyun & Uygulama',icon:'🎬',type:'gider',parent:'Eğlence & Hobi'},
-  {id:'gi56',name:'Spor Salonu / Yüzme',icon:'🎬',type:'gider',parent:'Eğlence & Hobi'},
-  {id:'gi57',name:'Spor Ekipmanı',icon:'🎬',type:'gider',parent:'Eğlence & Hobi'},
-  {id:'gi58',name:'Hobi Malzemeleri',icon:'🎬',type:'gider',parent:'Eğlence & Hobi'},
-  {id:'gi59',name:'Tatil & Seyahat',icon:'🎬',type:'gider',parent:'Eğlence & Hobi'},
-  {id:'gi60',name:'Piknik / Gezi',icon:'🎬',type:'gider',parent:'Eğlence & Hobi'},
-  // Finans & Borç
   {id:'gi61',name:'Kredi Kartı Ödeme',icon:'💳',type:'gider',parent:'Finans & Borç'},
-  {id:'gi62',name:'Banka Kredisi Taksiti',icon:'💳',type:'gider',parent:'Finans & Borç'},
-  {id:'gi63',name:'Konut Kredisi (Mortgage)',icon:'💳',type:'gider',parent:'Finans & Borç'},
-  {id:'gi64',name:'Taşıt Kredisi Taksiti',icon:'💳',type:'gider',parent:'Finans & Borç'},
-  {id:'gi65',name:'Arkadaş / Aile Borcu',icon:'💳',type:'gider',parent:'Finans & Borç'},
-  {id:'gi66',name:'Banka Ücret & Komisyonu',icon:'💳',type:'gider',parent:'Finans & Borç'},
-  {id:'gi67',name:'Faiz Gideri',icon:'💳',type:'gider',parent:'Finans & Borç'},
-  // Vergiler
-  {id:'gi68',name:'Gelir Vergisi',icon:'📑',type:'gider',parent:'Vergiler & Resmi Ödemeler'},
-  {id:'gi69',name:'MTV',icon:'📑',type:'gider',parent:'Vergiler & Resmi Ödemeler'},
-  {id:'gi70',name:'Emlak Vergisi',icon:'📑',type:'gider',parent:'Vergiler & Resmi Ödemeler'},
-  {id:'gi71',name:'SGK / Bağ-Kur Primi',icon:'📑',type:'gider',parent:'Vergiler & Resmi Ödemeler'},
-  {id:'gi72',name:'Trafik Cezası',icon:'📑',type:'gider',parent:'Vergiler & Resmi Ödemeler'},
-  {id:'gi73',name:'Noterlik & Resmi İşlem',icon:'📑',type:'gider',parent:'Vergiler & Resmi Ödemeler'},
-  // Sigorta
-  {id:'gi74',name:'Kasko',icon:'🔒',type:'gider',parent:'Sigorta'},
-  {id:'gi75',name:'Trafik Sigortası',icon:'🔒',type:'gider',parent:'Sigorta'},
-  {id:'gi76',name:'DASK (Deprem)',icon:'🔒',type:'gider',parent:'Sigorta'},
-  {id:'gi77',name:'Konut Sigortası',icon:'🔒',type:'gider',parent:'Sigorta'},
-  {id:'gi78',name:'Hayat Sigortası',icon:'🔒',type:'gider',parent:'Sigorta'},
-  {id:'gi79',name:'Seyahat Sigortası',icon:'🔒',type:'gider',parent:'Sigorta'},
-  // Aile & Çocuk
-  {id:'gi80',name:'Çocuk Bezi & Mama',icon:'👨‍👩‍👧',type:'gider',parent:'Aile & Çocuk'},
-  {id:'gi81',name:'Kreş / Anaokulu',icon:'👨‍👩‍👧',type:'gider',parent:'Aile & Çocuk'},
-  {id:'gi82',name:'Çocuk Giyim',icon:'👨‍👩‍👧',type:'gider',parent:'Aile & Çocuk'},
-  {id:'gi83',name:'Çocuk Sağlığı',icon:'👨‍👩‍👧',type:'gider',parent:'Aile & Çocuk'},
-  {id:'gi84',name:'Oyuncak & Hediye',icon:'👨‍👩‍👧',type:'gider',parent:'Aile & Çocuk'},
-  {id:'gi85',name:'Bebek Bakıcısı',icon:'👨‍👩‍👧',type:'gider',parent:'Aile & Çocuk'},
-  {id:'gi86',name:'Anne-Baba Bakımı',icon:'👨‍👩‍👧',type:'gider',parent:'Aile & Çocuk'},
-  {id:'gi87',name:'Nafaka (Ödenen)',icon:'👨‍👩‍👧',type:'gider',parent:'Aile & Çocuk'},
-  // Evcil Hayvan
-  {id:'gi88',name:'Mama & Su',icon:'🐾',type:'gider',parent:'Evcil Hayvan'},
-  {id:'gi89',name:'Veteriner',icon:'🐾',type:'gider',parent:'Evcil Hayvan'},
-  {id:'gi90',name:'Bakım & Tıraş',icon:'🐾',type:'gider',parent:'Evcil Hayvan'},
-  {id:'gi91',name:'Aksesuar & Malzeme',icon:'🐾',type:'gider',parent:'Evcil Hayvan'},
-  // Abonelikler
-  {id:'gi92',name:'Yayın Platformları',icon:'📦',type:'gider',parent:'Abonelikler & Üyelikler'},
-  {id:'gi93',name:'Müzik Aboneliği',icon:'📦',type:'gider',parent:'Abonelikler & Üyelikler'},
-  {id:'gi94',name:'Bulut Depolama',icon:'📦',type:'gider',parent:'Abonelikler & Üyelikler'},
-  {id:'gi95',name:'Dergi / Gazete Aboneliği',icon:'📦',type:'gider',parent:'Abonelikler & Üyelikler'},
-  {id:'gi96',name:'İş Yazılımı Aboneliği',icon:'📦',type:'gider',parent:'Abonelikler & Üyelikler'},
-  // Hediye & Bağış
-  {id:'gi97',name:'Doğum Günü Hediyesi',icon:'🎁',type:'gider',parent:'Hediye & Bağış'},
-  {id:'gi98',name:'Düğün / Nişan Harcaması',icon:'🎁',type:'gider',parent:'Hediye & Bağış'},
-  {id:'gi99',name:'Bayram Harcaması',icon:'🎁',type:'gider',parent:'Hediye & Bağış'},
-  {id:'gi100',name:'Bağış / Sadaka',icon:'🎁',type:'gider',parent:'Hediye & Bağış'},
-  {id:'gi101',name:'Çiçek Gönderme',icon:'🎁',type:'gider',parent:'Hediye & Bağış'},
-  // Teknoloji
-  {id:'gi102',name:'Cep Telefonu Alımı',icon:'📱',type:'gider',parent:'Teknoloji & Elektronik'},
-  {id:'gi103',name:'Telefon Faturası (Mobil)',icon:'📱',type:'gider',parent:'Teknoloji & Elektronik'},
-  {id:'gi104',name:'Bilgisayar / Tablet',icon:'📱',type:'gider',parent:'Teknoloji & Elektronik'},
-  {id:'gi105',name:'Elektronik Aksesuar',icon:'📱',type:'gider',parent:'Teknoloji & Elektronik'},
-  {id:'gi106',name:'Yazılım / Uygulama',icon:'📱',type:'gider',parent:'Teknoloji & Elektronik'},
-  {id:'gi107',name:'Tamir & Servis',icon:'📱',type:'gider',parent:'Teknoloji & Elektronik'},
-  // Yatırım & Birikim (Gider)
-  {id:'gi108',name:'BES / Emeklilik Katkısı',icon:'🏗️',type:'gider',parent:'Yatırım & Birikim'},
-  {id:'gi109',name:'Altın Alımı',icon:'🏗️',type:'gider',parent:'Yatırım & Birikim'},
-  {id:'gi110',name:'Hisse / Fon Yatırımı',icon:'🏗️',type:'gider',parent:'Yatırım & Birikim'},
-  {id:'gi111',name:'Kripto Para Alımı',icon:'🏗️',type:'gider',parent:'Yatırım & Birikim'},
-  {id:'gi112',name:'Döviz Alımı',icon:'🏗️',type:'gider',parent:'Yatırım & Birikim'},
-  {id:'gi113',name:'Birikim Hesabı Yatırımı',icon:'🏗️',type:'gider',parent:'Yatırım & Birikim'},
-  // Diğer Giderler
-  {id:'gi114',name:'Nakit Çekim',icon:'❓',type:'gider',parent:'Diğer Giderler'},
-  {id:'gi115',name:'Hukuk / Avukatlık',icon:'❓',type:'gider',parent:'Diğer Giderler'},
-  {id:'gi116',name:'Misafir Ağırlama',icon:'❓',type:'gider',parent:'Diğer Giderler'},
-  {id:'gi117',name:'Tanımlanamayan Gider',icon:'❓',type:'gider',parent:'Diğer Giderler'},
+  {id:'gi68',name:'Vergiler',icon:'📑',type:'gider',parent:'Vergiler & Resmi Ödemeler'},
+  {id:'gi74',name:'Sigorta',icon:'🔒',type:'gider',parent:'Sigorta'},
+  {id:'gi88',name:'Evcil Hayvan',icon:'🐾',type:'gider',parent:'Evcil Hayvan'},
+  {id:'gi92',name:'Abonelikler',icon:'📦',type:'gider',parent:'Abonelikler & Üyelikler'},
+  {id:'gi102',name:'Teknoloji & Elektronik',icon:'📱',type:'gider',parent:'Teknoloji & Elektronik'},
+  {id:'gi114',name:'Nakit Çekim',icon:'❓',type:'gider',parent:'Diğer Giderler'}
 ];
 
 const COLORS=['#6c63ff','#22d3a5','#f87171','#fbbf24','#60a5fa','#f472b6','#a78bfa','#34d399','#fb923c','#e879f9'];
@@ -593,6 +453,10 @@ let currentTxType='gider',currentDebtType='alacak',selectedCatIcon='📦';
 let txFilter='hepsi',debtFilter='hepsi',selectedAccColor=COLORS[0],currentPage='dashboard';
 let selectedCatId='';
 
+// Yeni filtreleme değişkenleri
+let txSelectedMonth = thisMonth();
+let txSelectedAcc = '';
+
 // ── STORAGE ──
 function save(){localStorage.setItem('butcetakip_v2',JSON.stringify(DB));}
 function load(){
@@ -604,12 +468,7 @@ function load(){
 // ── FORMAT ──
 function escapeHTML(str) {
   if (!str) return '';
-  return str.toString()
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+  return str.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
 function fmt(n){if(n==null)n=0;return'₺'+parseFloat(n).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2});}
 function fmtAmt(amount,currency){
@@ -629,7 +488,6 @@ function today(){return new Date().toISOString().split('T')[0];}
 function thisMonth(){const n=new Date();return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}`;}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 
-// ── KREDİ DÖNEM ──
 function getKrediDonem(txDate, kesimGun){
   if(!txDate||!kesimGun)return null;
   const d=new Date(txDate+'T00:00:00');
@@ -638,7 +496,6 @@ function getKrediDonem(txDate, kesimGun){
   return`${yil}-${String(ay+1).padStart(2,'0')}`;
 }
 
-// ── TAKSİT SANAL SATIRLAR ──
 function getTaksitRows(tx){
   if(!tx.isTaksit||!tx.taksitSayi)return[];
   const per=(parseFloat(tx.amount)||0)/tx.taksitSayi;
@@ -656,7 +513,6 @@ function getTaksitRows(tx){
   return rows;
 }
 
-// ── BAKİYE ──
 function getAccountBalance(accId){
   const acc=DB.accounts.find(a=>a.id===accId);
   if(!acc)return 0;
@@ -698,7 +554,6 @@ function renderPage(p){
   else if(p==='settings')renderSettings();
 }
 
-// ── ARAMA (Dashboard) ──
 function doSearch(val){
   const res=document.getElementById('search-res');
   if(!val.trim()){res.classList.remove('open');return;}
@@ -748,9 +603,8 @@ function renderDashboard(){
     let rows='';
     let netTotal=0;
     const typeOrder=['nakit','banka','tasarruf','yatirim','kredi'];
-    const typeLabel={nakit:'💵 Nakit',banka:'🏦 Banka',tasarruf:'💰 Tasarruf',yatirim:'📊 Yatırım',kredi:'💳 Kredi'};
     typeOrder.forEach(type=>{
-      const accs=DB.accounts.filter(a=>a.type===type&&a.netDahil!==false);
+      const accs=DB.accounts.filter(a=>a.type===type&&a.ozetDahil!==false);
       if(!accs.length)return;
       accs.forEach(a=>{
         const bal=getAccountBalance(a.id);
@@ -774,20 +628,19 @@ function renderDashboard(){
           } else {
             donemBorc=Math.abs(Math.min(0,bal));
           }
-          display=fmt(donemBorc);
+          display = fmtAmt(donemBorc, a.currency);
           col=donemBorc>0?'var(--red)':'var(--text3)';
           netTotal-=donemBorc;
         } else {
-          display=fmt(bal);
+          display = fmtAmt(bal, a.currency);
           col=bal<0?'var(--red)':'var(--text)';
           netTotal+=bal;
         }
-        const icon=typeLabel[type]||'🏦';
         const showMinus=(type==='kredi'&&donemBorc>0);
-        rows+=`<div class="sum-row"><span class="sum-label">${icon} ${a.name}</span><span class="sum-val" style="color:${col}">${showMinus?'-':''}${display}</span></div>`;
+        rows+=`<div class="sum-row"><span class="sum-label">${escapeHTML(a.name)}</span><span class="sum-val" style="color:${col}">${showMinus?'-':''}${display}</span></div>`;
       });
     });
-    sumEl.innerHTML=rows+`<div style="border-top:1px solid var(--border);margin:6px 0"></div><div class="sum-row"><span class="sum-label" style="font-weight:700;color:var(--text)">Toplam Net</span><span class="sum-val" style="color:${netTotal<0?'var(--red)':'var(--green)'};font-size:15px">${fmt(netTotal)}</span></div>`;
+    sumEl.innerHTML=rows+`<div style="border-top:1px solid var(--border);margin:6px 0"></div><div class="sum-row"><span class="sum-label" style="font-weight:700;color:var(--text)">Toplam Net (TRY Bazlı)</span><span class="sum-val" style="color:${netTotal<0?'var(--red)':'var(--green)'};font-size:15px">${fmt(netTotal)}</span></div>`;
   }
 
   const todayStr2=today();
@@ -853,8 +706,9 @@ function accCardHTML(a,clickable){
   const bal=getAccountBalance(a.id);const color=a.color||COLORS[0];const isK=a.type==='kredi';
   const displayBal=isK?Math.abs(bal):bal;
   const balCol=isK?(displayBal>0?'var(--red)':'var(--green)'):(bal<0?'var(--red)':'var(--text)');
-  const sym=CURRENCY_SYMBOLS[a.currency||'TRY']||'₺';
-  const bs=a.currency==='ALTIN'?displayBal.toLocaleString('tr-TR',{minimumFractionDigits:3,maximumFractionDigits:3})+' gr':(a.currency==='TRY'||!a.currency?'₺':sym)+displayBal.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  
+  const bs=fmtAmt(displayBal, a.currency);
+  
   const cb=a.currency&&a.currency!=='TRY'?` <span style="font-size:9px;opacity:.6">${a.currency}</span>`:'';
   const netIcon=a.netDahil===false?' <span style="font-size:9px;opacity:.5">🚫</span>':'';
   return`<div class="acc-card" style="padding:9px 11px;margin-bottom:5px" onclick="${clickable?`openAccDetail('${a.id}')`:''}" >
@@ -944,7 +798,7 @@ function openAccDetail(id){
     </div>
     <div style="text-align:center;padding:14px;background:var(--bg3);border-radius:var(--rsm)">
       <div style="font-size:12px;color:var(--text3);margin-bottom:3px">${a.type==='kredi'?'Toplam Borç':'Güncel Bakiye'}</div>
-      <div style="font-size:26px;font-weight:700;color:${a.type==='kredi'?'var(--red)':(bal<0?'var(--red)':'var(--green)')}">${a.type==='kredi'?fmt(Math.abs(bal)):fmt(bal)}</div>
+      <div style="font-size:26px;font-weight:700;color:${a.type==='kredi'?'var(--red)':(bal<0?'var(--red)':'var(--green)')}">${a.type==='kredi'?fmtAmt(Math.abs(bal), a.currency):fmtAmt(bal, a.currency)}</div>
     </div>
     ${limitHTML}${donemHTML}
     <div style="display:flex;gap:7px;margin:12px 0 8px">
@@ -957,18 +811,47 @@ function openAccDetail(id){
 }
 
 // ── İŞLEMLER ──
+function changeTxMonth(dir) {
+  const parts = txSelectedMonth.split('-');
+  let y = parseInt(parts[0]);
+  let m = parseInt(parts[1]);
+  m += dir;
+  if (m < 1) { m = 12; y--; }
+  if (m > 12) { m = 1; y++; }
+  txSelectedMonth = `${y}-${String(m).padStart(2,'0')}`;
+  renderTransactions();
+}
+function changeTxAcc(val){
+  txSelectedAcc = val;
+  renderTransactions();
+}
+
 function renderTransactions(){
   const el=document.getElementById('tx-list');
+  
+  document.getElementById('tx-month-label').textContent=fmtMonthLong(txSelectedMonth);
+  const accSelect = document.getElementById('tx-acc-filter');
+  accSelect.innerHTML = '<option value="">Tüm Hesaplar</option>' + DB.accounts.map(a=>`<option value="${a.id}" ${txSelectedAcc===a.id?'selected':''}>${a.name}</option>`).join('');
+
   let all=[];
   DB.transactions.forEach(tx=>{
     if(tx.isTaksit)getTaksitRows(tx).forEach(r=>all.push(r));
     else all.push(tx);
   });
   all.sort((a,b)=>new Date(b.date)-new Date(a.date));
+  
+  // Tip filtresi
   if(txFilter==='gelir')all=all.filter(t=>t.type==='gelir'&&!t._virtual);
   else if(txFilter==='gider')all=all.filter(t=>t.type==='gider');
   else if(txFilter==='taksit')all=all.filter(t=>t._virtual||t.isTaksit);
-  if(!all.length){el.innerHTML=`<div class="empty"><div class="empty-icon">💳</div><p>İşlem bulunamadı.</p></div>`;return;}
+
+  // Ay ve Hesap filtresi
+  all = all.filter(t => t.date && t.date.startsWith(txSelectedMonth));
+  if (txSelectedAcc) {
+      all = all.filter(t => t.accountId === txSelectedAcc || t.accountId2 === txSelectedAcc);
+  }
+
+  if(!all.length){el.innerHTML=`<div class="empty"><div class="empty-icon">💳</div><p>Bu döneme ait işlem bulunamadı.</p></div>`;return;}
   const groups={};
   all.forEach(tx=>{const d=tx.date||'?';if(!groups[d])groups[d]=[];groups[d].push(tx);});
   el.innerHTML=Object.entries(groups).sort((a,b)=>new Date(b[0])-new Date(a[0])).map(([date,list])=>`
@@ -1055,7 +938,6 @@ function openModal(id){document.getElementById(id).classList.add('open');documen
 function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
 document.querySelectorAll('.modal-overlay').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)closeModal(el.id);});});
 
-// ── KATEGORİ ARAMA (form içi) ──
 function onCatSearch(val){
   const dd=document.getElementById('cat-drop');
   const cats=DB.categories.filter(c=>c.type==='hepsi'||c.type===currentTxType||currentTxType==='transfer');
@@ -1149,7 +1031,6 @@ function saveTx(){
   const isTaksit=document.getElementById('tx-istaksit').checked;
   const taksitSayi=parseInt(document.getElementById('tx-taksit-sayi').value)||0;
   const accountId2=document.getElementById('tx-account2').value;
-  if(!firma){snack('Firma / mağaza girin');return;}
   if(!amount||amount<=0){snack('Geçerli tutar girin');return;}
   if(!accountId){snack('Hesap seçin');return;}
   if(isTaksit&&taksitSayi<2){snack('Taksit sayısı en az 2 olmalı');return;}
@@ -1237,6 +1118,7 @@ function openAddAccount(id){
   document.getElementById('acc-kredi-group').style.display=isK?'block':'none';
   document.getElementById('acc-color-picker').innerHTML=COLORS.map(c=>`<div class="color-dot ${c===selectedAccColor?'selected':''}" style="background:${c}" onclick="selectAccColor('${c}',this)"></div>`).join('');
   document.getElementById('acc-net-dahil').checked = acc ? acc.netDahil!==false : true;
+  document.getElementById('acc-ozet-dahil').checked = acc ? acc.ozetDahil!==false : true;
   openModal('modal-account');
 }
 function selectAccColor(c,el){selectedAccColor=c;document.querySelectorAll('.color-dot').forEach(d=>d.classList.remove('selected'));el.classList.add('selected');}
@@ -1252,7 +1134,8 @@ function saveAccount(){
   const editId=document.getElementById('acc-edit-id').value;
   if(!name){snack('Hesap adı girin');return;}
   const netDahil=document.getElementById('acc-net-dahil').checked;
-  const acc={id:editId||uid(),name,type,currency,initialBalance,limit,kesimGun,odemeGun,color:selectedAccColor,netDahil};
+  const ozetDahil=document.getElementById('acc-ozet-dahil').checked;
+  const acc={id:editId||uid(),name,type,currency,initialBalance,limit,kesimGun,odemeGun,color:selectedAccColor,netDahil,ozetDahil};
   if(editId){const i=DB.accounts.findIndex(a=>a.id===editId);if(i!==-1)DB.accounts[i]=acc;}
   else DB.accounts.push(acc);
   save();closeModal('modal-account');snack('Hesap kaydedildi ✓');renderPage(currentPage);
@@ -1354,18 +1237,11 @@ function saveCat(){
 }
 function deleteCat(id){
   if(!confirm('Bu kategoriyi silmek istediğinize emin misiniz?'))return;
-  
   DB.categories = DB.categories.filter(c=>c.id!==id);
-  
   DB.transactions.forEach(tx => {
-    if(tx.categoryId === id) {
-        tx.categoryId = ''; 
-    }
+    if(tx.categoryId === id) { tx.categoryId = ''; }
   });
-  
-  save();
-  snack('Silindi ve işlemler güncellendi');
-  renderSettings();
+  save();snack('Silindi ve işlemler güncellendi');renderSettings();
 }
 
 // ── VERİ YÖNETİMİ ──
