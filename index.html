@@ -1065,6 +1065,13 @@ function copyTx(){
   setTimeout(()=>openAddTx(copy.id),50);
 }
 
+function onCatFocus() {
+  const type = currentTxType || 'gider';
+  const cats = DB.categories.filter(c => c.type === type || c.type === 'hepsi');
+  renderCatDrop(cats);
+  document.getElementById('cat-drop').classList.add('open');
+}
+
 // ── TAKSİT DETAY ──
 function openTaksitDetail(txId){
   const tx=DB.transactions.find(t=>t.id===txId);if(!tx||!tx.isTaksit)return;
