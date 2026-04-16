@@ -412,730 +412,881 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 const DEFAULT_CATS = [
   {id:'g01',name:'Aylık Maaş',icon:'💼',type:'gelir',parent:'Maaş & Ücret'},
   {id:'g02',name:'Prim / İkramiye',icon:'💼',type:'gelir',parent:'Maaş & Ücret'},
-  {id:'g03',name:'Faiz Geliri',icon:'📈',type:'gelir',parent:'Yatırım'},
-  {id:'g04',name:'Kira Geliri',icon:'🏠',type:'gelir',parent:'Diğer Gelir'},
-  {id:'v01',name:'Market',icon:'🛒',type:'gider',parent:'Mutfak & Gıda'},
-  {id:'v02',name:'Restoran / Kafe',icon:'☕',type:'gider',parent:'Dışarıda Yemek'},
-  {id:'v03',name:'Kira Ödemesi',icon:'🏠',type:'gider',parent:'Barınma'},
-  {id:'v04',name:'Elektrik',icon:'⚡',type:'gider',parent:'Faturalar'},
-  {id:'v05',name:'Su',icon:'💧',type:'gider',parent:'Faturalar'},
-  {id:'v06',name:'Doğalgaz',icon:'🔥',type:'gider',parent:'Faturalar'},
-  {id:'v07',name:'İnternet',icon:'🌐',type:'gider',parent:'Faturalar'},
-  {id:'v08',name:'Telefon Paket',icon:'📱',type:'gider',parent:'Faturalar'},
-  {id:'v09',name:'Benzin / Mazot',icon:'⛽',type:'gider',parent:'Ulaşım'},
-  {id:'v10',name:'Toplu Taşıma',icon:'🚌',type:'gider',parent:'Ulaşım'},
-  {id:'v11',name:'Giyim / Moda',icon:'👕',type:'gider',parent:'Alışveriş'},
-  {id:'v12',name:'Kişisel Bakım',icon:'✂️',type:'gider',parent:'Sağlık & Bakım'},
-  {id:'v13',name:'Eğlence',icon:'🎭',type:'gider',parent:'Sosyal Hayat'}
+  {id:'g06',name:'Serbest Çalışma',icon:'🏢',type:'gelir',parent:'Serbest Meslek & İş'},
+  {id:'g11',name:'Konut Kira Geliri',icon:'🏠',type:'gelir',parent:'Kira & Mülk Geliri'},
+  {id:'g15',name:'Mevduat Faizi',icon:'📈',type:'gelir',parent:'Yatırım & Finans'},
+  {id:'g22',name:'Aile / Akraba Yardımı',icon:'🎁',type:'gelir',parent:'Sosyal Yardım & Destek'},
+  {id:'g27',name:'İkinci El Eşya Satışı',icon:'💰',type:'gelir',parent:'Satış Gelirleri'},
+  {id:'g40',name:'Piyango / Ödül',icon:'🎯',type:'gelir',parent:'Diğer Gelirler'},
+  {id:'gi01',name:'Kira',icon:'🏠',type:'gider',parent:'Konut & Yaşam'},
+  {id:'gi02',name:'Aidat',icon:'🏠',type:'gider',parent:'Konut & Yaşam'},
+  {id:'gi03',name:'Elektrik',icon:'🏠',type:'gider',parent:'Konut & Yaşam'},
+  {id:'gi04',name:'Doğalgaz / LPG',icon:'🏠',type:'gider',parent:'Konut & Yaşam'},
+  {id:'gi05',name:'Su',icon:'🏠',type:'gider',parent:'Konut & Yaşam'},
+  {id:'gi06',name:'İnternet',icon:'🏠',type:'gider',parent:'Konut & Yaşam'},
+  {id:'gi11',name:'Günlük Market',icon:'🛒',type:'gider',parent:'Market & Gıda'},
+  {id:'gi16',name:'Restoran / Lokanta',icon:'🍽️',type:'gider',parent:'Yeme & İçme (Dışarıda)'},
+  {id:'gi21',name:'Yakıt (Benzin / Motorin)',icon:'🚗',type:'gider',parent:'Ulaşım'},
+  {id:'gi22',name:'Toplu Taşıma',icon:'🚗',type:'gider',parent:'Ulaşım'},
+  {id:'gi30',name:'Doktor / Muayene',icon:'🏥',type:'gider',parent:'Sağlık'},
+  {id:'gi31',name:'İlaç & Eczane',icon:'🏥',type:'gider',parent:'Sağlık'},
+  {id:'gi40',name:'Kıyafet & Ayakkabı',icon:'👗',type:'gider',parent:'Giyim & Kişisel Bakım'},
+  {id:'gi46',name:'Okul Harcı / Ücreti',icon:'📚',type:'gider',parent:'Eğitim & Gelişim'},
+  {id:'gi53',name:'Sinema / Tiyatro / Konser',icon:'🎬',type:'gider',parent:'Eğlence & Hobi'},
+  {id:'gi61',name:'Kredi Kartı Ödeme',icon:'💳',type:'gider',parent:'Finans & Borç'},
+  {id:'gi68',name:'Vergiler',icon:'📑',type:'gider',parent:'Vergiler & Resmi Ödemeler'},
+  {id:'gi74',name:'Sigorta',icon:'🔒',type:'gider',parent:'Sigorta'},
+  {id:'gi88',name:'Evcil Hayvan',icon:'🐾',type:'gider',parent:'Evcil Hayvan'},
+  {id:'gi92',name:'Abonelikler',icon:'📦',type:'gider',parent:'Abonelikler & Üyelikler'},
+  {id:'gi102',name:'Teknoloji & Elektronik',icon:'📱',type:'gider',parent:'Teknoloji & Elektronik'},
+  {id:'gi114',name:'Nakit Çekim',icon:'❓',type:'gider',parent:'Diğer Giderler'}
 ];
 
-const COLORS = ['#6c63ff','#a78bfa','#22d3a5','#f87171','#fbbf24','#60a5fa','#ec4899','#f97316','#14b8a6','#8b5cf6'];
-const ICONS = ['💼','🛒','☕','🏠','⚡','💧','🔥','🌐','📱','⛽','🚌','👕','✂️','🎭','🏥','🎓','🍿','🍔','🍕','🍗','🍖','🍎','🥦','🚲','🚗','✈️','💻','🎮','⚽','🏀','🎁','💳','💸','💰','📈','📉','🔒','🛡️','🔋','🍼','🐱','🐶','📦','🧩','🎨','🛠️','📅','📍','💬'];
+const COLORS=['#6c63ff','#22d3a5','#f87171','#fbbf24','#60a5fa','#f472b6','#a78bfa','#34d399','#fb923c','#e879f9'];
+const ACC_ICONS={nakit:'💵',banka:'🏦',yatirim:'📊',kredi:'💳',tasarruf:'💰'};
+const ACC_LABELS={nakit:'Nakit',banka:'Banka',yatirim:'Yatırım',kredi:'Kredi Kartı',tasarruf:'Tasarruf'};
+const CURRENCY_SYMBOLS={TRY:'₺',USD:'$',EUR:'€',GBP:'£',ALTIN:'gr'};
+const CAT_ICONS_LIST=['🛒','🍽️','🚗','🏠','💊','🎬','🏋️','📚','✈️','👗','💼','🎮','🐾','💡','🔧','🎁','💰','📱','🎓','⚽','🎵','🌿','🍕','☕','🛍️','⛽','🔥','💧','🛋️','🛡️','🏘️','📊','🎯','💄','👶','🧾','📺','❤️','🏥','📑','🔒','🏗️','❓','🔄','🏢','📈'];
 
-let DB = { accounts: [], transactions: [], debts: [], categories: JSON.parse(JSON.stringify(DEFAULT_CATS)) };
-let currentPage = 'dashboard';
-let txType = 'gider';
-let debtType = 'alacak';
-let filterMonth = new Date().getMonth();
-let filterYear = new Date().getFullYear();
-let filterAcc = '';
+let DB={accounts:[],transactions:[],debts:[],categories:[]};
+let currentTxType='gider',currentDebtType='alacak',selectedCatIcon='📦';
+let txFilter='hepsi',debtFilter='hepsi',selectedAccColor=COLORS[0],currentPage='dashboard';
+let selectedCatId='';
 
-// ── CORE ──
-function save(){ localStorage.setItem('bt_data', JSON.stringify(DB)); }
+// Yeni filtreleme değişkenleri
+let txSelectedMonth = thisMonth();
+let txSelectedAcc = '';
+
+// ── STORAGE ──
+function save(){localStorage.setItem('butcetakip_v2',JSON.stringify(DB));}
 function load(){
-  const s = localStorage.getItem('bt_data');
-  if(s){
-    const d = JSON.parse(s);
-    DB.accounts = d.accounts || [];
-    DB.transactions = d.transactions || [];
-    DB.debts = d.debts || [];
-    DB.categories = d.categories || JSON.parse(JSON.stringify(DEFAULT_CATS));
-  } else {
-    DB.categories = JSON.parse(JSON.stringify(DEFAULT_CATS));
+  const raw=localStorage.getItem('butcetakip_v2')||localStorage.getItem('butcetakip_v1');
+  if(raw){DB=JSON.parse(raw);if(!DB.debts)DB.debts=[];if(!DB.categories||!DB.categories.length)DB.categories=JSON.parse(JSON.stringify(DEFAULT_CATS));}
+  else{DB.categories=JSON.parse(JSON.stringify(DEFAULT_CATS));save();}
+}
+
+// ── FORMAT ──
+function escapeHTML(str) {
+  if (!str) return '';
+  return str.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+function fmt(n){if(n==null)n=0;return'₺'+parseFloat(n).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmtAmt(amount,currency){
+  const sym=CURRENCY_SYMBOLS[currency||'TRY']||'₺';
+  const n=parseFloat(amount)||0;
+  if(currency==='ALTIN')return n.toLocaleString('tr-TR',{minimumFractionDigits:3,maximumFractionDigits:3})+' '+sym;
+  return sym+n.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function fmtDate(d){if(!d)return'';const dt=new Date(d+'T00:00:00');return dt.toLocaleDateString('tr-TR',{day:'2-digit',month:'short',year:'numeric'});}
+function fmtMonthLong(ym){
+  if(!ym)return'';
+  const[y,m]=ym.split('-');
+  const names=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+  return names[parseInt(m)-1]+' '+y;
+}
+function today(){return new Date().toISOString().split('T')[0];}
+function thisMonth(){const n=new Date();return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}`;}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+
+function getKrediDonem(txDate, kesimGun){
+  if(!txDate||!kesimGun)return null;
+  const d=new Date(txDate+'T00:00:00');
+  const gun=d.getDate(),ay=d.getMonth(),yil=d.getFullYear();
+  if(gun>kesimGun){const nx=new Date(yil,ay+1,1);return`${nx.getFullYear()}-${String(nx.getMonth()+1).padStart(2,'0')}`;}
+  return`${yil}-${String(ay+1).padStart(2,'0')}`;
+}
+
+function getTaksitRows(tx){
+  if(!tx.isTaksit||!tx.taksitSayi)return[];
+  const per=(parseFloat(tx.amount)||0)/tx.taksitSayi;
+  const base=new Date(tx.date+'T00:00:00');
+  const rows=[];
+  for(let i=0;i<tx.taksitSayi;i++){
+    let targetMonth = base.getMonth() + i;
+    let targetYear = base.getFullYear();
+    let d = new Date(targetYear, targetMonth, 1);
+    let lastDayOfMonth = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+    d.setDate(Math.min(base.getDate(), lastDayOfMonth));
+    const ds=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    rows.push({...tx,_virtual:true,_tNo:i+1,_tPaid:i<(tx.taksitOdenen||0),amount:per,date:ds});
   }
+  return rows;
 }
 
-function showPage(p, btn){
-  currentPage = p;
-  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
-  document.getElementById('page-'+p).classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));
-  if(btn) btn.classList.add('active');
-  
-  const titles = {'dashboard':'Ana Sayfa','accounts':'Hesaplar','transactions':'İşlemler','debt':'Borç / Alacak','settings':'Ayarlar'};
-  document.getElementById('header-title').textContent = titles[p];
-  document.getElementById('hdr-search').style.display = (p==='transactions' || p==='dashboard') ? 'block' : 'none';
-  
-  renderPage(p);
+function getAccountBalance(accId){
+  const acc=DB.accounts.find(a=>a.id===accId);
+  if(!acc)return 0;
+  let bal=parseFloat(acc.initialBalance)||0;
+  DB.transactions.forEach(tx=>{
+    if(tx.type==='gelir'&&tx.accountId===accId)bal+=parseFloat(tx.amount)||0;
+    if(tx.type==='gider'&&tx.accountId===accId)bal-=parseFloat(tx.amount)||0;
+    if(tx.type==='transfer'){
+      if(tx.accountId===accId)bal-=parseFloat(tx.amount)||0;
+      if(tx.accountId2===accId)bal+=parseFloat(tx.amount)||0;
+    }
+  });
+  return bal;
 }
 
+// ── NAV ──
+function showPage(page,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  if(btn)btn.classList.add('active');
+  currentPage=page;
+  const titles={dashboard:'Ana Sayfa',accounts:'Hesaplar',transactions:'İşlemler',debt:'Borç / Alacak',settings:'Ayarlar'};
+  document.getElementById('header-title').textContent=titles[page]||'';
+  const fab=document.getElementById('fab-btn');
+  const hs=document.getElementById('hdr-search');
+  if(page==='dashboard'){fab.style.display='flex';fab.onclick=()=>openAddTx();hs.style.display='flex';}
+  else if(page==='accounts'){fab.style.display='flex';fab.onclick=()=>openAddAccount();hs.style.display='none';}
+  else if(page==='transactions'){fab.style.display='flex';fab.onclick=()=>openAddTx();hs.style.display='none';}
+  else if(page==='debt'){fab.style.display='flex';fab.onclick=()=>openAddDebt();hs.style.display='none';}
+  else{fab.style.display='none';hs.style.display='none';}
+  renderPage(page);
+}
 function renderPage(p){
-  if(p==='dashboard') renderDash();
-  if(p==='accounts') renderAccounts();
-  if(p==='transactions') renderTransactions();
-  if(p==='debt') renderDebts();
-  if(p==='settings') renderSettings();
+  if(p==='dashboard')renderDashboard();
+  else if(p==='accounts')renderAccounts();
+  else if(p==='transactions')renderTransactions();
+  else if(p==='debt')renderDebts();
+  else if(p==='settings')renderSettings();
 }
 
-// ── UTILS ──
-const fmt = (v, c='TRY') => {
-  let sym = '₺';
-  if(c==='USD') sym='$'; if(c==='EUR') sym='€'; if(c==='GBP') sym='£'; if(c==='ALTIN') sym='gr';
-  return (v < 0 ? '-' : '') + sym + Math.abs(v).toLocaleString('tr-TR',{minimumFractionDigits:2});
-};
-const today = () => new Date().toISOString().split('T')[0];
+function doSearch(val){
+  const res=document.getElementById('search-res');
+  if(!val.trim()){res.classList.remove('open');return;}
+  const q=val.toLowerCase();
+  const found=DB.transactions.filter(tx=>((tx.firma||'')+(tx.desc||'')).toLowerCase().includes(q));
+  if(!found.length){res.innerHTML='<div style="padding:12px 14px;color:var(--text3);font-size:13px">Sonuç bulunamadı</div>';res.classList.add('open');return;}
+  res.innerHTML=found.slice(0,10).map(tx=>{
+    const cat=DB.categories.find(c=>c.id===tx.categoryId);
+    const icon=cat?cat.icon:(tx.type==='gelir'?'📈':'📉');
+    const col=tx.type==='gelir'?'var(--green)':'var(--red)';
+    const pre=tx.type==='gelir'?'+':'-';
+    return`<div class="sitem" onmousedown="editTx('${tx.id}');closeSearch(); event.preventDefault();">
+      <span style="font-size:20px">${icon}</span>
+      <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600">${escapeHTML(tx.firma)||escapeHTML(tx.desc)||'İsimsiz'}</div><div style="font-size:11px;color:var(--text3)">${fmtDate(tx.date)}${cat?' • '+cat.name:''}</div></div>
+      <span style="font-size:13px;font-weight:700;color:${col}">${pre}${fmtAmt(tx.amount,tx.currency)}</span>
+    </div>`;
+  }).join('');
+  res.classList.add('open');
+}
+function closeSearch(){document.getElementById('search-res').classList.remove('open');}
 
 // ── DASHBOARD ──
-function renderDash(){
-  let net = 0;
-  DB.accounts.filter(a=>a.netDahil).forEach(a=>{
-    const bal = getAccBal(a.id);
-    if(a.currency==='TRY') net += bal;
-    else if(a.currency==='USD') net += bal*32; // Sabit kur demo
-    else net += bal*34;
-  });
-  document.getElementById('dash-net').textContent = fmt(net);
-  document.getElementById('dash-date').textContent = new Intl.DateTimeFormat('tr-TR',{day:'numeric',month:'long',year:'numeric'}).format(new Date());
-
-  const mStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-  const mEnd = new Date(new Date().getFullYear(), new Date().getMonth()+1, 0);
-  
-  let inc=0, exp=0;
-  DB.transactions.filter(t=> {
-    const d = new Date(t.date);
-    return d >= mStart && d <= mEnd;
-  }).forEach(t=>{
-    if(t.type==='gelir') inc += t.amount;
-    if(t.type==='gider') exp += t.amount;
-  });
-  
-  document.getElementById('dash-income').textContent = fmt(inc);
-  document.getElementById('dash-expense').textContent = fmt(exp);
-
-  const summ = document.getElementById('dash-summary');
-  const ozetAccs = DB.accounts.filter(a=>a.ozetDahil);
-  if(ozetAccs.length===0) summ.innerHTML = '<p style="font-size:12px;color:var(--text3)">Gösterilecek hesap yok.</p>';
-  else {
-    summ.innerHTML = ozetAccs.map(a=> `
-      <div class="sum-row" onclick="openAccDetail('${a.id}')">
-        <span class="sum-label">${a.name}</span>
-        <span class="sum-val" style="color:${a.color}">${fmt(getAccBal(a.id), a.currency)}</span>
-      </div>
-    `).join('');
-  }
-
-  const rec = document.getElementById('dash-recent');
-  const recent = [...DB.transactions].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,5);
-  if(recent.length===0) rec.innerHTML = '<p style="font-size:12px;color:var(--text3)">İşlem bulunamadı.</p>';
-  else rec.innerHTML = recent.map(t=>renderTxCard(t)).join('');
-}
-
-function getAccBal(accId){
-  const acc = DB.accounts.find(a=>a.id===accId);
-  if(!acc) return 0;
-  let b = acc.balance || 0;
-  DB.transactions.forEach(t=>{
-    if(t.accId===accId){
-      if(t.type==='gelir') b += t.amount;
-      if(t.type==='gider') b -= t.amount;
-      if(t.type==='transfer') b -= t.amount;
+function renderDashboard(){
+  const now=new Date();
+  document.getElementById('dash-date').textContent=now.toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric',weekday:'long'});
+  const tm=thisMonth();let gi=0,go=0;
+  DB.transactions.forEach(tx=>{
+    if(tx.isTaksit){
+      const per=(parseFloat(tx.amount)||0)/(tx.taksitSayi||1);
+      getTaksitRows(tx).filter(r=>r.date.startsWith(tm)).forEach(()=>go+=per);
+    }else{
+      if(!tx.date||!tx.date.startsWith(tm))return;
+      if(tx.type==='gelir')gi+=parseFloat(tx.amount)||0;
+      if(tx.type==='gider')go+=parseFloat(tx.amount)||0;
     }
-    if(t.type==='transfer' && t.toAccId===accId) b += t.amount;
   });
-  return b;
-}
+  document.getElementById('dash-income').textContent=fmt(gi);
+  document.getElementById('dash-expense').textContent=fmt(go);
+  const dahilAccs=DB.accounts.filter(a=>a.netDahil!==false);
+  let netDahil=0;dahilAccs.forEach(a=>{netDahil+=getAccountBalance(a.id);});
+  document.getElementById('dash-net').textContent=fmt(netDahil);
+  document.getElementById('dash-net').style.color=netDahil<0?'var(--red)':'#fff';
 
-// ── ACCOUNTS ──
-function renderAccounts(){
-  const list = document.getElementById('acc-list');
-  if(DB.accounts.length===0) list.innerHTML = '<div class="empty"><div class="empty-icon">🏦</div><p>Henüz hesap eklemediniz.</p></div>';
-  else {
-    list.innerHTML = DB.accounts.map(a=> {
-      const bal = getAccBal(a.id);
-      let sub = a.type.toUpperCase();
-      if(a.type==='kredi') sub += ` • Kesim: ${a.kesimGun}`;
-      return `
-        <div class="acc-card" onclick="openAccDetail('${a.id}')">
-          <div class="acc-icon" style="background:${a.color}20;color:${a.color}">${a.type==='nakit'?'💵':a.type==='banka'?'🏦':a.type==='yatirim'?'📊':a.type==='kredi'?'💳':'💰'}</div>
-          <div class="acc-info">
-            <div class="acc-name">${a.name}</div>
-            <div class="acc-type">${sub}</div>
-          </div>
-          <div class="acc-bal" style="color:${bal<0?'var(--red)':'var(--text)'}">${fmt(bal, a.currency)}</div>
-        </div>
-      `;
-    }).join('');
-  }
-}
-
-function openAddAcc(){
-  document.getElementById('modal-acc-title').textContent = 'Yeni Hesap';
-  document.getElementById('acc-edit-id').value = '';
-  document.getElementById('acc-name-input').value = '';
-  document.getElementById('acc-type-input').value = 'banka';
-  document.getElementById('acc-currency-input').value = 'TRY';
-  document.getElementById('acc-balance-input').value = '';
-  document.getElementById('acc-limit-input').value = '';
-  document.getElementById('acc-kesim-gun').value = '';
-  document.getElementById('acc-odeme-gun').value = '';
-  document.getElementById('acc-net-dahil').checked = true;
-  document.getElementById('acc-ozet-dahil').checked = true;
-  onAccTypeChange('banka');
-  renderColorPicker();
-  openModal('modal-account');
-}
-
-function renderColorPicker(sel){
-  const p = document.getElementById('acc-color-picker');
-  p.innerHTML = COLORS.map(c=>`<div class="color-dot ${c===sel?'selected':''}" style="background:${c}" onclick="selColor(this,'${c}')"></div>`).join('');
-  if(!sel) selColor(p.firstChild, COLORS[0]);
-}
-let selectedColor = '';
-function selColor(el, c){
-  document.querySelectorAll('.color-dot').forEach(d=>d.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedColor = c;
-}
-
-function onAccTypeChange(v){
-  document.getElementById('acc-limit-group').style.display = (v==='kredi'?'block':'none');
-  document.getElementById('acc-kredi-group').style.display = (v==='kredi'?'block':'none');
-}
-
-function saveAccount(){
-  const name = document.getElementById('acc-name-input').value;
-  if(!name){ snack('İsim girin!'); return; }
-  const id = document.getElementById('acc-edit-id').value || 'acc_'+Date.now();
-  const acc = {
-    id, name,
-    type: document.getElementById('acc-type-input').value,
-    currency: document.getElementById('acc-currency-input').value,
-    balance: parseFloat(document.getElementById('acc-balance-input').value)||0,
-    limit: parseFloat(document.getElementById('acc-limit-input').value)||0,
-    kesimGun: parseInt(document.getElementById('acc-kesim-gun').value),
-    odemeGun: parseInt(document.getElementById('acc-odeme-gun').value),
-    color: selectedColor,
-    netDahil: document.getElementById('acc-net-dahil').checked,
-    ozetDahil: document.getElementById('acc-ozet-dahil').checked
-  };
-  
-  const idx = DB.accounts.findIndex(a=>a.id===id);
-  if(idx>-1) DB.accounts[idx] = acc; else DB.accounts.push(acc);
-  save(); closeModal('modal-account'); renderPage('accounts'); snack('Hesap kaydedildi ✓');
-}
-
-// ── TRANSACTIONS ──
-function renderTransactions(){
-  const label = new Intl.DateTimeFormat('tr-TR',{month:'long',year:'numeric'}).format(new Date(filterYear, filterMonth));
-  document.getElementById('tx-month-label').textContent = label;
-  
-  const sel = document.getElementById('tx-acc-filter');
-  sel.innerHTML = '<option value="">Tüm Hesaplar</option>' + DB.accounts.map(a=>`<option value="${a.id}" ${filterAcc===a.id?'selected':''}>${a.name}</option>`).join('');
-
-  const list = document.getElementById('tx-list');
-  let filtered = DB.transactions.filter(t=>{
-    const d = new Date(t.date);
-    const mMatch = d.getMonth() === filterMonth && d.getFullYear() === filterYear;
-    const aMatch = !filterAcc || t.accId === filterAcc || t.toAccId === filterAcc;
-    return mMatch && aMatch;
-  });
-  
-  filtered.sort((a,b)=>new Date(b.date)-new Date(a.date));
-
-  if(filtered.length===0) list.innerHTML = '<div class="empty"><div class="empty-icon">💳</div><p>Bu ayda işlem bulunamadı.</p></div>';
-  else {
-    let html = '', lastDate = '';
-    filtered.forEach(t=>{
-      if(t.date !== lastDate){
-        html += `<div class="section-title">${new Intl.DateTimeFormat('tr-TR',{day:'numeric',month:'long',weekday:'short'}).format(new Date(t.date))}</div>`;
-        lastDate = t.date;
-      }
-      html += renderTxCard(t);
+  const sumEl=document.getElementById('dash-summary');
+  if(sumEl){
+    const now2=new Date();
+    let rows='';
+    let netTotal=0;
+    const typeOrder=['nakit','banka','tasarruf','yatirim','kredi'];
+    typeOrder.forEach(type=>{
+      const accs=DB.accounts.filter(a=>a.type===type&&a.ozetDahil!==false);
+      if(!accs.length)return;
+      accs.forEach(a=>{
+        const bal=getAccountBalance(a.id);
+        let display,col;
+        let donemBorc=0;
+        if(type==='kredi'){
+          if(a.kesimGun){
+            const td=now2.getDate(),tm2=now2.getMonth(),ty=now2.getFullYear();
+            let curOdemeAy;
+            if(td<=a.kesimGun)curOdemeAy=`${ty}-${String(tm2+1).padStart(2,'0')}`;
+            else{const nx=new Date(ty,tm2+1,1);curOdemeAy=`${nx.getFullYear()}-${String(nx.getMonth()+1).padStart(2,'0')}`;}
+            DB.transactions.filter(t=>t.accountId===a.id&&t.type==='gider').forEach(t=>{
+              if(t.isTaksit){
+                getTaksitRows(t).forEach(vr=>{
+                  if(getKrediDonem(vr.date,a.kesimGun)===curOdemeAy)donemBorc+=parseFloat(vr.amount)||0;
+                });
+              }else{
+                if(getKrediDonem(t.date,a.kesimGun)===curOdemeAy)donemBorc+=parseFloat(t.amount)||0;
+              }
+            });
+          } else {
+            donemBorc=Math.abs(Math.min(0,bal));
+          }
+          display = fmtAmt(donemBorc, a.currency);
+          col=donemBorc>0?'var(--red)':'var(--text3)';
+          netTotal-=donemBorc;
+        } else {
+          display = fmtAmt(bal, a.currency);
+          col=bal<0?'var(--red)':'var(--text)';
+          netTotal+=bal;
+        }
+        const showMinus=(type==='kredi'&&donemBorc>0);
+        rows+=`<div class="sum-row"><span class="sum-label">${escapeHTML(a.name)}</span><span class="sum-val" style="color:${col}">${showMinus?'-':''}${display}</span></div>`;
+      });
     });
-    list.innerHTML = html;
+    sumEl.innerHTML=rows+`<div style="border-top:1px solid var(--border);margin:6px 0"></div><div class="sum-row"><span class="sum-label" style="font-weight:700;color:var(--text)">Toplam Net (TRY Bazlı)</span><span class="sum-val" style="color:${netTotal<0?'var(--red)':'var(--green)'};font-size:15px">${fmt(netTotal)}</span></div>`;
+  }
+
+  const todayStr2=today();
+  let recentAll=[];
+  DB.transactions.forEach(tx=>{
+    if(tx.isTaksit){
+      getTaksitRows(tx).filter(r=>r.date<=todayStr2).forEach(r=>recentAll.push(r));
+    } else {
+      recentAll.push(tx);
+    }
+  });
+  recentAll.sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const seenDates=[];
+  const recentFiltered=recentAll.filter(tx=>{
+    if(!seenDates.includes(tx.date))seenDates.push(tx.date);
+    return seenDates.indexOf(tx.date)<3;
+  });
+  const drEl=document.getElementById('dash-recent');
+  if(!recentFiltered.length){
+    drEl.innerHTML=`<div class="empty"><div class="empty-icon">💳</div><p>İşlem yok.</p></div>`;
+  } else {
+    const groups2={};
+    recentFiltered.forEach(tx=>{const d=tx.date||'?';if(!groups2[d])groups2[d]=[];groups2[d].push(tx);});
+    drEl.innerHTML=Object.entries(groups2).sort((a,b)=>new Date(b[0])-new Date(a[0])).map(([date,list])=>`
+      <div style="font-size:11px;color:var(--text3);margin:8px 0 5px;font-weight:700">${fmtDate(date)}</div>
+      ${list.map(tx=>txCardHTML(tx)).join('')}`).join('');
   }
 }
 
-function renderTxCard(t){
-  const acc = DB.accounts.find(a=>a.id===t.accId);
-  const cat = DB.categories.find(c=>c.id===t.catId);
-  const color = t.type==='gelir' ? 'var(--green)' : (t.type==='transfer' ? 'var(--blue)' : 'var(--text)');
-  const sign = t.type==='gelir' ? '+' : '-';
+// ── HESAPLAR ──
+function renderAccounts(){
+  const el=document.getElementById('acc-list');
+  if(!DB.accounts.length){
+    el.innerHTML=`<div class="empty"><div class="empty-icon">🏦</div><p>Henüz hesap eklenmedi.</p></div>`;
+    return;
+  }
+  const typeOrder=['nakit','banka','tasarruf','kredi','yatirim'];
+  const typeGroups={};
+  DB.accounts.forEach(a=>{
+    if(!typeGroups[a.type])typeGroups[a.type]=[];
+    typeGroups[a.type].push(a);
+  });
+  let html='';
+  typeOrder.forEach(type=>{
+    const accs=typeGroups[type];
+    if(!accs||!accs.length)return;
+    const groupTotal=accs.reduce((s,a)=>{
+      const b=getAccountBalance(a.id);
+      return s+(type==='kredi'?-Math.abs(b):b);
+    },0);
+    const groupLabel={nakit:'💵 Nakit',banka:'🏦 Banka',tasarruf:'💰 Tasarruf',kredi:'💳 Kredi Kartı',yatirim:'📊 Yatırım'}[type]||type;
+    const totalCol=type==='kredi'?(groupTotal<0?'var(--red)':'var(--text3)'):(groupTotal<0?'var(--red)':'var(--text3)');
+    html+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 2px 5px;margin-top:4px">
+      <span style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">${groupLabel}</span>
+      <span style="font-size:11px;font-weight:700;color:${totalCol}">${type==='kredi'&&groupTotal<0?fmt(groupTotal):fmt(groupTotal)}</span>
+    </div>`;
+    html+=accs.map(a=>accCardHTML(a,true)).join('');
+  });
+  el.innerHTML=html;
+}
+
+function accCardHTML(a,clickable){
+  const bal=getAccountBalance(a.id);const color=a.color||COLORS[0];const isK=a.type==='kredi';
+  const displayBal=isK?Math.abs(bal):bal;
+  const balCol=isK?(displayBal>0?'var(--red)':'var(--green)'):(bal<0?'var(--red)':'var(--text)');
   
-  let meta = (acc?acc.name:'?') + (t.firma ? ` • ${t.firma}` : '');
-  if(t.type==='transfer'){
-    const to = DB.accounts.find(a=>a.id===t.toAccId);
-    meta = `${acc?acc.name:'?'} ➔ ${to?to.name:'?'}`;
-  }
-
-  return `
-    <div class="tx-card ${t.isVirt?'virt':''}" onclick="editTx('${t.id}')">
-      <div class="tx-icon" style="background:var(--bg3)">${cat?cat.icon:(t.type==='transfer'?'🔄':'📦')}</div>
-      <div class="tx-info">
-        <div class="tx-desc">${t.desc || (cat?cat.name:'İşlem')}</div>
-        <div class="tx-meta">${meta}</div>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
-        <div class="tx-amount" style="color:${color}">${sign}${fmt(t.amount, t.currency || 'TRY')}</div>
-        ${t.isTaksit ? `<span class="badge badge-taksit">${t.taksitNo}/${t.taksitSayi}</span>` : ''}
-      </div>
-    </div>
-  `;
+  const bs=fmtAmt(displayBal, a.currency);
+  
+  const cb=a.currency&&a.currency!=='TRY'?` <span style="font-size:9px;opacity:.6">${a.currency}</span>`:'';
+  const netIcon=a.netDahil===false?' <span style="font-size:9px;opacity:.5">🚫</span>':'';
+  return`<div class="acc-card" style="padding:9px 11px;margin-bottom:5px" onclick="${clickable?`openAccDetail('${a.id}')`:''}" >
+    <div class="acc-icon" style="width:34px;height:34px;border-radius:8px;font-size:16px;background:${color}22;color:${color}">${ACC_ICONS[a.type]||'🏦'}</div>
+    <div class="acc-info"><div class="acc-name" style="font-size:13px">${a.name}${cb}${netIcon}</div></div>
+    <div class="acc-bal" style="font-size:13px;color:${balCol}">${isK&&displayBal>0?'-':''}${bs}</div>
+  </div>`;
 }
 
-function changeTxMonth(v){
-  filterMonth += v;
-  if(filterMonth>11){ filterMonth=0; filterYear++; }
-  if(filterMonth<0){ filterMonth=11; filterYear--; }
+function openAccDetail(id){
+  const a=DB.accounts.find(x=>x.id===id);if(!a)return;
+  const bal=getAccountBalance(a.id);const color=a.color||COLORS[0];
+  let rawTxs=DB.transactions.filter(t=>t.accountId===id||t.accountId2===id);
+  let txs=[];
+  rawTxs.forEach(t=>{
+    if(t.isTaksit&&t.accountId===id){
+      getTaksitRows(t).forEach(r=>txs.push(r));
+    } else {
+      txs.push(t);
+    }
+  });
+  txs.sort((a,b)=>new Date(b.date)-new Date(a.date));
+
+  let limitHTML='';
+  if(a.type==='kredi'&&a.limit){
+    const borcTutar=Math.abs(Math.min(0,bal));
+    const used=bal<0?Math.abs(bal):0;
+    const pct=Math.min(100,(used/a.limit)*100);
+    limitHTML=`<div style="margin-top:10px"><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text3);margin-bottom:5px"><span>Harcanan: ${fmt(used)}</span><span>Limit: ${fmt(a.limit)}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${pct>80?'var(--red)':'var(--accent)'}"></div></div></div>`;
+  }
+
+  let donemHTML='';
+  if(a.type==='kredi'&&a.kesimGun){
+    const now=new Date();const kg=a.kesimGun;
+    const todayDay=now.getDate();
+    let curDonemOdemeAy;
+    if(todayDay<=kg){curDonemOdemeAy=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;}
+    else{const nx=new Date(now.getFullYear(),now.getMonth()+1,1);curDonemOdemeAy=`${nx.getFullYear()}-${String(nx.getMonth()+1).padStart(2,'0')}`;}
+
+    const donemler=[];
+    for(let i=0;i<3;i++){
+      const dt=new Date(parseInt(curDonemOdemeAy.split('-')[0]),parseInt(curDonemOdemeAy.split('-')[1])-1+i,1);
+      donemler.push(`${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}`);
+    }
+
+    const borclar={};let toplamBorc=0;
+    DB.transactions.filter(t=>t.accountId===id&&t.type==='gider').forEach(t=>{
+      const don=getKrediDonem(t.date,kg);
+      if(don){
+        if(!borclar[don])borclar[don]=0;
+        if(t.isTaksit){
+          getTaksitRows(t).forEach(vr=>{
+            const vDon=getKrediDonem(vr.date,kg);
+            if(vDon){if(!borclar[vDon])borclar[vDon]=0;borclar[vDon]+=parseFloat(vr.amount)||0;}
+          });
+        }else{
+          borclar[don]+=parseFloat(t.amount)||0;
+        }
+      }
+    });
+    Object.values(borclar).forEach(v=>toplamBorc+=v);
+
+    const cls=['cur','nxt','fut'];
+    const lbl=['Mevcut Dönem','Gelecek Dönem','Sonraki Dönem'];
+    const cols=['var(--red)','var(--yellow)','var(--text3)'];
+    const cards=donemler.map((ym,i)=>`<div class="donem-card ${cls[i]}">
+      <div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase">${lbl[i]}</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:1px">${fmtMonthLong(ym)}</div>
+      <div style="font-size:16px;font-weight:700;margin-top:4px;color:${cols[i]}">${fmt(borclar[ym]||0)}</div>
+      ${i===0&&a.odemeGun?`<div style="font-size:10px;color:var(--text3);margin-top:1px">Son ödeme: ${a.odemeGun}. gün</div>`:''}
+    </div>`).join('');
+    donemHTML=`<div style="margin-top:8px">
+      <div style="font-size:10px;color:var(--text3);font-weight:700;margin-bottom:5px">DÖNEM BORÇLARI • Kesim: ${kg}. gün</div>
+      <div class="donem-grid">${cards}</div>
+      <div style="background:var(--bg3);border-radius:var(--rsm);padding:9px;display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+        <span style="font-size:12px;color:var(--text3)">Toplam Kart Borcu</span>
+        <span style="font-size:15px;font-weight:700;color:var(--red)">${fmt(toplamBorc)}</span>
+      </div>
+    </div>`;
+  }
+
+  const cb=a.currency&&a.currency!=='TRY'?` (${a.currency})`:'';
+  document.getElementById('acc-detail-content').innerHTML=`
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+      <div style="width:46px;height:46px;border-radius:12px;background:${color}22;color:${color};display:flex;align-items:center;justify-content:center;font-size:23px">${ACC_ICONS[a.type]||'🏦'}</div>
+      <div><div style="font-size:18px;font-weight:700">${a.name}${cb}</div><div style="font-size:12px;color:var(--text3)">${ACC_LABELS[a.type]||a.type}</div></div>
+    </div>
+    <div style="text-align:center;padding:14px;background:var(--bg3);border-radius:var(--rsm)">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:3px">${a.type==='kredi'?'Toplam Borç':'Güncel Bakiye'}</div>
+      <div style="font-size:26px;font-weight:700;color:${a.type==='kredi'?'var(--red)':(bal<0?'var(--red)':'var(--green)')}">${a.type==='kredi'?fmtAmt(Math.abs(bal), a.currency):fmtAmt(bal, a.currency)}</div>
+    </div>
+    ${limitHTML}${donemHTML}
+    <div style="display:flex;gap:7px;margin:12px 0 8px">
+      <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openAddAccount('${id}')">✏️ Düzenle</button>
+      <button class="btn btn-danger btn-sm" style="flex:1" onclick="deleteAccount('${id}')">🗑️ Sil</button>
+    </div>
+    <div class="section-title">İşlem Geçmişi</div>
+    ${txs.length?txs.slice(0,20).map(t=>txCardHTML(t)).join(''):'<div class="empty"><p>İşlem yok.</p></div>'}`;
+  openModal('modal-acc-detail');
+}
+
+// ── İŞLEMLER ──
+function changeTxMonth(dir) {
+  const parts = txSelectedMonth.split('-');
+  let y = parseInt(parts[0]);
+  let m = parseInt(parts[1]);
+  m += dir;
+  if (m < 1) { m = 12; y--; }
+  if (m > 12) { m = 1; y++; }
+  txSelectedMonth = `${y}-${String(m).padStart(2,'0')}`;
   renderTransactions();
 }
-function changeTxAcc(v){ filterAcc=v; renderTransactions(); }
-
-function openAddTx(){
-  document.getElementById('modal-tx-title').textContent = 'Yeni İşlem';
-  document.getElementById('tx-edit-id').value = '';
-  document.getElementById('tx-del-btn').style.display = 'none';
-  document.getElementById('tx-copy-btn').style.display = 'none';
-  document.getElementById('tx-date').value = today();
-  document.getElementById('tx-firma').value = '';
-  document.getElementById('tx-amount').value = '';
-  document.getElementById('tx-desc').value = '';
-  document.getElementById('tx-istaksit').checked = false;
-  document.getElementById('tx-taksit-sayi').value = '';
-  toggleTaksit(false);
-  
-  const accSel = document.getElementById('tx-account');
-  const accSel2 = document.getElementById('tx-account2');
-  const options = DB.accounts.map(a=>`<option value="${a.id}">${a.name}</option>`).join('');
-  accSel.innerHTML = options;
-  accSel2.innerHTML = options;
-
-  txType = 'gider';
-  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('active-gelir','active-gider','active-transfer'));
-  document.getElementById('txtype-gider').classList.add('active-gider');
-  
-  // Kategori sıfırla
-  document.getElementById('tx-category').value = '';
-  document.getElementById('cat-search').value = '';
-  reopenCatSearch();
-  
-  setTxType('gider', document.getElementById('txtype-gider'));
-  openModal('modal-tx');
+function changeTxAcc(val){
+  txSelectedAcc = val;
+  renderTransactions();
 }
 
-// ── KATEGORİ SEÇİM MANTIĞI (GÜNCELLENDİ) ──
-function setTxType(type, btn){
-  txType = type;
-  document.querySelectorAll('.type-btn').forEach(b=>{
-    b.classList.remove('active-gelir', 'active-gider', 'active-transfer');
-  });
-  btn.classList.add('active-' + type);
+function renderTransactions(){
+  const el=document.getElementById('tx-list');
   
-  // Tip değişince eski kategori seçimini sıfırla
-  document.getElementById('tx-category').value = '';
-  document.getElementById('cat-search').value = '';
-  reopenCatSearch(); 
+  document.getElementById('tx-month-label').textContent=fmtMonthLong(txSelectedMonth);
+  const accSelect = document.getElementById('tx-acc-filter');
+  accSelect.innerHTML = '<option value="">Tüm Hesaplar</option>' + DB.accounts.map(a=>`<option value="${a.id}" ${txSelectedAcc===a.id?'selected':''}>${a.name}</option>`).join('');
 
-  if(type === 'transfer'){
-    document.getElementById('tx-account2-group').style.display = 'block';
-    document.getElementById('taksit-check-group').style.display = 'none';
-  } else {
-    document.getElementById('tx-account2-group').style.display = 'none';
-    document.getElementById('taksit-check-group').style.display = 'block';
+  let all=[];
+  DB.transactions.forEach(tx=>{
+    if(tx.isTaksit)getTaksitRows(tx).forEach(r=>all.push(r));
+    else all.push(tx);
+  });
+  all.sort((a,b)=>new Date(b.date)-new Date(a.date));
+  
+  // Tip filtresi
+  if(txFilter==='gelir')all=all.filter(t=>t.type==='gelir'&&!t._virtual);
+  else if(txFilter==='gider')all=all.filter(t=>t.type==='gider');
+  else if(txFilter==='taksit')all=all.filter(t=>t._virtual||t.isTaksit);
+
+  // Ay ve Hesap filtresi
+  all = all.filter(t => t.date && t.date.startsWith(txSelectedMonth));
+  if (txSelectedAcc) {
+      all = all.filter(t => t.accountId === txSelectedAcc || t.accountId2 === txSelectedAcc);
   }
+
+  if(!all.length){el.innerHTML=`<div class="empty"><div class="empty-icon">💳</div><p>Bu döneme ait işlem bulunamadı.</p></div>`;return;}
+  const groups={};
+  all.forEach(tx=>{const d=tx.date||'?';if(!groups[d])groups[d]=[];groups[d].push(tx);});
+  el.innerHTML=Object.entries(groups).sort((a,b)=>new Date(b[0])-new Date(a[0])).map(([date,list])=>`
+    <div style="font-size:11px;color:var(--text3);margin:12px 0 5px;font-weight:700">${fmtDate(date)}</div>
+    <div class="card" style="padding:3px 12px">${list.map(tx=>txCardHTML(tx)).join('')}</div>`).join('');
+}
+
+function txCardHTML(tx){
+  const cat=DB.categories.find(c=>c.id===tx.categoryId);
+  const acc=DB.accounts.find(a=>a.id===tx.accountId);
+  const icon=cat?cat.icon:(tx.type==='transfer'?'🔄':tx.type==='gelir'?'📈':'📉');
+  const iconBg=tx.type==='gelir'?'rgba(34,211,165,.12)':tx.type==='transfer'?'rgba(96,165,250,.12)':'rgba(248,113,113,.12)';
+  const amtCol=tx.type==='gelir'?'var(--green)':tx.type==='transfer'?'var(--blue)':'var(--red)';
+  const pre=tx.type==='gelir'?'+':tx.type==='transfer'?'↔':'-';
+  const name = escapeHTML(tx.firma) || escapeHTML(tx.desc) || 'İsimsiz işlem';
+  let badge='';
+  const todayD=today();
+  if(tx._virtual){
+    const isPastTaksit=tx.date<=todayD;
+    badge=`<span class="badge badge-taksit" onclick="event.stopPropagation();openTaksitDetail('${tx.id}')" style="cursor:pointer">${tx._tNo}/${tx.taksitSayi} ${isPastTaksit?'✅':'⏳'}</span>`;
+  }else if(tx.isTaksit){
+    badge=`<span class="badge badge-taksit" onclick="event.stopPropagation();openTaksitDetail('${tx.id}')" style="cursor:pointer">${tx.taksitSayi} taksit</span>`;
+  }
+  const vc=tx._virtual&&tx.date>todayD?' virt':'';
+  const click=tx._virtual?`openTaksitDetail('${tx.id}')`:`editTx('${tx.id}')`;
+  const metaStr=[acc?acc.name:'',cat?'• '+cat.name:''].filter(Boolean).join(' ');
+  return`<div class="tx-card${vc}" onclick="${click}">
+    <div class="tx-icon" style="background:${iconBg}">${icon}</div>
+    <div class="tx-info">
+      <div class="tx-desc">${name}</div>
+      <div class="tx-meta">${metaStr}</div>
+      ${badge?`<div style="margin-top:3px">${badge}</div>`:''}
+    </div>
+    <div class="tx-amount" style="color:${amtCol}">${pre}${fmtAmt(tx.amount,tx.currency)}</div>
+  </div>`;
+}
+
+function filterTx(type,btn){txFilter=type;document.querySelectorAll('#page-transactions .tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderTransactions();}
+
+// ── BORÇ/ALACAK ──
+function renderDebts(){
+  const el=document.getElementById('debt-list');
+  let debts=[...DB.debts].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  if(debtFilter==='alacak')debts=debts.filter(d=>d.type==='alacak');
+  else if(debtFilter==='borc')debts=debts.filter(d=>d.type==='borc');
+  el.innerHTML=debts.length?debts.map(d=>debtCardHTML(d)).join(''):`<div class="empty"><div class="empty-icon">🤝</div><p>Kayıt bulunamadı.</p></div>`;
+}
+function debtCardHTML(d){
+  const rem=(parseFloat(d.amount)||0)-(parseFloat(d.paid)||0);
+  const pct=d.amount>0?Math.min(100,((parseFloat(d.paid)||0)/parseFloat(d.amount))*100):0;
+  const isA=d.type==='alacak';const col=isA?'var(--green)':'var(--red)';
+  const badge=isA?'<span class="badge badge-alacak">Alacak</span>':'<span class="badge badge-borc">Borç</span>';
+  return`<div class="ba-card" onclick="editDebt('${d.id}')">
+    <div class="ba-header">
+      <div><div class="ba-name">${escapeHTML(d.person)} ${badge}</div><div class="ba-meta">${fmtDate(d.date)}${d.due?' • Vade: '+fmtDate(d.due):''}${rem<=0?' ✅':''}</div>${d.desc?`<div class="ba-meta">${escapeHTML(d.desc)}</div>`:''}</div>
+      <div><div class="ba-amount" style="color:${col}">${fmt(rem)}</div><div style="font-size:11px;color:var(--text3);text-align:right">/ ${fmt(d.amount)}</div></div>
+    </div>
+    <div class="ba-progress"><div class="ba-fill" style="width:${pct}%;background:${col}"></div></div>
+  </div>`;
+}
+function filterDebt(type,btn){debtFilter=type;document.querySelectorAll('#page-debt .tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderDebts();}
+
+// ── AYARLAR / KATEGORİ YÖNETİMİ ──
+function renderSettings(){
+  const el=document.getElementById('cat-list');
+  const groups={};
+  DB.categories.forEach(c=>{const g=c.parent||(c.type==='gelir'?'Diğer Gelir':c.type==='gider'?'Diğer Gider':'Diğer');if(!groups[g])groups[g]=[];groups[g].push(c);});
+  el.innerHTML=Object.entries(groups).map(([grp,cats])=>`
+    <div class="cat-grp-hdr"><span class="cat-grp-lbl">${grp}</span></div>
+    ${cats.map(c=>`<div class="cat-item">
+      <span style="font-size:16px">${c.icon}</span>
+      <span style="font-size:13px;flex:1">${c.name}</span>
+      <span style="font-size:10px;color:var(--text3);margin-right:4px">${c.type==='gider'?'G':'K'}</span>
+      <div class="cat-item-acts">
+        <button class="cat-edit-btn" onclick="openEditCat('${c.id}')">✏️</button>
+        <button class="cat-edit-btn" onclick="deleteCat('${c.id}')" style="color:var(--red)">🗑️</button>
+      </div>
+    </div>`).join('')}
+    <div style="height:1px;background:rgba(50,54,96,.25);margin:3px 0"></div>`).join('');
+}
+
+// ── MODALS ──
+function openModal(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';}
+function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
+document.querySelectorAll('.modal-overlay').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)closeModal(el.id);});});
+
+function onCatSearch(val){
+  const dd=document.getElementById('cat-drop');
+  const cats=DB.categories.filter(c=>c.type==='hepsi'||c.type===currentTxType||currentTxType==='transfer');
+  const q=val.toLowerCase().trim();
+  const filtered=q?cats.filter(c=>c.name.toLowerCase().includes(q)||(c.parent||'').toLowerCase().includes(q)):cats;
+  dd.innerHTML=filtered.slice(0,20).map(c=>`<div class="cat-opt" onmousedown="pickCat('${c.id}'); event.preventDefault();">
+    <span>${c.icon}</span><span>${c.name}</span><span class="cg">${c.parent||''}</span>
+  </div>`).join('');
+  dd.classList.add('open');
+}
+function onCatFocus(){onCatSearch(document.getElementById('cat-search').value);}
+function closeCatDrop(){document.getElementById('cat-drop').classList.remove('open');}
+function pickCat(catId){
+  selectedCatId=catId;
+  document.getElementById('tx-category').value=catId;
+  const cat=DB.categories.find(c=>c.id===catId);
+  if(cat){
+    document.getElementById('cat-sel-icon').textContent=cat.icon;
+    document.getElementById('cat-sel-name').textContent=cat.name;
+    document.getElementById('cat-sel-box').style.display='flex';
+    document.getElementById('cat-search').style.display='none';
+    document.getElementById('cat-wrap').querySelector('.cat-si').style.display='none';
+  }
+  closeCatDrop();
+}
+function reopenCatSearch(){
+  selectedCatId='';document.getElementById('tx-category').value='';
+  document.getElementById('cat-sel-box').style.display='none';
+  document.getElementById('cat-search').style.display='block';
+  document.getElementById('cat-wrap').querySelector('.cat-si').style.display='block';
+  document.getElementById('cat-search').value='';
+  document.getElementById('cat-search').focus();
+}
+function resetCatUI(catId){
+  selectedCatId=catId||'';
+  document.getElementById('tx-category').value=catId||'';
+  if(catId){
+    const cat=DB.categories.find(c=>c.id===catId);
+    if(cat){document.getElementById('cat-sel-icon').textContent=cat.icon;document.getElementById('cat-sel-name').textContent=cat.name;document.getElementById('cat-sel-box').style.display='flex';document.getElementById('cat-search').style.display='none';document.getElementById('cat-wrap').querySelector('.cat-si').style.display='none';return;}
+  }
+  document.getElementById('cat-sel-box').style.display='none';
+  document.getElementById('cat-search').style.display='block';
+  document.getElementById('cat-wrap').querySelector('.cat-si').style.display='block';
+  document.getElementById('cat-search').value='';
+}
+
+// ── İŞLEM EKLE/DÜZENLE ──
+function openAddTx(id){
+  const tx=id?DB.transactions.find(t=>t.id===id):null;
+  document.getElementById('modal-tx-title').textContent=tx?'İşlemi Düzenle':'Yeni İşlem';
+  document.getElementById('tx-edit-id').value=tx?tx.id:'';
+  document.getElementById('tx-firma').value=tx?(tx.firma||''):'';
+  document.getElementById('tx-desc').value=tx?(tx.desc||''):'';
+  document.getElementById('tx-amount').value=tx?tx.amount:'';
+  document.getElementById('tx-currency').value=tx?(tx.currency||'TRY'):'TRY';
+  document.getElementById('tx-date').value=tx?tx.date:today();
+  document.getElementById('tx-istaksit').checked=tx?!!tx.isTaksit:false;
+  document.getElementById('tx-taksit-sayi').value=tx?(tx.taksitSayi||''):'';
+  document.getElementById('taksit-group').style.display=(tx&&tx.isTaksit)?'block':'none';
+  document.getElementById('tx-del-btn').style.display=tx?'inline-block':'none';
+  document.getElementById('tx-copy-btn').style.display=tx?'inline-block':'none';
+  const t=tx?tx.type:'gider';
+  document.querySelectorAll('.type-btn').forEach(b=>b.className='type-btn');
+  document.getElementById('txtype-'+t).className='type-btn active-'+t;
+  currentTxType=t;
+  document.getElementById('tx-account2-group').style.display=t==='transfer'?'block':'none';
+  const accOpts=DB.accounts.map(a=>`<option value="${a.id}" ${tx&&tx.accountId===a.id?'selected':''}>${ACC_ICONS[a.type]} ${a.name}${a.currency&&a.currency!=='TRY'?' ('+a.currency+')':''}</option>`).join('');
+  document.getElementById('tx-account').innerHTML=DB.accounts.length?accOpts:'<option value="">Hesap yok</option>';
+  document.getElementById('tx-account2').innerHTML=DB.accounts.length?DB.accounts.map(a=>`<option value="${a.id}" ${tx&&tx.accountId2===a.id?'selected':''}>${ACC_ICONS[a.type]} ${a.name}</option>`).join(''):'<option value="">Hesap yok</option>';
+  resetCatUI(tx?tx.categoryId:'');
+  document.getElementById('cat-drop').classList.remove('open');
+  openModal('modal-tx');
+}
+function setTxType(type,btn){
+  currentTxType=type;
+  document.querySelectorAll('.type-btn').forEach(b=>b.className='type-btn');
+  btn.className='type-btn active-'+type;
+  document.getElementById('tx-account2-group').style.display=type==='transfer'?'block':'none';
+  resetCatUI('');
+}
+function toggleTaksit(checked){document.getElementById('taksit-group').style.display=checked?'block':'none';}
+function saveTx(){
+  const firma=document.getElementById('tx-firma').value.trim();
+  const desc=document.getElementById('tx-desc').value.trim();
+  const amount=parseFloat(document.getElementById('tx-amount').value);
+  const currency=document.getElementById('tx-currency').value||'TRY';
+  const date=document.getElementById('tx-date').value;
+  const accountId=document.getElementById('tx-account').value;
+  const categoryId=document.getElementById('tx-category').value||selectedCatId;
+  const editId=document.getElementById('tx-edit-id').value;
+  const isTaksit=document.getElementById('tx-istaksit').checked;
+  const taksitSayi=parseInt(document.getElementById('tx-taksit-sayi').value)||0;
+  const accountId2=document.getElementById('tx-account2').value;
+  if(!amount||amount<=0){snack('Geçerli tutar girin');return;}
+  if(!accountId){snack('Hesap seçin');return;}
+  if(isTaksit&&taksitSayi<2){snack('Taksit sayısı en az 2 olmalı');return;}
+  const acc=DB.accounts.find(a=>a.id===accountId);
+  let krediDonem=null;
+  if(acc&&acc.type==='kredi'&&acc.kesimGun)krediDonem=getKrediDonem(date,acc.kesimGun);
+  const tx={
+    id:editId||uid(),type:currentTxType,firma,desc,amount,currency,date,accountId,categoryId,krediDonem,
+    isTaksit:isTaksit&&currentTxType==='gider',
+    taksitSayi:isTaksit?taksitSayi:0,
+    taksitOdenen:editId?(DB.transactions.find(t=>t.id===editId)?.taksitOdenen||0):0,
+    accountId2:currentTxType==='transfer'?accountId2:null
+  };
+  if(editId){const i=DB.transactions.findIndex(t=>t.id===editId);if(i!==-1)DB.transactions[i]=tx;}
+  else DB.transactions.push(tx);
+  save();closeModal('modal-tx');snack('Kaydedildi ✓');renderPage(currentPage);
+}
+function editTx(id){openAddTx(id);}
+function deleteTxConfirm(){
+  const id=document.getElementById('tx-edit-id').value;
+  if(!id)return;
+  if(!confirm('Bu işlemi silmek istediğinize emin misiniz?'))return;
+  DB.transactions=DB.transactions.filter(t=>t.id!==id);
+  save();closeModal('modal-tx');snack('İşlem silindi');renderPage(currentPage);
+}
+function copyTx(){
+  const id=document.getElementById('tx-edit-id').value;if(!id)return;
+  const tx=DB.transactions.find(t=>t.id===id);if(!tx)return;
+  closeModal('modal-tx');
+  const copy={...tx,id:uid(),date:today(),taksitOdenen:0};
+  DB.transactions.push(copy);save();snack('Kopyalandı ✓');
+  setTimeout(()=>openAddTx(copy.id),50);
 }
 
 function onCatFocus() {
-  onCatSearch(document.getElementById('cat-search').value);
+  const type = currentTxType || 'gider';
+  const cats = DB.categories.filter(c => c.type === type || c.type === 'hepsi');
+  renderCatDrop(cats);
+  document.getElementById('cat-drop').classList.add('open');
 }
 
-function onCatSearch(val) {
-  const drop = document.getElementById('cat-drop');
-  const term = val.toLowerCase().trim();
-  const currentType = txType; // 'gelir', 'gider' veya 'transfer'
-
-  // Kategorileri filtrele: Hem türe göre hem de arama terimine göre
-  const filtered = DB.categories.filter(c => {
-    // Tür kontrolü: Kategorinin türü 'hepsi' ise her zaman çıkar, 
-    // değilse txType ile eşleşmelidir.
-    const typeMatch = (c.type === 'hepsi' || c.type === currentType);
-    
-    // Arama terimi kontrolü
-    const nameMatch = c.name.toLowerCase().includes(term) || 
-                      (c.parent && c.parent.toLowerCase().includes(term));
-    
-    return typeMatch && nameMatch;
-  });
-
-  if (filtered.length === 0) {
-    drop.innerHTML = '<div class="cat-opt">Sonuç bulunamadı</div>';
-  } else {
-    // Gruplandırarak veya listeleyerek bas
-    drop.innerHTML = filtered.map(c => `
-      <div class="cat-opt" onclick="selectCat('${c.id}')">
-        <span>${c.icon || '📦'}</span>
-        <div style="display:flex; flex-direction:column">
-          <span style="font-weight:600">${c.name}</span>
-          ${c.parent ? `<span style="font-size:10px; color:var(--text3)">${c.parent}</span>` : ''}
-        </div>
-        <span class="cg">${c.type === 'hepsi' ? '' : (c.type === 'gelir' ? '📈' : '📉')}</span>
-      </div>
-    `).join('');
+// ── TAKSİT DETAY ──
+function openTaksitDetail(txId){
+  const tx=DB.transactions.find(t=>t.id===txId);if(!tx||!tx.isTaksit)return;
+  const per=tx.amount/tx.taksitSayi;
+  const base=new Date(tx.date+'T00:00:00');
+  const todayStr=today();
+  let rows='';
+  for(let i=0;i<tx.taksitSayi;i++){
+    let targetMonth = base.getMonth() + i;
+    let targetYear = base.getFullYear();
+    let d = new Date(targetYear, targetMonth, 1);
+    let lastDayOfMonth = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+    d.setDate(Math.min(base.getDate(), lastDayOfMonth));
+    const ds=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const isPast=ds<=todayStr;
+    rows+=`<div class="taksit-row ${isPast?'taksit-paid':'taksit-pending'}">
+      <span>${i+1}. Taksit — ${fmtDate(ds)}</span>
+      <span>${isPast?'✅':'⏳'} ${fmtAmt(per,tx.currency)}</span>
+    </div>`;
   }
-  drop.classList.add('open');
+  document.getElementById('taksit-detail-content').innerHTML=`
+    <div class="modal-title">${escapeHTML(tx.firma)||'Taksitli İşlem'} — Taksit Planı</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px;text-align:center">
+      <div class="card-sm"><div style="font-size:10px;color:var(--text3)">Toplam Taksit</div><div style="font-weight:700">${tx.taksitSayi}</div></div>
+      <div class="card-sm"><div style="font-size:10px;color:var(--text3)">Taksit Tutarı</div><div style="font-weight:700">${fmtAmt(per,tx.currency)}</div></div>
+    </div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:8px">Toplam: ${fmtAmt(tx.amount,tx.currency)} ${tx.desc?'• '+escapeHTML(tx.desc):''}</div>
+    ${rows}
+    <div style="margin-top:14px">
+      <button class="btn btn-ghost" onclick="closeModal('modal-taksit-detail')">Kapat</button>
+    </div>`;
+  openModal('modal-taksit-detail');
 }
 
-function selectCat(id){
-  const c = DB.categories.find(x=>x.id===id);
-  if(!c) return;
-  document.getElementById('tx-category').value = c.id;
-  document.getElementById('cat-sel-icon').textContent = c.icon;
-  document.getElementById('cat-sel-name').textContent = c.name;
-  document.getElementById('cat-wrap').style.display = 'none';
-  document.getElementById('cat-sel-box').style.display = 'flex';
-  closeCatDrop();
+// ── HESAP EKLE/DÜZENLE ──
+function openAddAccount(id){
+  closeModal('modal-acc-detail');
+  const acc=id?DB.accounts.find(a=>a.id===id):null;
+  document.getElementById('modal-acc-title').textContent=acc?'Hesabı Düzenle':'Yeni Hesap';
+  document.getElementById('acc-edit-id').value=acc?acc.id:'';
+  document.getElementById('acc-name-input').value=acc?acc.name:'';
+  document.getElementById('acc-type-input').value=acc?acc.type:'banka';
+  document.getElementById('acc-currency-input').value=acc?(acc.currency||'TRY'):'TRY';
+  document.getElementById('acc-balance-input').value=acc?acc.initialBalance:'';
+  document.getElementById('acc-limit-input').value=acc?(acc.limit||''):'';
+  document.getElementById('acc-kesim-gun').value=acc?(acc.kesimGun||''):'';
+  document.getElementById('acc-odeme-gun').value=acc?(acc.odemeGun||''):'';
+  selectedAccColor=acc?(acc.color||COLORS[0]):COLORS[0];
+  const isK=(acc?acc.type:'banka')==='kredi';
+  document.getElementById('acc-limit-group').style.display=isK?'block':'none';
+  document.getElementById('acc-kredi-group').style.display=isK?'block':'none';
+  document.getElementById('acc-color-picker').innerHTML=COLORS.map(c=>`<div class="color-dot ${c===selectedAccColor?'selected':''}" style="background:${c}" onclick="selectAccColor('${c}',this)"></div>`).join('');
+  document.getElementById('acc-net-dahil').checked = acc ? acc.netDahil!==false : true;
+  document.getElementById('acc-ozet-dahil').checked = acc ? acc.ozetDahil!==false : true;
+  openModal('modal-account');
+}
+function selectAccColor(c,el){selectedAccColor=c;document.querySelectorAll('.color-dot').forEach(d=>d.classList.remove('selected'));el.classList.add('selected');}
+function onAccTypeChange(type){const k=type==='kredi';document.getElementById('acc-limit-group').style.display=k?'block':'none';document.getElementById('acc-kredi-group').style.display=k?'block':'none';}
+function saveAccount(){
+  const name=document.getElementById('acc-name-input').value.trim();
+  const type=document.getElementById('acc-type-input').value;
+  const currency=document.getElementById('acc-currency-input').value||'TRY';
+  const initialBalance=parseFloat(document.getElementById('acc-balance-input').value)||0;
+  const limit=parseFloat(document.getElementById('acc-limit-input').value)||0;
+  const kesimGun=parseInt(document.getElementById('acc-kesim-gun').value)||0;
+  const odemeGun=parseInt(document.getElementById('acc-odeme-gun').value)||0;
+  const editId=document.getElementById('acc-edit-id').value;
+  if(!name){snack('Hesap adı girin');return;}
+  const netDahil=document.getElementById('acc-net-dahil').checked;
+  const ozetDahil=document.getElementById('acc-ozet-dahil').checked;
+  const acc={id:editId||uid(),name,type,currency,initialBalance,limit,kesimGun,odemeGun,color:selectedAccColor,netDahil,ozetDahil};
+  if(editId){const i=DB.accounts.findIndex(a=>a.id===editId);if(i!==-1)DB.accounts[i]=acc;}
+  else DB.accounts.push(acc);
+  save();closeModal('modal-account');snack('Hesap kaydedildi ✓');renderPage(currentPage);
+}
+function deleteAccount(id){
+  if(!confirm('Bu hesabı silmek istediğinize emin misiniz?'))return;
+  DB.accounts=DB.accounts.filter(a=>a.id!==id);
+  DB.transactions=DB.transactions.filter(t=>t.accountId!==id&&t.accountId2!==id);
+  save();closeModal('modal-acc-detail');snack('Hesap silindi');renderPage(currentPage);
 }
 
-function closeCatDrop(){ document.getElementById('cat-drop').classList.remove('open'); }
-function reopenCatSearch(){
-  document.getElementById('cat-wrap').style.display = 'block';
-  document.getElementById('cat-sel-box').style.display = 'none';
-  document.getElementById('cat-search').focus();
-}
-
-function toggleTaksit(v){ document.getElementById('taksit-group').style.display = v?'block':'none'; }
-
-function saveTx(){
-  const amount = parseFloat(document.getElementById('tx-amount').value);
-  const accId = document.getElementById('tx-account').value;
-  if(!amount || !accId){ snack('Tutar ve hesap gerekli!'); return; }
-  
-  const id = document.getElementById('tx-edit-id').value || 'tx_'+Date.now();
-  const isTaksit = document.getElementById('tx-istaksit').checked;
-  const tCount = isTaksit ? parseInt(document.getElementById('tx-taksit-sayi').value)||1 : 1;
-  
-  const baseDate = new Date(document.getElementById('tx-date').value);
-  const firma = document.getElementById('tx-firma').value;
-  const catId = document.getElementById('tx-category').value;
-  const desc = document.getElementById('tx-desc').value;
-  const currency = document.getElementById('tx-currency').value;
-  const toAccId = document.getElementById('tx-account2').value;
-
-  // Edit ise eskileri sil (taksitler dahil)
-  const oldId = document.getElementById('tx-edit-id').value;
-  if(oldId){
-    const original = DB.transactions.find(x=>x.id===oldId);
-    if(original && original.groupId) DB.transactions = DB.transactions.filter(x=>x.groupId !== original.groupId);
-    else DB.transactions = DB.transactions.filter(x=>x.id !== oldId);
-  }
-
-  const groupId = isTaksit ? 'grp_'+Date.now() : null;
-
-  for(let i=0; i<tCount; i++){
-    const d = new Date(baseDate);
-    d.setMonth(d.getMonth() + i);
-    const tx = {
-      id: i===0 ? id : 'tx_'+Date.now()+'_'+i,
-      type: txType,
-      date: d.toISOString().split('T')[0],
-      accId, toAccId: txType==='transfer'?toAccId:null,
-      firma, catId, desc, currency,
-      amount: isTaksit ? amount/tCount : amount,
-      isTaksit, taksitNo: i+1, taksitSayi: tCount,
-      groupId,
-      isVirt: d > new Date()
-    };
-    DB.transactions.push(tx);
-  }
-
-  save(); closeModal('modal-tx'); showPage(currentPage); snack('İşlem kaydedildi ✓');
-}
-
-function editTx(id){
-  const t = DB.transactions.find(x=>x.id===id);
-  if(!t) return;
-  openAddTx();
-  document.getElementById('modal-tx-title').textContent = 'İşlemi Düzenle';
-  document.getElementById('tx-edit-id').value = t.id;
-  document.getElementById('tx-del-btn').style.display = 'block';
-  document.getElementById('tx-copy-btn').style.display = 'block';
-  document.getElementById('tx-date').value = t.date;
-  document.getElementById('tx-firma').value = t.firma || '';
-  document.getElementById('tx-amount').value = t.isTaksit ? (t.amount * t.taksitSayi).toFixed(2) : t.amount;
-  document.getElementById('tx-currency').value = t.currency || 'TRY';
-  document.getElementById('tx-account').value = t.accId;
-  document.getElementById('tx-account2').value = t.toAccId || '';
-  document.getElementById('tx-desc').value = t.desc || '';
-  document.getElementById('tx-istaksit').checked = t.isTaksit;
-  document.getElementById('tx-taksit-sayi').value = t.taksitSayi || '';
-  toggleTaksit(t.isTaksit);
-  
-  if(t.catId) selectCat(t.catId);
-  
-  const btnId = 'txtype-' + t.type;
-  setTxType(t.type, document.getElementById(btnId));
-}
-
-function deleteTxConfirm(){
-  if(!confirm('Bu işlem silinsin mi?')) return;
-  const id = document.getElementById('tx-edit-id').value;
-  const t = DB.transactions.find(x=>x.id===id);
-  if(t && t.isTaksit){
-    if(confirm('Tüm taksitler silinsin mi? (Hayır derseniz sadece bu taksit silinir)')){
-      DB.transactions = DB.transactions.filter(x=>x.groupId !== t.groupId);
-    } else {
-      DB.transactions = DB.transactions.filter(x=>x.id !== id);
-    }
-  } else {
-    DB.transactions = DB.transactions.filter(x=>x.id !== id);
-  }
-  save(); closeModal('modal-tx'); showPage(currentPage); snack('Silindi');
-}
-
-// ── DEBTS ──
-function renderDebts(){
-  const list = document.getElementById('debt-list');
-  let filtered = DB.debts.filter(d => debtType==='hepsi' || d.type === debtType);
-  if(filtered.length===0) list.innerHTML = '<div class="empty"><div class="empty-icon">🤝</div><p>Kayıtlı borç/alacak yok.</p></div>';
-  else {
-    list.innerHTML = filtered.map(d=> {
-      const kalan = d.amount - (d.paid||0);
-      const perc = Math.min(100, ((d.paid||0)/d.amount)*100);
-      return `
-        <div class="ba-card" onclick="editDebt('${d.id}')">
-          <div class="ba-header">
-            <div class="ba-name">${d.person}</div>
-            <div class="ba-amount" style="color:${d.type==='alacak'?'var(--green)':'var(--red)'}">${fmt(d.amount)}</div>
-          </div>
-          <div class="ba-meta">${d.desc || 'Açıklama yok'}</div>
-          <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--text3)">
-            <span>Kalan: ${fmt(kalan)}</span>
-            <span>%${Math.round(perc)}</span>
-          </div>
-          <div class="ba-progress"><div class="ba-fill" style="width:${perc}%;background:${d.type==='alacak'?'var(--green)':'var(--red)'}"></div></div>
-        </div>
-      `;
-    }).join('');
-  }
-}
-
-function openAddDebt(){
-  document.getElementById('debt-edit-id').value = '';
-  document.getElementById('debt-del-btn').style.display = 'none';
-  document.getElementById('debt-person').value = '';
-  document.getElementById('debt-amount').value = '';
-  document.getElementById('debt-paid').value = '0';
-  document.getElementById('debt-date').value = today();
-  document.getElementById('debt-due').value = '';
-  document.getElementById('debt-desc').value = '';
-  setDebtType('alacak', document.querySelector('#modal-debt .tab-btn'));
+// ── BORÇ/ALACAK ──
+function openAddDebt(id){
+  const d=id?DB.debts.find(x=>x.id===id):null;
+  document.getElementById('debt-edit-id').value=d?d.id:'';
+  document.getElementById('debt-person').value=d?d.person:'';
+  document.getElementById('debt-amount').value=d?d.amount:'';
+  document.getElementById('debt-date').value=d?d.date:today();
+  document.getElementById('debt-due').value=d?(d.due||''):'';
+  document.getElementById('debt-paid').value=d?(d.paid||0):0;
+  document.getElementById('debt-desc').value=d?(d.desc||''):'';
+  document.getElementById('debt-del-btn').style.display=d?'inline-block':'none';
+  document.getElementById('debt-copy-btn').style.display=d?'inline-block':'none';
+  currentDebtType=d?d.type:'alacak';
+  const tabs=document.querySelectorAll('#modal-debt .tab-btn');
+  tabs[0].classList.toggle('active',currentDebtType==='alacak');
+  tabs[1].classList.toggle('active',currentDebtType==='borc');
   openModal('modal-debt');
 }
-
-function setDebtType(t, btn){
-  debtType = t;
-  document.querySelectorAll('#modal-debt .tab-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-}
-
+function setDebtType(type,btn){currentDebtType=type;document.querySelectorAll('#modal-debt .tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
 function saveDebt(){
-  const person = document.getElementById('debt-person').value;
-  const amount = parseFloat(document.getElementById('debt-amount').value);
-  if(!person || !amount){ snack('İsim ve tutar gerekli!'); return; }
-  
-  const id = document.getElementById('debt-edit-id').value || 'd_'+Date.now();
-  const d = {
-    id, person, amount,
-    paid: parseFloat(document.getElementById('debt-paid').value)||0,
-    type: debtType,
-    date: document.getElementById('debt-date').value,
-    due: document.getElementById('debt-due').value,
-    desc: document.getElementById('debt-desc').value
-  };
-  
-  const idx = DB.debts.findIndex(x=>x.id===id);
-  if(idx>-1) DB.debts[idx] = d; else DB.debts.push(d);
-  save(); closeModal('modal-debt'); renderDebts(); snack('Kaydedildi');
+  const person=document.getElementById('debt-person').value.trim();
+  const amount=parseFloat(document.getElementById('debt-amount').value);
+  const date=document.getElementById('debt-date').value;
+  const due=document.getElementById('debt-due').value;
+  const paid=parseFloat(document.getElementById('debt-paid').value)||0;
+  const desc=document.getElementById('debt-desc').value.trim();
+  const editId=document.getElementById('debt-edit-id').value;
+  if(!person){snack('Kişi adı girin');return;}
+  if(!amount||amount<=0){snack('Geçerli tutar girin');return;}
+  const d={id:editId||uid(),type:currentDebtType,person,amount,date,due,paid,desc};
+  if(editId){const i=DB.debts.findIndex(x=>x.id===editId);if(i!==-1)DB.debts[i]=d;}
+  else DB.debts.push(d);
+  save();closeModal('modal-debt');snack('Kaydedildi ✓');renderPage(currentPage);
 }
-
-function editDebt(id){
-  const d = DB.debts.find(x=>x.id===id);
-  if(!d) return;
-  openAddDebt();
-  document.getElementById('debt-edit-id').value = d.id;
-  document.getElementById('debt-del-btn').style.display = 'block';
-  document.getElementById('debt-person').value = d.person;
-  document.getElementById('debt-amount').value = d.amount;
-  document.getElementById('debt-paid').value = d.paid || 0;
-  document.getElementById('debt-date').value = d.date;
-  document.getElementById('debt-due').value = d.due || '';
-  document.getElementById('debt-desc').value = d.desc || '';
-  setDebtType(d.type, document.querySelectorAll('#modal-debt .tab-btn')[d.type==='alacak'?0:1]);
-}
-
+function editDebt(id){openAddDebt(id);}
 function deleteDebtConfirm(){
-  if(!confirm('Bu kayıt silinsin mi?')) return;
-  DB.debts = DB.debts.filter(x=>x.id !== document.getElementById('debt-edit-id').value);
-  save(); closeModal('modal-debt'); renderDebts(); snack('Silindi');
+  const id=document.getElementById('debt-edit-id').value;if(!id)return;
+  if(!confirm('Bu kaydı silmek istediğinize emin misiniz?'))return;
+  DB.debts=DB.debts.filter(d=>d.id!==id);
+  save();closeModal('modal-debt');snack('Silindi');renderPage(currentPage);
+}
+function copyDebt(){
+  const id=document.getElementById('debt-edit-id').value;if(!id)return;
+  const d=DB.debts.find(x=>x.id===id);if(!d)return;
+  closeModal('modal-debt');
+  const copy={...d,id:uid(),date:today(),paid:0};
+  DB.debts.push(copy);save();snack('Kopyalandı ✓');
+  setTimeout(()=>openAddDebt(copy.id),50);
 }
 
-// ── SETTINGS ──
-function renderSettings(){
-  const list = document.getElementById('cat-list');
-  const grouped = {};
-  DB.categories.forEach(c=>{
-    const p = c.parent || 'DİĞER';
-    if(!grouped[p]) grouped[p] = [];
-    grouped[p].push(c);
-  });
-  
-  let html = '';
-  for(let g in grouped){
-    html += `<div class="cat-grp-hdr"><span class="cat-grp-lbl">${g}</span></div>`;
-    html += grouped[g].map(c=> `
-      <div class="cat-item">
-        <span>${c.icon}</span>
-        <span style="font-size:13px">${c.name}</span>
-        <span style="font-size:10px;color:var(--text3);margin-left:4px">${c.type==='gelir'?'(Gelir)':c.type==='hepsi'?'(Hepsi)':'(Gider)'}</span>
-        <div class="cat-item-acts">
-          <button class="cat-edit-btn" onclick="openEditCat('${c.id}')">✏️</button>
-          <button class="cat-edit-btn" onclick="deleteCat('${c.id}')">🗑️</button>
-        </div>
-      </div>
-    `).join('');
-  }
-  list.innerHTML = html;
-}
-
+// ── KATEGORİ ──
 function openAddCat(){
-  document.getElementById('modal-cat-title').textContent = 'Kategori Ekle';
-  document.getElementById('cat-edit-id').value = '';
-  document.getElementById('cat-name-input').value = '';
-  document.getElementById('cat-parent-input').value = '';
-  document.getElementById('cat-type-input').value = 'gider';
-  renderIconPicker();
-  openModal('modal-cat');
+  document.getElementById('cat-edit-id').value='';
+  document.getElementById('modal-cat-title').textContent='Kategori Ekle';
+  document.getElementById('cat-name-input').value='';
+  document.getElementById('cat-parent-input').value='';
+  document.getElementById('cat-type-input').value='gider';
+  selectedCatIcon='📦';buildIconPicker();openModal('modal-cat');
 }
-
-function renderIconPicker(sel){
-  const p = document.getElementById('cat-icon-picker');
-  p.innerHTML = ICONS.map(i=>`<div class="chip ${i===sel?'active':''}" onclick="selIcon(this,'${i}')">${i}</div>`).join('');
-  if(!sel) selIcon(p.firstChild, ICONS[0]);
-}
-let selectedIcon = '';
-function selIcon(el, i){
-  document.querySelectorAll('#cat-icon-picker .chip').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
-  selectedIcon = i;
-}
-
-function saveCat(){
-  const name = document.getElementById('cat-name-input').value;
-  if(!name){ snack('İsim girin!'); return; }
-  const id = document.getElementById('cat-edit-id').value || 'cat_'+Date.now();
-  const c = {
-    id, name,
-    parent: document.getElementById('cat-parent-input').value,
-    icon: selectedIcon,
-    type: document.getElementById('cat-type-input').value
-  };
-  const idx = DB.categories.findIndex(x=>x.id===id);
-  if(idx>-1) DB.categories[idx] = c; else DB.categories.push(c);
-  save(); closeModal('modal-cat'); renderSettings(); snack('Kategori kaydedildi ✓');
-}
-
 function openEditCat(id){
-  const c = DB.categories.find(x=>x.id===id);
-  if(!c) return;
-  openAddCat();
-  document.getElementById('modal-cat-title').textContent = 'Kategoriyi Düzenle';
-  document.getElementById('cat-edit-id').value = c.id;
-  document.getElementById('cat-name-input').value = c.name;
-  document.getElementById('cat-parent-input').value = c.parent || '';
-  document.getElementById('cat-type-input').value = c.type || 'gider';
-  renderIconPicker(c.icon);
+  const c=DB.categories.find(x=>x.id===id);if(!c)return;
+  document.getElementById('cat-edit-id').value=id;
+  document.getElementById('modal-cat-title').textContent='Kategori Düzenle';
+  document.getElementById('cat-name-input').value=c.name;
+  document.getElementById('cat-parent-input').value=c.parent||'';
+  document.getElementById('cat-type-input').value=c.type;
+  selectedCatIcon=c.icon||'📦';buildIconPicker();openModal('modal-cat');
 }
-
-function deleteCat(id){
-  if(!confirm('Bu kategori silinsin mi?')) return;
-  DB.categories = DB.categories.filter(x=>x.id !== id);
-  save(); renderSettings(); snack('Silindi');
+function buildIconPicker(){
+  document.getElementById('cat-icon-picker').innerHTML=CAT_ICONS_LIST.map(i=>`<button class="chip ${i===selectedCatIcon?'active':''}" onclick="selectCatIcon('${i}',this)">${i}</button>`).join('');
 }
-
-// ── SEARCH ──
-function doSearch(q){
-  const res = document.getElementById('search-res');
-  if(!q || q.length < 2){ res.classList.remove('open'); return; }
-  
-  const found = DB.transactions.filter(t=> 
-    (t.firma && t.firma.toLowerCase().includes(q.toLowerCase())) ||
-    (t.desc && t.desc.toLowerCase().includes(q.toLowerCase()))
-  ).sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,20);
-  
-  if(found.length===0){
-    res.innerHTML = '<div style="padding:15px;text-align:center;font-size:13px;color:var(--text3)">Sonuç bulunamadı</div>';
-  } else {
-    res.innerHTML = found.map(t=> `
-      <div class="sitem" onclick="editTx('${t.id}')">
-        <div class="tx-icon" style="background:var(--bg3);font-size:14px;width:30px;height:30px">
-          ${(DB.categories.find(c=>c.id===t.catId)||{}).icon || '📦'}
-        </div>
-        <div style="flex:1">
-          <div style="font-size:13px;font-weight:600">${t.firma || t.desc || 'İşlem'}</div>
-          <div style="font-size:10px;color:var(--text3)">${t.date} • ${fmt(t.amount, t.currency)}</div>
-        </div>
-      </div>
-    `).join('');
+function selectCatIcon(icon,el){selectedCatIcon=icon;document.querySelectorAll('#cat-icon-picker .chip').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
+function saveCat(){
+  const name=document.getElementById('cat-name-input').value.trim();
+  const parent=document.getElementById('cat-parent-input').value.trim();
+  const type=document.getElementById('cat-type-input').value;
+  const editId=document.getElementById('cat-edit-id').value;
+  if(!name){snack('Kategori adı girin');return;}
+  if(editId){
+    const i=DB.categories.findIndex(c=>c.id===editId);
+    if(i!==-1)DB.categories[i]={...DB.categories[i],name,parent:parent||undefined,type,icon:selectedCatIcon};
+    snack('Güncellendi ✓');
+  }else{
+    DB.categories.push({id:uid(),name,icon:selectedCatIcon,type,parent:parent||undefined});
+    snack('Eklendi ✓');
   }
-  res.classList.add('open');
+  save();closeModal('modal-cat');renderSettings();
 }
-function closeSearch(){ document.getElementById('search-res').classList.remove('open'); }
+function deleteCat(id){
+  if(!confirm('Bu kategoriyi silmek istediğinize emin misiniz?'))return;
+  DB.categories = DB.categories.filter(c=>c.id!==id);
+  DB.transactions.forEach(tx => {
+    if(tx.categoryId === id) { tx.categoryId = ''; }
+  });
+  save();snack('Silindi ve işlemler güncellendi');renderSettings();
+}
 
-// ── MODALS ──
-function openModal(id){ document.getElementById(id).classList.add('open'); }
-function closeModal(id){ document.getElementById(id).classList.remove('open'); }
-
-// ── EXPORT / IMPORT ──
+// ── VERİ YÖNETİMİ ──
 function exportData(){
-  const data = JSON.stringify(DB);
-  const blob = new Blob([data], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = `butcetakip_yedek_${today()}.json`; a.click(); URL.revokeObjectURL(url); snack('Yedek alındı ✓');
+  const blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download=`butcetakip_yedek_${today()}.json`;a.click();URL.revokeObjectURL(url);snack('Yedek alındı ✓');
 }
 function importData(e){
-  const file = e.target.files[0]; if(!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    try {
-      const data = JSON.parse(ev.target.result);
-      if(data.accounts && data.transactions && data.categories){
-        DB = data; save(); snack('Veriler yüklendi ✓'); renderPage(currentPage);
-      } else snack('Geçersiz dosya!');
-    } catch { snack('Dosya okunamadı!'); }
-  };
-  reader.readAsText(file); e.target.value = '';
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{try{const data=JSON.parse(ev.target.result);if(data.accounts&&data.transactions&&data.categories){DB=data;save();snack('Veriler yüklendi ✓');renderPage(currentPage);}else snack('Geçersiz dosya!');}catch{snack('Dosya okunamadı!');}};
+  reader.readAsText(file);e.target.value='';
 }
 function clearAllData(){
-  if(!confirm('TÜM veriler silinecek! Emin misiniz?')) return;
-  if(!confirm('Son onay: Tüm hesaplar ve işlemler silinecek!')) return;
-  DB = {accounts:[], transactions:[], debts:[], categories:JSON.parse(JSON.stringify(DEFAULT_CATS))};
-  save(); snack('Veriler silindi'); renderPage(currentPage);
+  if(!confirm('TÜM veriler silinecek! Emin misiniz?'))return;
+  if(!confirm('Son onay: Tüm hesaplar ve işlemler silinecek!'))return;
+  DB={accounts:[],transactions:[],debts:[],categories:JSON.parse(JSON.stringify(DEFAULT_CATS))};
+  save();snack('Veriler silindi');renderPage(currentPage);
 }
 
 // ── SNACK ──
-function snack(msg){ const el=document.getElementById('snack'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2500); }
+function snack(msg){const el=document.getElementById('snack');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500);}
 
 // ── BAŞLAT ──
 function init(){
   load();
-  document.getElementById('tx-date').value = today();
-  document.getElementById('debt-date').value = today();
-  setTimeout(()=>document.getElementById('splash').style.opacity='0', 1000);
-  setTimeout(()=>document.getElementById('splash').style.display='none', 1500);
-  renderDash();
+  document.getElementById('tx-date').value=today();
+  document.getElementById('debt-date').value=today();
+  setTimeout(()=>{const s=document.getElementById('splash');s.style.opacity='0';setTimeout(()=>s.style.display='none',500);},1300);
+  renderDashboard();
 }
-window.onload = init;
+init();
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
 </script>
 </body>
 </html>
