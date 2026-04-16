@@ -20,8 +20,8 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Tahoma,Geneva
 .splash-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;animation:fillbar 1.2s ease forwards;}
 @keyframes fillbar{from{width:0}to{width:100%}}
 #nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom);}
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px 8px;cursor:pointer;color:var(--text3);transition:color .2s;font-size:10px;font-weight:500;border:none;background:none;}
-.nav-btn .ni{font-size:22px;transition:transform .2s;}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 2px 8px;cursor:pointer;color:var(--text3);transition:color .2s;font-size:10px;font-weight:500;border:none;background:none;}
+.nav-btn .ni{font-size:20px;transition:transform .2s;}
 .nav-btn.active{color:var(--accent2);}
 .nav-btn.active .ni{transform:translateY(-2px);}
 #header{position:fixed;top:0;left:0;right:0;background:var(--bg2);border-bottom:1px solid var(--border);z-index:90;padding:12px 14px 10px;display:flex;align-items:center;gap:10px;}
@@ -165,29 +165,6 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .cat-item-acts{display:flex;gap:3px;margin-left:auto;}
 .cat-edit-btn{background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer;padding:3px;}
 .cat-edit-btn:active{color:var(--accent2);}
-
-/* ── KATEGORİ ACCORDION (Ayarlar) ── */
-.cat-type-tab{display:flex;background:var(--bg3);border-radius:var(--rsm);padding:3px;margin-bottom:12px;gap:2px;}
-.cat-type-btn{flex:1;padding:8px;border-radius:7px;border:none;background:none;color:var(--text3);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;}
-.cat-type-btn.active{background:var(--card);color:var(--text);}
-.cat-type-btn.gelir-active{background:rgba(34,211,165,.15);color:var(--green);}
-.cat-type-btn.gider-active{background:rgba(248,113,113,.15);color:var(--red);}
-.cat-parent-row{display:flex;align-items:center;justify-content:space-between;padding:9px 8px;border-radius:8px;cursor:pointer;transition:background .15s;margin-bottom:1px;}
-.cat-parent-row:active,.cat-parent-row:hover{background:var(--card2);}
-.cat-parent-label{font-size:13px;font-weight:600;color:var(--text);}
-.cat-parent-count{font-size:11px;color:var(--text3);background:var(--bg3);padding:2px 8px;border-radius:99px;}
-.cat-parent-arrow{font-size:11px;color:var(--text3);transition:transform .2s;margin-left:6px;}
-.cat-parent-arrow.open{transform:rotate(90deg);}
-.cat-children{display:none;padding-left:8px;border-left:2px solid var(--border);margin-left:10px;margin-bottom:4px;}
-.cat-children.open{display:block;}
-
-/* ── KATEGORİ SEARCH (İşlem Formu) gelişmiş ── */
-.cat-drop-header{padding:6px 12px 4px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid rgba(50,54,96,.3);background:var(--bg3);}
-.cat-opt-group{padding:6px 0;}
-.cat-opt{display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;font-size:13px;border-bottom:1px solid rgba(50,54,96,.15);}
-.cat-opt:last-child{border-bottom:none;}
-.cat-opt:hover,.cat-opt.highlighted{background:var(--card2);}
-.cat-opt .cg{font-size:10px;color:var(--text3);margin-left:auto;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 </style>
 </head>
 <body>
@@ -243,6 +220,23 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     <div id="tx-list"></div>
   </div>
 
+  <div class="page" id="page-stats">
+    <div style="display:flex;align-items:center;background:var(--bg3);border-radius:var(--rsm);padding:4px;justify-content:space-between;margin-bottom:10px">
+      <button class="btn btn-ghost btn-sm" onclick="changeStatsMonth(-1)" style="padding:6px;width:30px">◀</button>
+      <span id="stats-month-label" style="font-size:13px;font-weight:600">Ay</span>
+      <button class="btn btn-ghost btn-sm" onclick="changeStatsMonth(1)" style="padding:6px;width:30px">▶</button>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="setStatsTab('gider',this)">📉 Gider Dağılımı</button>
+      <button class="tab-btn" onclick="setStatsTab('gelir',this)">📈 Gelir Dağılımı</button>
+    </div>
+    <div class="card">
+       <div style="font-size:11px;color:var(--text3);text-align:center;text-transform:uppercase;letter-spacing:0.5px">Toplam Dönem Tutarı</div>
+       <div id="stats-total" style="font-size:26px;font-weight:700;text-align:center;margin-bottom:18px">₺0,00</div>
+       <div id="stats-list"></div>
+    </div>
+  </div>
+
   <div class="page" id="page-debt">
     <div class="tab-bar">
       <button class="tab-btn active" onclick="filterDebt('hepsi',this)">Hepsi</button>
@@ -275,6 +269,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   <button class="nav-btn active" onclick="showPage('dashboard',this)"><span class="ni">🏠</span><span>Ana Sayfa</span></button>
   <button class="nav-btn" onclick="showPage('accounts',this)"><span class="ni">🏦</span><span>Hesaplar</span></button>
   <button class="nav-btn" onclick="showPage('transactions',this)"><span class="ni">💳</span><span>İşlemler</span></button>
+  <button class="nav-btn" onclick="showPage('stats',this)"><span class="ni">📊</span><span>İstatistik</span></button>
   <button class="nav-btn" onclick="showPage('debt',this)"><span class="ni">🤝</span><span>Borç/Alacak</span></button>
   <button class="nav-btn" onclick="showPage('settings',this)"><span class="ni">⚙️</span><span>Ayarlar</span></button>
 </div>
@@ -304,15 +299,15 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     <div class="form-group" id="tx-account2-group" style="display:none"><label class="form-label">Hedef Hesap</label><select class="form-input" id="tx-account2"></select></div>
 
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Firma / Mağaza</label><input class="form-input" type="text" id="tx-firma" placeholder="Örn: Migros"></div>
+      <div class="form-group"><label class="form-label">Firma / Mağaza</label><input class="form-input" type="text" id="tx-firma" placeholder="Örn: Migros" list="firma-list"><datalist id="firma-list"></datalist></div>
       <div class="form-group"><label class="form-label">Tutar</label><input class="form-input" type="number" id="tx-amount" placeholder="0,00" step="0.01"></div>
     </div>
     
-    <div class="form-group" id="cat-form-group">
+    <div class="form-group">
       <label class="form-label">Kategori</label>
       <div class="cat-wrap" id="cat-wrap">
         <span class="cat-si">🔍</span>
-        <input class="cat-input" type="text" id="cat-search" placeholder="Kategori ara..." oninput="onCatSearch(this.value)" onfocus="onCatFocus()" onblur="setTimeout(closeCatDrop,200)" onkeydown="onCatKeydown(event)">
+        <input class="cat-input" type="text" id="cat-search" placeholder="Kategori ara (ör: market, kira, yakıt...)" oninput="onCatSearch(this.value)" onfocus="onCatFocus()" onblur="setTimeout(closeCatDrop,200)">
         <div class="cat-drop" id="cat-drop"></div>
       </div>
       <div class="cat-sel-box" id="cat-sel-box" onclick="reopenCatSearch()">
@@ -476,9 +471,11 @@ let currentTxType='gider',currentDebtType='alacak',selectedCatIcon='📦';
 let txFilter='hepsi',debtFilter='hepsi',selectedAccColor=COLORS[0],currentPage='dashboard';
 let selectedCatId='';
 
-// Yeni filtreleme değişkenleri
+// Filtreleme ve İstatistik değişkenleri
 let txSelectedMonth = thisMonth();
 let txSelectedAcc = '';
+let statsMonth = thisMonth();
+let statsTab = 'gider';
 
 // ── STORAGE ──
 function save(){localStorage.setItem('butcetakip_v2',JSON.stringify(DB));}
@@ -558,7 +555,7 @@ function showPage(page,btn){
   document.getElementById('page-'+page).classList.add('active');
   if(btn)btn.classList.add('active');
   currentPage=page;
-  const titles={dashboard:'Ana Sayfa',accounts:'Hesaplar',transactions:'İşlemler',debt:'Borç / Alacak',settings:'Ayarlar'};
+  const titles={dashboard:'Ana Sayfa',accounts:'Hesaplar',transactions:'İşlemler',stats:'İstatistikler',debt:'Borç / Alacak',settings:'Ayarlar'};
   document.getElementById('header-title').textContent=titles[page]||'';
   const fab=document.getElementById('fab-btn');
   const hs=document.getElementById('hdr-search');
@@ -573,6 +570,7 @@ function renderPage(p){
   if(p==='dashboard')renderDashboard();
   else if(p==='accounts')renderAccounts();
   else if(p==='transactions')renderTransactions();
+  else if(p==='stats')renderStats();
   else if(p==='debt')renderDebts();
   else if(p==='settings')renderSettings();
 }
@@ -597,6 +595,12 @@ function doSearch(val){
   res.classList.add('open');
 }
 function closeSearch(){document.getElementById('search-res').classList.remove('open');}
+
+// YENİ: FİRMA / MAĞAZA OTOMATİK TAMAMLAMA GÜNCELLEYİCİSİ
+function updateFirmaList() {
+  const firmas = [...new Set(DB.transactions.map(t => t.firma).filter(f => f && f.trim() !== ''))];
+  document.getElementById('firma-list').innerHTML = firmas.map(f => `<option value="${escapeHTML(f)}">`).join('');
+}
 
 // ── DASHBOARD ──
 function renderDashboard(){
@@ -863,12 +867,10 @@ function renderTransactions(){
   });
   all.sort((a,b)=>new Date(b.date)-new Date(a.date));
   
-  // Tip filtresi
   if(txFilter==='gelir')all=all.filter(t=>t.type==='gelir'&&!t._virtual);
   else if(txFilter==='gider')all=all.filter(t=>t.type==='gider');
   else if(txFilter==='taksit')all=all.filter(t=>t._virtual||t.isTaksit);
 
-  // Ay ve Hesap filtresi
   all = all.filter(t => t.date && t.date.startsWith(txSelectedMonth));
   if (txSelectedAcc) {
       all = all.filter(t => t.accountId === txSelectedAcc || t.accountId2 === txSelectedAcc);
@@ -914,6 +916,82 @@ function txCardHTML(tx){
 
 function filterTx(type,btn){txFilter=type;document.querySelectorAll('#page-transactions .tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderTransactions();}
 
+// ── İSTATİSTİK SAYFASI FONKSİYONLARI ──
+function changeStatsMonth(dir) {
+  const parts = statsMonth.split('-');
+  let y = parseInt(parts[0]);
+  let m = parseInt(parts[1]);
+  m += dir;
+  if (m < 1) { m = 12; y--; }
+  if (m > 12) { m = 1; y++; }
+  statsMonth = `${y}-${String(m).padStart(2,'0')}`;
+  renderStats();
+}
+
+function setStatsTab(tab, btn) {
+  statsTab = tab;
+  document.querySelectorAll('#page-stats .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderStats();
+}
+
+function renderStats() {
+  document.getElementById('stats-month-label').textContent = fmtMonthLong(statsMonth);
+  
+  let total = 0;
+  const catTotals = {};
+
+  DB.transactions.forEach(tx => {
+      if (tx.isTaksit) {
+          if(statsTab !== 'gider') return; 
+          getTaksitRows(tx).forEach(r => {
+              if (r.date.startsWith(statsMonth)) {
+                  let amt = parseFloat(r.amount) || 0;
+                  total += amt;
+                  catTotals[r.categoryId] = (catTotals[r.categoryId] || 0) + amt;
+              }
+          });
+      } else {
+          if (tx.type !== statsTab) return;
+          if (tx.date && tx.date.startsWith(statsMonth)) {
+              let amt = parseFloat(tx.amount) || 0;
+              total += amt;
+              catTotals[tx.categoryId] = (catTotals[tx.categoryId] || 0) + amt;
+          }
+      }
+  });
+
+  document.getElementById('stats-total').textContent = fmt(total);
+  document.getElementById('stats-total').style.color = statsTab === 'gider' ? 'var(--red)' : 'var(--green)';
+
+  const listEl = document.getElementById('stats-list');
+  if (total === 0) {
+      listEl.innerHTML = `<div class="empty"><div class="empty-icon">📊</div><p>Bu döneme ait veri bulunamadı.</p></div>`;
+      return;
+  }
+
+  const sortedCats = Object.entries(catTotals).sort((a, b) => b[1] - a[1]);
+  const col = statsTab === 'gider' ? 'var(--red)' : 'var(--green)';
+
+  listEl.innerHTML = sortedCats.map(([catId, amt]) => {
+      const cat = DB.categories.find(c => c.id === catId);
+      const cName = cat ? escapeHTML(cat.name) : 'Kategorisiz';
+      const cIcon = cat ? cat.icon : '📦';
+      const pct = ((amt / total) * 100).toFixed(1);
+      
+      return `
+      <div style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px">
+              <span>${cIcon} ${cName}</span>
+              <span style="font-weight:700">${fmt(amt)} <span style="font-size:10px;color:var(--text3);font-weight:normal">(${pct}%)</span></span>
+          </div>
+          <div class="progress-bar">
+              <div class="progress-fill" style="width:${pct}%;background:${col}"></div>
+          </div>
+      </div>`;
+  }).join('');
+}
+
 // ── BORÇ/ALACAK ──
 function renderDebts(){
   const el=document.getElementById('debt-list');
@@ -938,67 +1016,22 @@ function debtCardHTML(d){
 function filterDebt(type,btn){debtFilter=type;document.querySelectorAll('#page-debt .tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderDebts();}
 
 // ── AYARLAR / KATEGORİ YÖNETİMİ ──
-let catSettingsTab = 'gider'; // aktif sekme: 'gelir' veya 'gider'
-let catOpenGroups = {}; // hangi ana gruplar açık: {grpName: true/false}
-
 function renderSettings(){
   const el=document.getElementById('cat-list');
-
-  // Sekme başlıkları
-  const tabHTML = `<div class="cat-type-tab">
-    <button class="cat-type-btn ${catSettingsTab==='gelir'?'gelir-active':''}" onclick="setCatTab('gelir')">📈 Gelir</button>
-    <button class="cat-type-btn ${catSettingsTab==='gider'?'gider-active':''}" onclick="setCatTab('gider')">📉 Gider</button>
-  </div>`;
-
-  // Seçili türdeki kategorileri filtrele (hepsi her ikisinde de görünsün)
-  const filteredCats = DB.categories.filter(c =>
-    c.type === catSettingsTab || c.type === 'hepsi'
-  );
-
-  // Ana gruplara göre grupla
-  const groups = {};
-  filteredCats.forEach(c => {
-    const g = c.parent || (catSettingsTab === 'gelir' ? 'Diğer Gelir' : 'Diğer Gider');
-    if(!groups[g]) groups[g] = [];
-    groups[g].push(c);
-  });
-
-  const groupsHTML = Object.entries(groups).map(([grp, cats]) => {
-    const isOpen = catOpenGroups[grp] === true;
-    const childrenHTML = cats.map(c => `<div class="cat-item">
+  const groups={};
+  DB.categories.forEach(c=>{const g=c.parent||(c.type==='gelir'?'Diğer Gelir':c.type==='gider'?'Diğer Gider':'Diğer');if(!groups[g])groups[g]=[];groups[g].push(c);});
+  el.innerHTML=Object.entries(groups).map(([grp,cats])=>`
+    <div class="cat-grp-hdr"><span class="cat-grp-lbl">${grp}</span></div>
+    ${cats.map(c=>`<div class="cat-item">
       <span style="font-size:16px">${c.icon}</span>
-      <span style="font-size:13px;flex:1">${escapeHTML(c.name)}</span>
+      <span style="font-size:13px;flex:1">${c.name}</span>
+      <span style="font-size:10px;color:var(--text3);margin-right:4px">${c.type==='gider'?'G':'K'}</span>
       <div class="cat-item-acts">
         <button class="cat-edit-btn" onclick="openEditCat('${c.id}')">✏️</button>
         <button class="cat-edit-btn" onclick="deleteCat('${c.id}')" style="color:var(--red)">🗑️</button>
       </div>
-    </div>`).join('');
-
-    return `<div>
-      <div class="cat-parent-row" onclick="toggleCatGroup('${grp.replace(/'/g,'\'')}')" >
-        <span class="cat-parent-label">${escapeHTML(grp)}</span>
-        <span style="display:flex;align-items:center;gap:6px">
-          <span class="cat-parent-count">${cats.length}</span>
-          <span class="cat-parent-arrow ${isOpen?'open':''}">▶</span>
-        </span>
-      </div>
-      <div class="cat-children ${isOpen?'open':''}">${childrenHTML}</div>
-    </div>`;
-  }).join('');
-
-  el.innerHTML = tabHTML + (Object.keys(groups).length
-    ? groupsHTML
-    : `<div class="empty" style="padding:20px 0"><p>Bu türde kategori yok.</p></div>`);
-}
-
-function setCatTab(tab) {
-  catSettingsTab = tab;
-  renderSettings();
-}
-
-function toggleCatGroup(grp) {
-  catOpenGroups[grp] = !catOpenGroups[grp];
-  renderSettings();
+    </div>`).join('')}
+    <div style="height:1px;background:rgba(50,54,96,.25);margin:3px 0"></div>`).join('');
 }
 
 // ── MODALS ──
@@ -1006,80 +1039,18 @@ function openModal(id){document.getElementById(id).classList.add('open');documen
 function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
 document.querySelectorAll('.modal-overlay').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)closeModal(el.id);});});
 
-// Kategori dropdown - gelişmiş
-let catHighlightIdx = -1;
-
-function buildCatDropGrouped(cats, q) {
-  // q varsa düz liste (arama), yoksa gruplı görünüm
-  if (q) {
-    const lq = q.toLowerCase();
-    const filtered = cats.filter(c =>
-      c.name.toLowerCase().includes(lq) ||
-      (c.parent||'').toLowerCase().includes(lq)
-    );
-    if (!filtered.length) return '<div style="padding:12px;font-size:13px;color:var(--text3);text-align:center">Sonuç yok</div>';
-    return filtered.map((c,i) => {
-      // Adı bold yap - eşleşen kısımları vurgula
-      const name = escapeHTML(c.name);
-      const highlighted = name.replace(new RegExp('('+escapeHTML(q).replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<strong style="color:var(--text)">$1</strong>');
-      return `<div class="cat-opt" data-cat-id="${c.id}" onmousedown="pickCat('${c.id}'); event.preventDefault();">
-        <span>${c.icon}</span><span>${highlighted}</span><span class="cg">${escapeHTML(c.parent||'')}</span>
-      </div>`;
-    }).join('');
-  }
-  // Gruplı görünüm
-  const groups = {};
-  cats.forEach(c => {
-    const g = c.parent || (c.type==='gelir' ? 'Diğer Gelir' : 'Diğer Gider');
-    if(!groups[g]) groups[g]=[];
-    groups[g].push(c);
-  });
-  return Object.entries(groups).map(([grp, gcats]) =>
-    `<div class="cat-drop-header">${escapeHTML(grp)}</div>` +
-    gcats.map(c => `<div class="cat-opt" data-cat-id="${c.id}" onmousedown="pickCat('${c.id}'); event.preventDefault();">
-      <span>${c.icon}</span><span>${escapeHTML(c.name)}</span>
-    </div>`).join('')
-  ).join('');
-}
-
 function onCatSearch(val){
   const dd=document.getElementById('cat-drop');
-  // Transfer için kategori yok
-  if(currentTxType==='transfer'){dd.classList.remove('open');return;}
-  const cats=DB.categories.filter(c=>c.type===currentTxType||c.type==='hepsi');
-  catHighlightIdx = -1;
-  dd.innerHTML = buildCatDropGrouped(cats, val.trim());
+  const cats=DB.categories.filter(c=>c.type==='hepsi'||c.type===currentTxType||currentTxType==='transfer');
+  const q=val.toLowerCase().trim();
+  const filtered=q?cats.filter(c=>c.name.toLowerCase().includes(q)||(c.parent||'').toLowerCase().includes(q)):cats;
+  dd.innerHTML=filtered.slice(0,20).map(c=>`<div class="cat-opt" onmousedown="pickCat('${c.id}'); event.preventDefault();">
+    <span>${c.icon}</span><span>${c.name}</span><span class="cg">${c.parent||''}</span>
+  </div>`).join('');
   dd.classList.add('open');
 }
-function onCatFocus(){
-  if(currentTxType==='transfer')return;
-  const val=document.getElementById('cat-search').value;
-  onCatSearch(val);
-}
-function closeCatDrop(){document.getElementById('cat-drop').classList.remove('open'); catHighlightIdx=-1;}
-
-function onCatKeydown(e) {
-  const dd = document.getElementById('cat-drop');
-  const opts = dd.querySelectorAll('.cat-opt');
-  if(!opts.length) return;
-  if(e.key==='ArrowDown'){
-    e.preventDefault();
-    catHighlightIdx = Math.min(catHighlightIdx+1, opts.length-1);
-    opts.forEach((o,i)=>o.classList.toggle('highlighted',i===catHighlightIdx));
-    opts[catHighlightIdx]&&opts[catHighlightIdx].scrollIntoView({block:'nearest'});
-  } else if(e.key==='ArrowUp'){
-    e.preventDefault();
-    catHighlightIdx = Math.max(catHighlightIdx-1, 0);
-    opts.forEach((o,i)=>o.classList.toggle('highlighted',i===catHighlightIdx));
-    opts[catHighlightIdx]&&opts[catHighlightIdx].scrollIntoView({block:'nearest'});
-  } else if(e.key==='Enter'&&catHighlightIdx>=0){
-    e.preventDefault();
-    const catId=opts[catHighlightIdx].dataset.catId;
-    if(catId)pickCat(catId);
-  } else if(e.key==='Escape'){
-    closeCatDrop();
-  }
-}
+function onCatFocus(){onCatSearch(document.getElementById('cat-search').value);}
+function closeCatDrop(){document.getElementById('cat-drop').classList.remove('open');}
 function pickCat(catId){
   selectedCatId=catId;
   document.getElementById('tx-category').value=catId;
@@ -1134,11 +1105,6 @@ function openAddTx(id){
   document.getElementById('txtype-'+t).className='type-btn active-'+t;
   currentTxType=t;
   document.getElementById('tx-account2-group').style.display=t==='transfer'?'block':'none';
-  // Transfer için kategori/taksit gizle
-  const catGrp2=document.getElementById('cat-form-group');
-  if(catGrp2)catGrp2.style.display=t==='transfer'?'none':'block';
-  const taksitGrp2=document.getElementById('taksit-check-group');
-  if(taksitGrp2)taksitGrp2.style.display=t==='gider'?'block':'none';
   const accOpts=DB.accounts.map(a=>`<option value="${a.id}" ${tx&&tx.accountId===a.id?'selected':''}>${ACC_ICONS[a.type]} ${a.name}${a.currency&&a.currency!=='TRY'?' ('+a.currency+')':''}</option>`).join('');
   document.getElementById('tx-account').innerHTML=DB.accounts.length?accOpts:'<option value="">Hesap yok</option>';
   document.getElementById('tx-account2').innerHTML=DB.accounts.length?DB.accounts.map(a=>`<option value="${a.id}" ${tx&&tx.accountId2===a.id?'selected':''}>${ACC_ICONS[a.type]} ${a.name}</option>`).join(''):'<option value="">Hesap yok</option>';
@@ -1151,13 +1117,6 @@ function setTxType(type,btn){
   document.querySelectorAll('.type-btn').forEach(b=>b.className='type-btn');
   btn.className='type-btn active-'+type;
   document.getElementById('tx-account2-group').style.display=type==='transfer'?'block':'none';
-  // Transfer için kategori alanını gizle
-  const catGrp=document.getElementById('cat-form-group');
-  if(catGrp)catGrp.style.display=type==='transfer'?'none':'block';
-  // Taksit sadece gider için
-  const taksitGrp=document.getElementById('taksit-check-group');
-  if(taksitGrp)taksitGrp.style.display=type==='gider'?'block':'none';
-  if(type!=='gider'){document.getElementById('tx-istaksit').checked=false;document.getElementById('taksit-group').style.display='none';}
   resetCatUI('');
 }
 function toggleTaksit(checked){document.getElementById('taksit-group').style.display=checked?'block':'none';}
@@ -1188,7 +1147,9 @@ function saveTx(){
   };
   if(editId){const i=DB.transactions.findIndex(t=>t.id===editId);if(i!==-1)DB.transactions[i]=tx;}
   else DB.transactions.push(tx);
-  save();closeModal('modal-tx');snack('Kaydedildi ✓');renderPage(currentPage);
+  save();closeModal('modal-tx');snack('Kaydedildi ✓');
+  updateFirmaList(); // Firma listesini yenile
+  renderPage(currentPage);
 }
 function editTx(id){openAddTx(id);}
 function deleteTxConfirm(){
@@ -1196,7 +1157,9 @@ function deleteTxConfirm(){
   if(!id)return;
   if(!confirm('Bu işlemi silmek istediğinize emin misiniz?'))return;
   DB.transactions=DB.transactions.filter(t=>t.id!==id);
-  save();closeModal('modal-tx');snack('İşlem silindi');renderPage(currentPage);
+  save();closeModal('modal-tx');snack('İşlem silindi');
+  updateFirmaList(); // Firma listesini yenile
+  renderPage(currentPage);
 }
 function copyTx(){
   const id=document.getElementById('tx-edit-id').value;if(!id)return;
@@ -1207,9 +1170,7 @@ function copyTx(){
   setTimeout(()=>openAddTx(copy.id),50);
 }
 
-// onCatFocus handled above
-
-// ── TAKSİT DETAY ──
+// ── TAKSİT DETAY & DÜZENLEME GÜNCELLEMESİ ──
 function openTaksitDetail(txId){
   const tx=DB.transactions.find(t=>t.id===txId);if(!tx||!tx.isTaksit)return;
   const per=tx.amount/tx.taksitSayi;
@@ -1237,10 +1198,27 @@ function openTaksitDetail(txId){
     </div>
     <div style="font-size:12px;color:var(--text3);margin-bottom:8px">Toplam: ${fmtAmt(tx.amount,tx.currency)} ${tx.desc?'• '+escapeHTML(tx.desc):''}</div>
     ${rows}
-    <div style="margin-top:14px">
-      <button class="btn btn-ghost" onclick="closeModal('modal-taksit-detail')">Kapat</button>
+    <div style="display:flex;gap:7px;margin-top:14px">
+      <button class="btn btn-danger btn-sm" style="flex:1" onclick="deleteTxFromTaksit('${tx.id}')">🗑️ Sil</button>
+      <button class="btn btn-primary btn-sm" style="flex:1" onclick="editTxFromTaksit('${tx.id}')">✏️ Düzenle</button>
+      <button class="btn btn-ghost" style="flex:1" onclick="closeModal('modal-taksit-detail')">Kapat</button>
     </div>`;
   openModal('modal-taksit-detail');
+}
+
+function editTxFromTaksit(id) {
+    closeModal('modal-taksit-detail');
+    setTimeout(() => openAddTx(id), 100);
+}
+
+function deleteTxFromTaksit(id) {
+    if(!confirm('Bu taksitli işlemi tamamen silmek istediğinize emin misiniz?')) return;
+    DB.transactions = DB.transactions.filter(t => t.id !== id);
+    save();
+    closeModal('modal-taksit-detail');
+    snack('Taksitli işlem silindi');
+    updateFirmaList();
+    renderPage(currentPage);
 }
 
 // ── HESAP EKLE/DÜZENLE ──
@@ -1397,14 +1375,14 @@ function exportData(){
 function importData(e){
   const file=e.target.files[0];if(!file)return;
   const reader=new FileReader();
-  reader.onload=ev=>{try{const data=JSON.parse(ev.target.result);if(data.accounts&&data.transactions&&data.categories){DB=data;save();snack('Veriler yüklendi ✓');renderPage(currentPage);}else snack('Geçersiz dosya!');}catch{snack('Dosya okunamadı!');}};
+  reader.onload=ev=>{try{const data=JSON.parse(ev.target.result);if(data.accounts&&data.transactions&&data.categories){DB=data;save();snack('Veriler yüklendi ✓');updateFirmaList();renderPage(currentPage);}else snack('Geçersiz dosya!');}catch{snack('Dosya okunamadı!');}};
   reader.readAsText(file);e.target.value='';
 }
 function clearAllData(){
   if(!confirm('TÜM veriler silinecek! Emin misiniz?'))return;
   if(!confirm('Son onay: Tüm hesaplar ve işlemler silinecek!'))return;
   DB={accounts:[],transactions:[],debts:[],categories:JSON.parse(JSON.stringify(DEFAULT_CATS))};
-  save();snack('Veriler silindi');renderPage(currentPage);
+  save();snack('Veriler silindi');updateFirmaList();renderPage(currentPage);
 }
 
 // ── SNACK ──
@@ -1415,6 +1393,7 @@ function init(){
   load();
   document.getElementById('tx-date').value=today();
   document.getElementById('debt-date').value=today();
+  updateFirmaList(); // Firma önerilerini yükle
   setTimeout(()=>{const s=document.getElementById('splash');s.style.opacity='0';setTimeout(()=>s.style.display='none',500);},1300);
   renderDashboard();
 }
