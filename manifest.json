@@ -1,0 +1,15 @@
+{
+  "short_name": "BütçeTakip",
+  "name": "Kişisel Bütçe Takip Sistemi",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2910/2910311.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "./index.html",
+  "display": "standalone",
+  "theme_color": "#0f1117",
+  "background_color": "#0f1117"
+}
