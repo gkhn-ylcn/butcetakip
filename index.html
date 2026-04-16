@@ -165,6 +165,29 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .cat-item-acts{display:flex;gap:3px;margin-left:auto;}
 .cat-edit-btn{background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer;padding:3px;}
 .cat-edit-btn:active{color:var(--accent2);}
+
+/* ── KATEGORİ ACCORDION (Ayarlar) ── */
+.cat-type-tab{display:flex;background:var(--bg3);border-radius:var(--rsm);padding:3px;margin-bottom:12px;gap:2px;}
+.cat-type-btn{flex:1;padding:8px;border-radius:7px;border:none;background:none;color:var(--text3);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;}
+.cat-type-btn.active{background:var(--card);color:var(--text);}
+.cat-type-btn.gelir-active{background:rgba(34,211,165,.15);color:var(--green);}
+.cat-type-btn.gider-active{background:rgba(248,113,113,.15);color:var(--red);}
+.cat-parent-row{display:flex;align-items:center;justify-content:space-between;padding:9px 8px;border-radius:8px;cursor:pointer;transition:background .15s;margin-bottom:1px;}
+.cat-parent-row:active,.cat-parent-row:hover{background:var(--card2);}
+.cat-parent-label{font-size:13px;font-weight:600;color:var(--text);}
+.cat-parent-count{font-size:11px;color:var(--text3);background:var(--bg3);padding:2px 8px;border-radius:99px;}
+.cat-parent-arrow{font-size:11px;color:var(--text3);transition:transform .2s;margin-left:6px;}
+.cat-parent-arrow.open{transform:rotate(90deg);}
+.cat-children{display:none;padding-left:8px;border-left:2px solid var(--border);margin-left:10px;margin-bottom:4px;}
+.cat-children.open{display:block;}
+
+/* ── KATEGORİ SEARCH (İşlem Formu) gelişmiş ── */
+.cat-drop-header{padding:6px 12px 4px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid rgba(50,54,96,.3);background:var(--bg3);}
+.cat-opt-group{padding:6px 0;}
+.cat-opt{display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;font-size:13px;border-bottom:1px solid rgba(50,54,96,.15);}
+.cat-opt:last-child{border-bottom:none;}
+.cat-opt:hover,.cat-opt.highlighted{background:var(--card2);}
+.cat-opt .cg{font-size:10px;color:var(--text3);margin-left:auto;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 </style>
 </head>
 <body>
@@ -285,11 +308,11 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       <div class="form-group"><label class="form-label">Tutar</label><input class="form-input" type="number" id="tx-amount" placeholder="0,00" step="0.01"></div>
     </div>
     
-    <div class="form-group">
+    <div class="form-group" id="cat-form-group">
       <label class="form-label">Kategori</label>
       <div class="cat-wrap" id="cat-wrap">
         <span class="cat-si">🔍</span>
-        <input class="cat-input" type="text" id="cat-search" placeholder="Kategori ara (ör: market, kira, yakıt...)" oninput="onCatSearch(this.value)" onfocus="onCatFocus()" onblur="setTimeout(closeCatDrop,200)">
+        <input class="cat-input" type="text" id="cat-search" placeholder="Kategori ara..." oninput="onCatSearch(this.value)" onfocus="onCatFocus()" onblur="setTimeout(closeCatDrop,200)" onkeydown="onCatKeydown(event)">
         <div class="cat-drop" id="cat-drop"></div>
       </div>
       <div class="cat-sel-box" id="cat-sel-box" onclick="reopenCatSearch()">
@@ -915,22 +938,67 @@ function debtCardHTML(d){
 function filterDebt(type,btn){debtFilter=type;document.querySelectorAll('#page-debt .tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderDebts();}
 
 // ── AYARLAR / KATEGORİ YÖNETİMİ ──
+let catSettingsTab = 'gider'; // aktif sekme: 'gelir' veya 'gider'
+let catOpenGroups = {}; // hangi ana gruplar açık: {grpName: true/false}
+
 function renderSettings(){
   const el=document.getElementById('cat-list');
-  const groups={};
-  DB.categories.forEach(c=>{const g=c.parent||(c.type==='gelir'?'Diğer Gelir':c.type==='gider'?'Diğer Gider':'Diğer');if(!groups[g])groups[g]=[];groups[g].push(c);});
-  el.innerHTML=Object.entries(groups).map(([grp,cats])=>`
-    <div class="cat-grp-hdr"><span class="cat-grp-lbl">${grp}</span></div>
-    ${cats.map(c=>`<div class="cat-item">
+
+  // Sekme başlıkları
+  const tabHTML = `<div class="cat-type-tab">
+    <button class="cat-type-btn ${catSettingsTab==='gelir'?'gelir-active':''}" onclick="setCatTab('gelir')">📈 Gelir</button>
+    <button class="cat-type-btn ${catSettingsTab==='gider'?'gider-active':''}" onclick="setCatTab('gider')">📉 Gider</button>
+  </div>`;
+
+  // Seçili türdeki kategorileri filtrele (hepsi her ikisinde de görünsün)
+  const filteredCats = DB.categories.filter(c =>
+    c.type === catSettingsTab || c.type === 'hepsi'
+  );
+
+  // Ana gruplara göre grupla
+  const groups = {};
+  filteredCats.forEach(c => {
+    const g = c.parent || (catSettingsTab === 'gelir' ? 'Diğer Gelir' : 'Diğer Gider');
+    if(!groups[g]) groups[g] = [];
+    groups[g].push(c);
+  });
+
+  const groupsHTML = Object.entries(groups).map(([grp, cats]) => {
+    const isOpen = catOpenGroups[grp] === true;
+    const childrenHTML = cats.map(c => `<div class="cat-item">
       <span style="font-size:16px">${c.icon}</span>
-      <span style="font-size:13px;flex:1">${c.name}</span>
-      <span style="font-size:10px;color:var(--text3);margin-right:4px">${c.type==='gider'?'G':'K'}</span>
+      <span style="font-size:13px;flex:1">${escapeHTML(c.name)}</span>
       <div class="cat-item-acts">
         <button class="cat-edit-btn" onclick="openEditCat('${c.id}')">✏️</button>
         <button class="cat-edit-btn" onclick="deleteCat('${c.id}')" style="color:var(--red)">🗑️</button>
       </div>
-    </div>`).join('')}
-    <div style="height:1px;background:rgba(50,54,96,.25);margin:3px 0"></div>`).join('');
+    </div>`).join('');
+
+    return `<div>
+      <div class="cat-parent-row" onclick="toggleCatGroup('${grp.replace(/'/g,'\'')}')" >
+        <span class="cat-parent-label">${escapeHTML(grp)}</span>
+        <span style="display:flex;align-items:center;gap:6px">
+          <span class="cat-parent-count">${cats.length}</span>
+          <span class="cat-parent-arrow ${isOpen?'open':''}">▶</span>
+        </span>
+      </div>
+      <div class="cat-children ${isOpen?'open':''}">${childrenHTML}</div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = tabHTML + (Object.keys(groups).length
+    ? groupsHTML
+    : `<div class="empty" style="padding:20px 0"><p>Bu türde kategori yok.</p></div>`);
+}
+
+function setCatTab(tab) {
+  catSettingsTab = tab;
+  renderSettings();
+}
+
+function toggleCatGroup(grp) {
+  catOpenGroups[grp] = !catOpenGroups[grp];
+  renderSettings();
 }
 
 // ── MODALS ──
@@ -938,18 +1006,80 @@ function openModal(id){document.getElementById(id).classList.add('open');documen
 function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
 document.querySelectorAll('.modal-overlay').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)closeModal(el.id);});});
 
+// Kategori dropdown - gelişmiş
+let catHighlightIdx = -1;
+
+function buildCatDropGrouped(cats, q) {
+  // q varsa düz liste (arama), yoksa gruplı görünüm
+  if (q) {
+    const lq = q.toLowerCase();
+    const filtered = cats.filter(c =>
+      c.name.toLowerCase().includes(lq) ||
+      (c.parent||'').toLowerCase().includes(lq)
+    );
+    if (!filtered.length) return '<div style="padding:12px;font-size:13px;color:var(--text3);text-align:center">Sonuç yok</div>';
+    return filtered.map((c,i) => {
+      // Adı bold yap - eşleşen kısımları vurgula
+      const name = escapeHTML(c.name);
+      const highlighted = name.replace(new RegExp('('+escapeHTML(q).replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<strong style="color:var(--text)">$1</strong>');
+      return `<div class="cat-opt" data-cat-id="${c.id}" onmousedown="pickCat('${c.id}'); event.preventDefault();">
+        <span>${c.icon}</span><span>${highlighted}</span><span class="cg">${escapeHTML(c.parent||'')}</span>
+      </div>`;
+    }).join('');
+  }
+  // Gruplı görünüm
+  const groups = {};
+  cats.forEach(c => {
+    const g = c.parent || (c.type==='gelir' ? 'Diğer Gelir' : 'Diğer Gider');
+    if(!groups[g]) groups[g]=[];
+    groups[g].push(c);
+  });
+  return Object.entries(groups).map(([grp, gcats]) =>
+    `<div class="cat-drop-header">${escapeHTML(grp)}</div>` +
+    gcats.map(c => `<div class="cat-opt" data-cat-id="${c.id}" onmousedown="pickCat('${c.id}'); event.preventDefault();">
+      <span>${c.icon}</span><span>${escapeHTML(c.name)}</span>
+    </div>`).join('')
+  ).join('');
+}
+
 function onCatSearch(val){
   const dd=document.getElementById('cat-drop');
-  const cats=DB.categories.filter(c=>c.type==='hepsi'||c.type===currentTxType||currentTxType==='transfer');
-  const q=val.toLowerCase().trim();
-  const filtered=q?cats.filter(c=>c.name.toLowerCase().includes(q)||(c.parent||'').toLowerCase().includes(q)):cats;
-  dd.innerHTML=filtered.slice(0,20).map(c=>`<div class="cat-opt" onmousedown="pickCat('${c.id}'); event.preventDefault();">
-    <span>${c.icon}</span><span>${c.name}</span><span class="cg">${c.parent||''}</span>
-  </div>`).join('');
+  // Transfer için kategori yok
+  if(currentTxType==='transfer'){dd.classList.remove('open');return;}
+  const cats=DB.categories.filter(c=>c.type===currentTxType||c.type==='hepsi');
+  catHighlightIdx = -1;
+  dd.innerHTML = buildCatDropGrouped(cats, val.trim());
   dd.classList.add('open');
 }
-function onCatFocus(){onCatSearch(document.getElementById('cat-search').value);}
-function closeCatDrop(){document.getElementById('cat-drop').classList.remove('open');}
+function onCatFocus(){
+  if(currentTxType==='transfer')return;
+  const val=document.getElementById('cat-search').value;
+  onCatSearch(val);
+}
+function closeCatDrop(){document.getElementById('cat-drop').classList.remove('open'); catHighlightIdx=-1;}
+
+function onCatKeydown(e) {
+  const dd = document.getElementById('cat-drop');
+  const opts = dd.querySelectorAll('.cat-opt');
+  if(!opts.length) return;
+  if(e.key==='ArrowDown'){
+    e.preventDefault();
+    catHighlightIdx = Math.min(catHighlightIdx+1, opts.length-1);
+    opts.forEach((o,i)=>o.classList.toggle('highlighted',i===catHighlightIdx));
+    opts[catHighlightIdx]&&opts[catHighlightIdx].scrollIntoView({block:'nearest'});
+  } else if(e.key==='ArrowUp'){
+    e.preventDefault();
+    catHighlightIdx = Math.max(catHighlightIdx-1, 0);
+    opts.forEach((o,i)=>o.classList.toggle('highlighted',i===catHighlightIdx));
+    opts[catHighlightIdx]&&opts[catHighlightIdx].scrollIntoView({block:'nearest'});
+  } else if(e.key==='Enter'&&catHighlightIdx>=0){
+    e.preventDefault();
+    const catId=opts[catHighlightIdx].dataset.catId;
+    if(catId)pickCat(catId);
+  } else if(e.key==='Escape'){
+    closeCatDrop();
+  }
+}
 function pickCat(catId){
   selectedCatId=catId;
   document.getElementById('tx-category').value=catId;
@@ -1004,6 +1134,11 @@ function openAddTx(id){
   document.getElementById('txtype-'+t).className='type-btn active-'+t;
   currentTxType=t;
   document.getElementById('tx-account2-group').style.display=t==='transfer'?'block':'none';
+  // Transfer için kategori/taksit gizle
+  const catGrp2=document.getElementById('cat-form-group');
+  if(catGrp2)catGrp2.style.display=t==='transfer'?'none':'block';
+  const taksitGrp2=document.getElementById('taksit-check-group');
+  if(taksitGrp2)taksitGrp2.style.display=t==='gider'?'block':'none';
   const accOpts=DB.accounts.map(a=>`<option value="${a.id}" ${tx&&tx.accountId===a.id?'selected':''}>${ACC_ICONS[a.type]} ${a.name}${a.currency&&a.currency!=='TRY'?' ('+a.currency+')':''}</option>`).join('');
   document.getElementById('tx-account').innerHTML=DB.accounts.length?accOpts:'<option value="">Hesap yok</option>';
   document.getElementById('tx-account2').innerHTML=DB.accounts.length?DB.accounts.map(a=>`<option value="${a.id}" ${tx&&tx.accountId2===a.id?'selected':''}>${ACC_ICONS[a.type]} ${a.name}</option>`).join(''):'<option value="">Hesap yok</option>';
@@ -1016,6 +1151,13 @@ function setTxType(type,btn){
   document.querySelectorAll('.type-btn').forEach(b=>b.className='type-btn');
   btn.className='type-btn active-'+type;
   document.getElementById('tx-account2-group').style.display=type==='transfer'?'block':'none';
+  // Transfer için kategori alanını gizle
+  const catGrp=document.getElementById('cat-form-group');
+  if(catGrp)catGrp.style.display=type==='transfer'?'none':'block';
+  // Taksit sadece gider için
+  const taksitGrp=document.getElementById('taksit-check-group');
+  if(taksitGrp)taksitGrp.style.display=type==='gider'?'block':'none';
+  if(type!=='gider'){document.getElementById('tx-istaksit').checked=false;document.getElementById('taksit-group').style.display='none';}
   resetCatUI('');
 }
 function toggleTaksit(checked){document.getElementById('taksit-group').style.display=checked?'block':'none';}
@@ -1065,12 +1207,7 @@ function copyTx(){
   setTimeout(()=>openAddTx(copy.id),50);
 }
 
-function onCatFocus() {
-  const type = currentTxType || 'gider';
-  const cats = DB.categories.filter(c => c.type === type || c.type === 'hepsi');
-  renderCatDrop(cats);
-  document.getElementById('cat-drop').classList.add('open');
-}
+// onCatFocus handled above
 
 // ── TAKSİT DETAY ──
 function openTaksitDetail(txId){
