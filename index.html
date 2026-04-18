@@ -188,6 +188,18 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .cat-opt:last-child{border-bottom:none;}
 .cat-opt:hover,.cat-opt.highlighted{background:var(--card2);}
 .cat-opt .cg{font-size:10px;color:var(--text3);margin-left:auto;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* ── FİRMA AUTOCOMPLETE ── */
+.firma-wrap{position:relative;}
+.firma-drop{position:absolute;top:100%;left:0;right:0;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rsm);z-index:501;max-height:200px;overflow-y:auto;display:none;margin-top:2px;box-shadow:0 8px 24px rgba(0,0,0,.5);}
+.firma-drop.open{display:block;}
+.firma-opt{display:flex;align-items:center;gap:10px;padding:10px 13px;cursor:pointer;font-size:13px;border-bottom:1px solid rgba(50,54,96,.2);transition:background .1s;}
+.firma-opt:last-child{border-bottom:none;}
+.firma-opt:active,.firma-opt.firma-hi{background:var(--card2);}
+.firma-opt-icon{width:28px;height:28px;border-radius:7px;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.firma-opt-name{flex:1;font-weight:500;}
+.firma-opt-count{font-size:11px;color:var(--text3);background:var(--bg3);padding:2px 7px;border-radius:99px;}
+.firma-opt-bold strong{color:var(--text);}
 </style>
 </head>
 <body>
@@ -322,7 +334,18 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     <div class="form-group" id="tx-account2-group" style="display:none"><label class="form-label">Hedef Hesap</label><select class="form-input" id="tx-account2"></select></div>
 
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Firma / Mağaza</label><input class="form-input" type="text" id="tx-firma" placeholder="Örn: Migros" list="firma-list"><datalist id="firma-list"></datalist></div>
+      <div class="form-group">
+        <label class="form-label">Firma / Mağaza</label>
+        <div class="firma-wrap" id="firma-wrap">
+          <input class="form-input" type="text" id="tx-firma" placeholder="Örn: Migros"
+            autocomplete="off"
+            oninput="onFirmaInput(this.value)"
+            onfocus="onFirmaFocus()"
+            onblur="setTimeout(closeFirmaDrop,200)"
+            onkeydown="onFirmaKeydown(event)">
+          <div class="firma-drop" id="firma-drop"></div>
+        </div>
+      </div>
       <div class="form-group"><label class="form-label">Tutar</label><input class="form-input" type="number" id="tx-amount" placeholder="0,00" step="0.01"></div>
     </div>
     
@@ -619,11 +642,119 @@ function doSearch(val){
 }
 function closeSearch(){document.getElementById('search-res').classList.remove('open');}
 
-// YENİ: FİRMA / MAĞAZA OTOMATİK TAMAMLAMA GÜNCELLEYİCİSİ
-function updateFirmaList() {
-  const firmas = [...new Set(DB.transactions.map(t => t.firma).filter(f => f && f.trim() !== ''))];
-  document.getElementById('firma-list').innerHTML = firmas.map(f => `<option value="${escapeHTML(f)}">`).join('');
+// ── FİRMA AUTOCOMPLETE ──
+// Firma adlarını kullanım sayısına göre sıralı döndür
+function getFirmaSuggestions(q) {
+  // Tüm işlemlerden firma → kullanım sayısı hesapla
+  const countMap = {};
+  DB.transactions.forEach(t => {
+    if (!t.firma || !t.firma.trim()) return;
+    const key = t.firma.trim();
+    countMap[key] = (countMap[key] || 0) + 1;
+  });
+  // Benzersiz firmalar, kullanım sayısına göre sırala
+  let firms = Object.entries(countMap)
+    .sort((a, b) => b[1] - a[1])
+    .map(([name, count]) => ({ name, count }));
+
+  if (q && q.trim()) {
+    const lq = q.toLowerCase();
+    firms = firms.filter(f => f.name.toLowerCase().includes(lq));
+  }
+  return firms.slice(0, 12);
 }
+
+// Son kullanılan işlemin kategorisini firma adına göre bul
+function getCatForFirma(firmaName) {
+  const txs = DB.transactions
+    .filter(t => t.firma && t.firma.toLowerCase() === firmaName.toLowerCase() && t.categoryId)
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
+  return txs.length ? txs[0].categoryId : null;
+}
+
+let firmaHiIdx = -1;
+
+function renderFirmaDrop(q) {
+  const dd = document.getElementById('firma-drop');
+  const suggs = getFirmaSuggestions(q);
+  if (!suggs.length) { closeFirmaDrop(); return; }
+
+  const lq = (q || '').toLowerCase();
+  dd.innerHTML = suggs.map((f, i) => {
+    // İlgili kategoriyi bul — ikon için
+    const catId = getCatForFirma(f.name);
+    const cat = catId ? DB.categories.find(c => c.id === catId) : null;
+    const icon = cat ? cat.icon : '🏪';
+
+    // Eşleşen kısmı bold yap
+    let displayName = escapeHTML(f.name);
+    if (lq) {
+      const re = new RegExp('(' + lq.replace(/[.*+?^${}()|[\]\]/g, '\$&') + ')', 'gi');
+      displayName = displayName.replace(re, '<strong style="color:var(--accent2)">$1</strong>');
+    }
+
+    return `<div class="firma-opt" data-firma="${escapeHTML(f.name)}" data-cat="${catId||''}"
+      onmousedown="pickFirma('${escapeHTML(f.name).replace(/'/g,"\'")}','${catId||''}'); event.preventDefault();">
+      <div class="firma-opt-icon">${icon}</div>
+      <span class="firma-opt-name firma-opt-bold">${displayName}</span>
+      <span class="firma-opt-count">${f.count}</span>
+    </div>`;
+  }).join('');
+
+  dd.classList.add('open');
+  firmaHiIdx = -1;
+}
+
+function onFirmaInput(val) {
+  if (!val.trim()) { closeFirmaDrop(); return; }
+  renderFirmaDrop(val);
+}
+
+function onFirmaFocus() {
+  const val = document.getElementById('tx-firma').value;
+  // Kutu boşsa son kullanılanları göster, doluysa filtrele
+  renderFirmaDrop(val);
+}
+
+function closeFirmaDrop() {
+  document.getElementById('firma-drop').classList.remove('open');
+  firmaHiIdx = -1;
+}
+
+function pickFirma(name, catId) {
+  document.getElementById('tx-firma').value = name;
+  closeFirmaDrop();
+  // Aynı firmada en son kullanılan kategoriyi otomatik seç
+  if (catId && !document.getElementById('tx-category').value) {
+    resetCatUI(catId);
+  }
+}
+
+function onFirmaKeydown(e) {
+  const dd = document.getElementById('firma-drop');
+  const opts = dd.querySelectorAll('.firma-opt');
+  if (!opts.length && e.key !== 'Escape') return;
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    firmaHiIdx = Math.min(firmaHiIdx + 1, opts.length - 1);
+    opts.forEach((o, i) => o.classList.toggle('firma-hi', i === firmaHiIdx));
+    opts[firmaHiIdx] && opts[firmaHiIdx].scrollIntoView({ block: 'nearest' });
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    firmaHiIdx = Math.max(firmaHiIdx - 1, 0);
+    opts.forEach((o, i) => o.classList.toggle('firma-hi', i === firmaHiIdx));
+    opts[firmaHiIdx] && opts[firmaHiIdx].scrollIntoView({ block: 'nearest' });
+  } else if (e.key === 'Enter' && firmaHiIdx >= 0) {
+    e.preventDefault();
+    const opt = opts[firmaHiIdx];
+    if (opt) pickFirma(opt.dataset.firma, opt.dataset.cat);
+  } else if (e.key === 'Escape') {
+    closeFirmaDrop();
+  }
+}
+
+// updateFirmaList artık kullanılmıyor ama bozmamak için boş bırak
+function updateFirmaList() {}
 
 // ── DASHBOARD ──
 function renderDashboard(){
@@ -1247,6 +1378,7 @@ function openAddTx(id){
   document.getElementById('tx-account2').innerHTML=DB.accounts.length?DB.accounts.map(a=>`<option value="${a.id}" ${tx&&tx.accountId2===a.id?'selected':''}>${ACC_ICONS[a.type]} ${a.name}</option>`).join(''):'<option value="">Hesap yok</option>';
   resetCatUI(tx?tx.categoryId:'');
   document.getElementById('cat-drop').classList.remove('open');
+  closeFirmaDrop();
   openModal('modal-tx');
 }
 function setTxType(type,btn){
