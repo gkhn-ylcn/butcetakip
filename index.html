@@ -345,7 +345,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
            autocomplete="off">
     <datalist id="firma-list"></datalist>
   </div>
-  </div>
+</div>
       <div class="form-group"><label class="form-label">Tutar</label><input class="form-input" type="number" id="tx-amount" placeholder="0,00" step="0.01"></div>
     </div>
     
@@ -755,16 +755,13 @@ function onFirmaKeydown(e) {
 
 // ── FİRMA OTOMATİK TAMAMLAMA ──
 function updateFirmaList() {
-  // DB.transactions içindeki "firma" alanlarını al, boş olmayanları filtrele ve benzersiz yap
+  if(!DB.transactions) return;
   const firmas = [...new Set(DB.transactions.map(t => t.firma).filter(f => f && f.trim() !== ''))];
-  
   const listEl = document.getElementById('firma-list');
   if (listEl) {
-    // Listeyi alfabetik sıralayarak datalist içine aktar
     listEl.innerHTML = firmas.sort().map(f => `<option value="${f}">`).join('');
   }
 }
-
 // ── DASHBOARD ──
 function renderDashboard(){
   const now=new Date();
