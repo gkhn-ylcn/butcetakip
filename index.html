@@ -335,18 +335,17 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 
     <div class="form-row">
       <div class="form-group">
-        <label class="form-label">Firma / Mağaza</label>
-        <div class="firma-wrap" id="firma-wrap">
-          <input class="form-input" type="text" id="tx-firma" placeholder="Örn: Migros" list="firma-list">
-          <datalist id="firma-list"></datalist>
-            autocomplete="off"
-            oninput="onFirmaInput(this.value)"
-            onfocus="onFirmaFocus()"
-            onblur="setTimeout(closeFirmaDrop,200)"
-            onkeydown="onFirmaKeydown(event)">
-          <div class="firma-drop" id="firma-drop"></div>
-        </div>
-      </div>
+  <label class="form-label">Firma / Mağaza</label>
+  <div class="firma-wrap" id="firma-wrap">
+    <input class="form-input" 
+           type="text" 
+           id="tx-firma" 
+           placeholder="Örn: Migros" 
+           list="firma-list" 
+           autocomplete="off">
+    <datalist id="firma-list"></datalist>
+  </div>
+  </div>
       <div class="form-group"><label class="form-label">Tutar</label><input class="form-input" type="number" id="tx-amount" placeholder="0,00" step="0.01"></div>
     </div>
     
