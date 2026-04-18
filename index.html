@@ -754,8 +754,17 @@ function onFirmaKeydown(e) {
   }
 }
 
-// updateFirmaList artık kullanılmıyor ama bozmamak için boş bırak
-function updateFirmaList() {}
+// ── FİRMA OTOMATİK TAMAMLAMA ──
+function updateFirmaList() {
+  // DB.transactions içindeki "firma" alanlarını al, boş olmayanları filtrele ve benzersiz yap
+  const firmas = [...new Set(DB.transactions.map(t => t.firma).filter(f => f && f.trim() !== ''))];
+  
+  const listEl = document.getElementById('firma-list');
+  if (listEl) {
+    // Listeyi alfabetik sıralayarak datalist içine aktar
+    listEl.innerHTML = firmas.sort().map(f => `<option value="${f}">`).join('');
+  }
+}
 
 // ── DASHBOARD ──
 function renderDashboard(){
