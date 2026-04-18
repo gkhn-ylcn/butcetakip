@@ -337,7 +337,8 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       <div class="form-group">
         <label class="form-label">Firma / Mağaza</label>
         <div class="firma-wrap" id="firma-wrap">
-          <input class="form-input" type="text" id="tx-firma" placeholder="Örn: Migros"
+          <input class="form-input" type="text" id="tx-firma" placeholder="Örn: Migros" list="firma-list">
+          <datalist id="firma-list"></datalist>
             autocomplete="off"
             oninput="onFirmaInput(this.value)"
             onfocus="onFirmaFocus()"
