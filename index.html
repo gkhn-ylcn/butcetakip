@@ -230,6 +230,17 @@
          .calc-input-row input{flex:1;}
          .calc-open-btn{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rsm);color:var(--text3);font-size:17px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background .15s;}
          .calc-open-btn:active{background:var(--card2);}
+         .quick-btn{display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--card);border:1px solid var(--border);border-radius:var(--rsm);padding:10px 8px;cursor:pointer;min-width:72px;flex:1;transition:background .15s;-webkit-tap-highlight-color:transparent;}
+         .quick-btn:active{background:var(--card2);}
+         .quick-btn .qb-icon{font-size:20px;}
+         .quick-btn .qb-name{font-size:11px;font-weight:600;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:68px;color:var(--text);}
+         .quick-btn .qb-amt{font-size:10px;color:var(--text3);white-space:nowrap;}
+         .quick-btn.type-gelir{border-color:rgba(34,211,165,.3);}
+         .quick-btn.type-gider{border-color:rgba(248,113,113,.3);}
+         .fav-item{display:flex;align-items:center;gap:10px;padding:10px 8px;border-radius:var(--rsm);background:var(--bg3);margin-bottom:7px;}
+         .fav-item-info{flex:1;min-width:0;}
+         .fav-item-name{font-size:13px;font-weight:600;}
+         .fav-item-meta{font-size:11px;color:var(--text3);margin-top:2px;}
       </style>
    </head>
    <body>
@@ -274,6 +285,11 @@
                <div class="notif-icon">⏰</div>
                <div class="notif-text"></div>
             </div>
+            <div class="section-title" style="display:flex;align-items:center;justify-content:space-between">
+               <span>Hızlı İşlem</span>
+               <button id="dash-fav-edit-btn" style="background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;padding:2px 6px" onclick="openFavoritesManager()">Düzenle</button>
+            </div>
+            <div id="dash-favorites" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px"></div>
             <div class="section-title">Varlık Özeti</div>
             <div class="card" id="dash-summary"></div>
             <div class="section-title">Son İşlemler</div>
@@ -345,6 +361,15 @@
                <div class="acc-info">
                   <div class="acc-name">Tekrarlayan İşlemler</div>
                   <div class="acc-type" id="settings-recur-sub">Otomatik işlemleri yönet</div>
+               </div>
+               <div style="color:var(--text3);font-size:18px">›</div>
+            </div>
+            <div class="section-title">Kurlar</div>
+            <div class="acc-card" onclick="openSettingsRates()" style="margin-bottom:8px">
+               <div class="acc-icon" style="background:rgba(251,191,36,.12);color:var(--yellow)">💱</div>
+               <div class="acc-info">
+                  <div class="acc-name">Döviz & Altın Kurları</div>
+                  <div class="acc-type" id="settings-rates-sub">Manuel kur girişi</div>
                </div>
                <div style="color:var(--text3);font-size:18px">›</div>
             </div>
@@ -434,12 +459,40 @@
             <button class="btn btn-ghost" style="margin-top:12px" onclick="closeModal('modal-settings-data')">Kapat</button>
          </div>
       </div>
+      <!-- ── AYARLAR: DÖVİZ & ALTIN KURLARI MODALI ── -->
+      <div class="modal-overlay" id="modal-settings-rates">
+         <div class="modal">
+            <div class="modal-handle"></div>
+            <div class="modal-title">💱 Döviz & Altın Kurları</div>
+            <div style="background:var(--bg3);border-radius:var(--rsm);padding:9px 12px;margin-bottom:14px;font-size:12px;color:var(--text3);line-height:1.6">
+               Girdiğiniz kurlar net varlık hesaplamasında ve raporlarda TRY bazlı dönüşüm için kullanılır. Son güncelleme: <span id="rates-last-update">—</span>
+            </div>
+            <div id="rates-form"></div>
+            <div style="display:flex;gap:7px;margin-top:14px">
+               <button class="btn btn-ghost btn-sm" style="flex:1" onclick="closeModal('modal-settings-rates')">İptal</button>
+               <button class="btn btn-primary" style="flex:2" onclick="saveRates()">💾 Kaydet</button>
+            </div>
+         </div>
+      </div>
+      <!-- ── FAVORİLER YÖNETİMİ MODALI ── -->
+      <div class="modal-overlay" id="modal-favorites">
+         <div class="modal">
+            <div class="modal-handle"></div>
+            <div class="modal-title">⭐ Hızlı İşlemler</div>
+            <div style="font-size:12px;color:var(--text3);margin-bottom:12px">İşlem eklerken ⭐ butonuna basarak favoriye ekleyebilirsiniz. Buradan silebilirsiniz.</div>
+            <div id="favorites-list"></div>
+            <button class="btn btn-ghost" style="margin-top:12px" onclick="closeModal('modal-favorites')">Kapat</button>
+         </div>
+      </div>
       <div class="modal-overlay" id="modal-tx">
          <div class="modal">
             <div class="modal-handle"></div>
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
                <div class="modal-title" id="modal-tx-title" style="margin:0">Yeni İşlem</div>
-               <button id="tx-copy-btn" class="btn btn-success btn-sm" style="display:none" onclick="copyTx()">⧉ Kopyala</button>
+               <div style="display:flex;gap:5px">
+                  <button id="tx-fav-btn" class="btn btn-ghost btn-sm" style="display:none" onclick="saveFavorite()" title="Favoriye ekle">⭐</button>
+                  <button id="tx-copy-btn" class="btn btn-success btn-sm" style="display:none" onclick="copyTx()">⧉ Kopyala</button>
+               </div>
             </div>
             <div class="type-toggle">
                <button class="type-btn" id="txtype-gelir" onclick="setTxType('gelir',this)">📈 Gelir</button>
@@ -847,7 +900,7 @@
          const CURRENCY_SYMBOLS={TRY:'₺',USD:'$',EUR:'€',GBP:'£',ALTIN:'gr'};
          const CAT_ICONS_LIST=['🛒','🍽️','🚗','🏠','💊','🎬','🏋️','📚','✈️','👗','💼','🎮','🐾','💡','🔧','🎁','💰','📱','🎓','⚽','🎵','🌿','🍕','☕','🛍️','⛽','🔥','💧','🛋️','🛡️','🏘️','📊','🎯','💄','👶','🧾','📺','❤️','🏥','📑','🔒','🏗️','❓','🔄','🏢','📈'];
          
-         let DB={accounts:[],transactions:[],debts:[],categories:[],recurring:[]};
+         let DB={accounts:[],transactions:[],debts:[],categories:[],recurring:[],rates:{USD:0,EUR:0,GBP:0,ALTIN:0,ratesUpdated:''},favorites:[]};
          let currentTxType='gider',currentDebtType='alacak',selectedCatIcon='📦';
          let txFilter='hepsi',debtFilter='hepsi',selectedAccColor=COLORS[0],currentPage='dashboard';
          let selectedCatId='';
@@ -862,7 +915,7 @@
          function save(){localStorage.setItem('butcetakip_v2',JSON.stringify(DB));}
          function load(){
            const raw=localStorage.getItem('butcetakip_v2')||localStorage.getItem('butcetakip_v1');
-           if(raw){DB=JSON.parse(raw);if(!DB.debts)DB.debts=[];if(!DB.recurring)DB.recurring=[];if(!DB.categories||!DB.categories.length)DB.categories=JSON.parse(JSON.stringify(DEFAULT_CATS));}
+           if(raw){DB=JSON.parse(raw);if(!DB.debts)DB.debts=[];if(!DB.recurring)DB.recurring=[];if(!DB.categories||!DB.categories.length)DB.categories=JSON.parse(JSON.stringify(DEFAULT_CATS));if(!DB.rates)DB.rates={USD:0,EUR:0,GBP:0,ALTIN:0,ratesUpdated:''};if(!DB.favorites)DB.favorites=[];}
            else{DB.categories=JSON.parse(JSON.stringify(DEFAULT_CATS));save();}
          }
          
@@ -975,6 +1028,7 @@
 			else if (p === 'settings') {
 			renderSettings();
 			renderRecurList();
+			updateRatesSub();
 			if (searchArea) searchArea.style.display = 'none'; // GİZLE
 			}
 		 }
@@ -1433,6 +1487,7 @@
          
          // ── DASHBOARD ──
          function renderDashboard(){
+           renderFavorites();
            const now=new Date();
            document.getElementById('dash-date').textContent=now.toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric',weekday:'long'});
            const tm=thisMonth();let gi=0,go=0;
@@ -1449,7 +1504,12 @@
            document.getElementById('dash-income').textContent=fmt(gi);
            document.getElementById('dash-expense').textContent=fmt(go);
            const dahilAccs=DB.accounts.filter(a=>a.netDahil!==false);
-           let netDahil=0;dahilAccs.forEach(a=>{netDahil+=getAccountBalance(a.id);});
+           let netDahil=0;
+           dahilAccs.forEach(a=>{
+             const bal=getAccountBalance(a.id);
+             const tryBal=toTRY(bal,a.currency);
+             if(tryBal!==null)netDahil+=tryBal;
+           });
            document.getElementById('dash-net').textContent=fmt(netDahil);
            document.getElementById('dash-net').style.color=netDahil<0?'var(--red)':'#fff';
          
@@ -1458,6 +1518,7 @@
              const now2=new Date();
              let rows='';
              let netTotal=0;
+             let netHasUnknown=false;
              const typeOrder=['nakit','banka','tasarruf','yatirim','kredi'];
              typeOrder.forEach(type=>{
                const accs=DB.accounts.filter(a=>a.type===type&&a.ozetDahil!==false);
@@ -1486,17 +1547,31 @@
                    }
                    display = fmtAmt(donemBorc, a.currency);
                    col=donemBorc>0?'var(--red)':'var(--text3)';
-                   netTotal-=donemBorc;
+                   const tryBorc = toTRY(donemBorc, a.currency);
+                   if(tryBorc !== null) netTotal -= tryBorc; else netHasUnknown = true;
                  } else {
                    display = fmtAmt(bal, a.currency);
                    col=bal<0?'var(--red)':'var(--text)';
-                   netTotal+=bal;
+                   const tryBal = toTRY(bal, a.currency);
+                   if(tryBal !== null) netTotal += tryBal; else netHasUnknown = true;
+                 }
+                 // Yabancı para ise kur bilgisini de göster
+                 const cur = a.currency||'TRY';
+                 let kurBilgi = '';
+                 if(cur !== 'TRY'){
+                   const rate = getRate(cur);
+                   kurBilgi = rate > 0
+                     ? ` <span style="font-size:10px;color:var(--text3)">(₺${parseFloat(rate).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})})</span>`
+                     : ` <span style="font-size:10px;color:var(--yellow)" title="Kur girilmedi">⚠️ kur yok</span>`;
                  }
                  const showMinus=(type==='kredi'&&donemBorc>0);
-                 rows+=`<div class="sum-row"><span class="sum-label">${escapeHTML(a.name)}</span><span class="sum-val" style="color:${col}">${showMinus?'-':''}${display}</span></div>`;
+                 rows+=`<div class="sum-row"><span class="sum-label">${escapeHTML(a.name)}${kurBilgi}</span><span class="sum-val" style="color:${col}">${showMinus?'-':''}${display}</span></div>`;
                });
              });
-             sumEl.innerHTML=rows+`<div style="border-top:1px solid var(--border);margin:6px 0"></div><div class="sum-row"><span class="sum-label" style="font-weight:700;color:var(--text)">Toplam Net (TRY Bazlı)</span><span class="sum-val" style="color:${netTotal<0?'var(--red)':'var(--green)'};font-size:15px">${fmt(netTotal)}</span></div>`;
+             const netLabel = netHasUnknown
+               ? 'Toplam Net (TRY Bazlı) <span style="font-size:10px;color:var(--yellow)">⚠️ Bazı kurlar girilmedi</span>'
+               : 'Toplam Net (TRY Bazlı)';
+             sumEl.innerHTML=rows+`<div style="border-top:1px solid var(--border);margin:6px 0"></div><div class="sum-row"><span class="sum-label" style="font-weight:700;color:var(--text)">${netLabel}</span><span class="sum-val" style="color:${netTotal<0?'var(--red)':'var(--green)'};font-size:15px">${fmt(netTotal)}</span></div>`;
            }
          
            const todayStr2=today();
@@ -1990,14 +2065,84 @@
          function openSettingsData() {
            openModal('modal-settings-data');
          }
+
+         // ── DÖVİZ & ALTIN KURLARI ──
+         const RATE_CURRENCIES = [
+           {code:'USD', label:'Amerikan Doları', symbol:'$', icon:'🇺🇸'},
+           {code:'EUR', label:'Euro', symbol:'€', icon:'🇪🇺'},
+           {code:'GBP', label:'İngiliz Sterlini', symbol:'£', icon:'🇬🇧'},
+           {code:'ALTIN', label:'Altın (gram)', symbol:'gr', icon:'🥇'},
+         ];
+
+         function openSettingsRates() {
+           const rates = DB.rates || {};
+           const formEl = document.getElementById('rates-form');
+           formEl.innerHTML = RATE_CURRENCIES.map(c => `
+             <div class="form-group">
+               <label class="form-label">${c.icon} ${c.label} (${c.code}) — 1 ${c.symbol} = ? ₺</label>
+               <input class="form-input" type="number" id="rate-input-${c.code}" 
+                 placeholder="0,00" step="0.01" min="0"
+                 value="${rates[c.code] > 0 ? rates[c.code] : ''}">
+             </div>
+           `).join('');
+           const upd = document.getElementById('rates-last-update');
+           if (upd) upd.textContent = rates.ratesUpdated ? fmtDate(rates.ratesUpdated) : '—';
+           openModal('modal-settings-rates');
+         }
+
+         function saveRates() {
+           if (!DB.rates) DB.rates = {};
+           let hasAny = false;
+           RATE_CURRENCIES.forEach(c => {
+             const val = parseFloat(document.getElementById('rate-input-'+c.code).value) || 0;
+             DB.rates[c.code] = val;
+             if (val > 0) hasAny = true;
+           });
+           DB.rates.ratesUpdated = today();
+           save();
+           // Alt başlığı güncelle
+           updateRatesSub();
+           closeModal('modal-settings-rates');
+           snack('Kurlar kaydedildi ✓');
+           // Dashboard ve hesapları yenile
+           if (currentPage === 'dashboard') renderDashboard();
+           if (currentPage === 'accounts') renderAccounts();
+         }
+
+         // 1 birim yabancı para = kaç TRY (kur tanımlı değilse 0 döner)
+         function getRate(currency) {
+           if (!currency || currency === 'TRY') return 1;
+           return (DB.rates && DB.rates[currency] > 0) ? parseFloat(DB.rates[currency]) : 0;
+         }
+
+         // Tutarı TRY'ye çevirir; kur tanımlı değilse null döner
+         function toTRY(amount, currency) {
+           if (!currency || currency === 'TRY') return parseFloat(amount) || 0;
+           const rate = getRate(currency);
+           if (!rate) return null; // kur girilmemiş
+           return (parseFloat(amount) || 0) * rate;
+         }
+
+         function updateRatesSub() {
+           const subEl = document.getElementById('settings-rates-sub');
+           if (!subEl) return;
+           const rates = DB.rates || {};
+           const defined = RATE_CURRENCIES.filter(c => rates[c.code] > 0);
+           if (defined.length === 0) {
+             subEl.textContent = 'Manuel kur girişi';
+           } else {
+             subEl.textContent = defined.map(c => `${c.code}: ₺${parseFloat(rates[c.code]).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})}`).join(' • ');
+           }
+         }
+
          function renderSettingsExtra() {
            renderRecurList();
-           // Ayarlar ana sayfasındaki tekrarlayan özet alt başlığını güncelle
            const subEl = document.getElementById('settings-recur-sub');
            if (subEl) {
              const count = DB.recurring ? DB.recurring.length : 0;
              subEl.textContent = count > 0 ? `${count} aktif işlem` : 'Otomatik işlemleri yönet';
            }
+           updateRatesSub();
          }
          
          function toggleCatGroup(grp) {
@@ -2119,21 +2264,23 @@
          }
          
          // ── İŞLEM EKLE/DÜZENLE ──
-         function openAddTx(id){
+         function openAddTx(id, prefill){
            const tx=id?DB.transactions.find(t=>t.id===id):null;
            document.getElementById('modal-tx-title').textContent=tx?'İşlemi Düzenle':'Yeni İşlem';
            document.getElementById('tx-edit-id').value=tx?tx.id:'';
-           document.getElementById('tx-firma').value=tx?(tx.firma||''):'';
-           document.getElementById('tx-desc').value=tx?(tx.desc||''):'';
-           document.getElementById('tx-amount').value=tx?tx.amount:'';
-           document.getElementById('tx-currency').value=tx?(tx.currency||'TRY'):'TRY';
+           document.getElementById('tx-firma').value=prefill?(prefill.firma||''):tx?(tx.firma||''):'';
+           document.getElementById('tx-desc').value=prefill?(prefill.desc||''):tx?(tx.desc||''):'';
+           document.getElementById('tx-amount').value=prefill?(prefill.amount||''):tx?tx.amount:'';
+           document.getElementById('tx-currency').value=prefill?(prefill.currency||'TRY'):tx?(tx.currency||'TRY'):'TRY';
            document.getElementById('tx-date').value=tx?tx.date:today();
            document.getElementById('tx-istaksit').checked=tx?!!tx.isTaksit:false;
            document.getElementById('tx-taksit-sayi').value=tx?(tx.taksitSayi||''):'';
            document.getElementById('taksit-group').style.display=(tx&&tx.isTaksit)?'block':'none';
            document.getElementById('tx-del-btn').style.display=tx?'inline-block':'none';
            document.getElementById('tx-copy-btn').style.display=tx?'inline-block':'none';
-           const t=tx?tx.type:'gider';
+           // Favori butonu: düzenleme modunda gizle, yeni işlemde göster
+           document.getElementById('tx-fav-btn').style.display=tx?'none':'inline-block';
+           const t=prefill?(prefill.type||'gider'):tx?tx.type:'gider';
            document.querySelectorAll('.type-btn').forEach(b=>b.className='type-btn');
            document.getElementById('txtype-'+t).className='type-btn active-'+t;
            currentTxType=t;
@@ -2143,10 +2290,11 @@
            if(catGrp2)catGrp2.style.display=t==='transfer'?'none':'block';
            const taksitGrp2=document.getElementById('taksit-check-group');
            if(taksitGrp2)taksitGrp2.style.display=t==='gider'?'block':'none';
-           const accOpts=DB.accounts.map(a=>`<option value="${a.id}" ${tx&&tx.accountId===a.id?'selected':''}>${ACC_ICONS[a.type]} ${a.name}${a.currency&&a.currency!=='TRY'?' ('+a.currency+')':''}</option>`).join('');
+           const prefillAccId = prefill?prefill.accountId:null;
+           const accOpts=DB.accounts.map(a=>`<option value="${a.id}" ${(prefillAccId?prefillAccId===a.id:tx&&tx.accountId===a.id)?'selected':''}>${ACC_ICONS[a.type]} ${a.name}${a.currency&&a.currency!=='TRY'?' ('+a.currency+')':''}</option>`).join('');
            document.getElementById('tx-account').innerHTML=DB.accounts.length?accOpts:'<option value="">Hesap yok</option>';
            document.getElementById('tx-account2').innerHTML=DB.accounts.length?DB.accounts.map(a=>`<option value="${a.id}" ${tx&&tx.accountId2===a.id?'selected':''}>${ACC_ICONS[a.type]} ${a.name}</option>`).join(''):'<option value="">Hesap yok</option>';
-           resetCatUI(tx?tx.categoryId:'');
+           resetCatUI(prefill?(prefill.categoryId||''):tx?tx.categoryId:'');
            document.getElementById('cat-drop').classList.remove('open');
            openModal('modal-tx');
          }
@@ -2165,6 +2313,78 @@
            resetCatUI('');
          }
          function toggleTaksit(checked){document.getElementById('taksit-group').style.display=checked?'block':'none';}
+
+         // ── FAVORİLER ──
+         function saveFavorite(){
+           const firma=document.getElementById('tx-firma').value.trim();
+           const desc=document.getElementById('tx-desc').value.trim();
+           const amount=parseFloat(document.getElementById('tx-amount').value)||0;
+           const currency=document.getElementById('tx-currency').value||'TRY';
+           const accountId=document.getElementById('tx-account').value;
+           const categoryId=document.getElementById('tx-category').value||selectedCatId;
+           const type=currentTxType;
+           if(!firma&&!desc){snack('Firma veya açıklama girin');return;}
+           const fav={
+             id:uid(),
+             name:firma||desc,
+             firma,desc,amount,currency,accountId,categoryId,type
+           };
+           DB.favorites.push(fav);
+           save();
+           snack('⭐ Favoriye eklendi');
+           renderFavorites();
+         }
+
+         function renderFavorites(){
+           const el=document.getElementById('dash-favorites');
+           if(!el)return;
+           if(!DB.favorites||!DB.favorites.length){
+             el.innerHTML='<div style="font-size:12px;color:var(--text3);padding:4px 0 8px">İşlem eklerken ⭐ ile favoriye alın.</div>';
+             return;
+           }
+           el.innerHTML=DB.favorites.map(f=>{
+             const cat=DB.categories.find(c=>c.id===f.categoryId);
+             const icon=cat?cat.icon:(f.type==='gelir'?'📈':'📉');
+             const amtStr=f.amount>0?fmtAmt(f.amount,f.currency):'';
+             const typeClass=f.type==='gelir'?'type-gelir':'type-gider';
+             return`<button class="quick-btn ${typeClass}" onclick="openAddTx(null,${JSON.stringify(f).replace(/"/g,'&quot;')})">
+               <span class="qb-icon">${icon}</span>
+               <span class="qb-name">${escapeHTML(f.name)}</span>
+               ${amtStr?`<span class="qb-amt">${amtStr}</span>`:''}
+             </button>`;
+           }).join('');
+         }
+
+         function openFavoritesManager(){
+           const el=document.getElementById('favorites-list');
+           if(!DB.favorites||!DB.favorites.length){
+             el.innerHTML='<div style="font-size:13px;color:var(--text3);text-align:center;padding:14px 0">Henüz favori işlem yok.</div>';
+           } else {
+             el.innerHTML=DB.favorites.map(f=>{
+               const cat=DB.categories.find(c=>c.id===f.categoryId);
+               const acc=DB.accounts.find(a=>a.id===f.accountId);
+               const icon=cat?cat.icon:(f.type==='gelir'?'📈':'📉');
+               const amtStr=f.amount>0?fmtAmt(f.amount,f.currency):'Tutar yok';
+               return`<div class="fav-item">
+                 <span style="font-size:22px">${icon}</span>
+                 <div class="fav-item-info">
+                   <div class="fav-item-name">${escapeHTML(f.name)}</div>
+                   <div class="fav-item-meta">${amtStr} • ${f.type==='gelir'?'Gelir':'Gider'}${acc?' • '+escapeHTML(acc.name):''}</div>
+                 </div>
+                 <button class="delete-btn" onclick="deleteFavorite('${f.id}')">🗑️</button>
+               </div>`;
+             }).join('');
+           }
+           openModal('modal-favorites');
+         }
+
+         function deleteFavorite(id){
+           DB.favorites=DB.favorites.filter(f=>f.id!==id);
+           save();
+           snack('Silindi');
+           openFavoritesManager();
+           renderFavorites();
+         }
          function saveTx(){
            const firma=document.getElementById('tx-firma').value.trim();
            const desc=document.getElementById('tx-desc').value.trim();
