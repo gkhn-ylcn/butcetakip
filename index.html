@@ -241,9 +241,35 @@
          .fav-item-info{flex:1;min-width:0;}
          .fav-item-name{font-size:13px;font-weight:600;}
          .fav-item-meta{font-size:11px;color:var(--text3);margin-top:2px;}
+         @media print {
+           body > *:not(#report-print-area) { display: none !important; }
+           #report-print-area { display: block !important; position: static !important; }
+           #report-print-area { font-family: 'Segoe UI', sans-serif; color: #1a2040; background: #fff; padding: 24px; }
+           .rpt-page-break { page-break-before: always; }
+           @page { margin: 15mm; size: A4; }
+         }
+         #report-print-area { display: none; position: fixed; inset: 0; background: #fff; z-index: 9999; overflow-y: auto; padding: 20px; color: #1a2040; font-family: 'Segoe UI', sans-serif; }
+         #report-print-area.visible { display: block; }
+         .rpt-header { border-bottom: 2px solid #6c63ff; padding-bottom: 12px; margin-bottom: 20px; }
+         .rpt-title { font-size: 22px; font-weight: 700; color: #6c63ff; }
+         .rpt-period { font-size: 13px; color: #64748b; margin-top: 3px; }
+         .rpt-section { margin-bottom: 24px; }
+         .rpt-section-title { font-size: 14px; font-weight: 700; color: #1a2040; border-left: 3px solid #6c63ff; padding-left: 8px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: .5px; }
+         .rpt-stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 14px; }
+         .rpt-stat-box { background: #f0f4ff; border-radius: 8px; padding: 12px; text-align: center; }
+         .rpt-stat-label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: .4px; }
+         .rpt-stat-val { font-size: 18px; font-weight: 700; margin-top: 4px; }
+         .rpt-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+         .rpt-table th { background: #f0f4ff; padding: 7px 8px; text-align: left; font-weight: 600; border-bottom: 1px solid #c8d4f0; }
+         .rpt-table td { padding: 6px 8px; border-bottom: 1px solid #e8edf8; vertical-align: top; }
+         .rpt-table tr:last-child td { border-bottom: none; }
+         .rpt-close-btn { position: fixed; top: 16px; right: 16px; background: #6c63ff; color: #fff; border: none; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; z-index: 10000; }
+         .rpt-print-btn { position: fixed; top: 16px; right: 110px; background: #22d3a5; color: #fff; border: none; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; z-index: 10000; }
+         @media print { .rpt-close-btn, .rpt-print-btn { display: none !important; } }
       </style>
    </head>
    <body>
+      <div id="report-print-area"></div>
       <div id="splash">
          <div class="logo">💰</div>
          <h1>BütçeTakip</h1>
@@ -318,7 +344,7 @@
             <div id="tx-list"></div>
          </div>
          <div class="page" id="page-stats">
-            <div style="display:flex;align-items:center;background:var(--bg3);border-radius:var(--rsm);padding:4px;justify-content:space-between;margin-bottom:10px">
+            <div style="display:flex;align-items:center;background:var(--bg3);border-radius:var(--rsm);padding:4px;justify-content:space-between;margin-bottom:10px" id="stats-month-nav">
                <button class="btn btn-ghost btn-sm" onclick="changeStatsMonth(-1)" style="padding:6px;width:30px">◀</button>
                <span id="stats-month-label" style="font-size:13px;font-weight:600">Ay</span>
                <button class="btn btn-ghost btn-sm" onclick="changeStatsMonth(1)" style="padding:6px;width:30px">▶</button>
@@ -326,14 +352,33 @@
             <div class="tab-bar">
                <button class="tab-btn active" onclick="setStatsTab('gider',this)">📉 Gider Dağılımı</button>
                <button class="tab-btn" onclick="setStatsTab('gelir',this)">📈 Gelir Dağılımı</button>
+               <button class="tab-btn" onclick="setStatsTab('karsilastirma',this)">📊 Karşılaştırma</button>
             </div>
-            <div class="card">
-               <div style="font-size:11px;color:var(--text3);text-align:center;text-transform:uppercase;letter-spacing:0.5px">Toplam Dönem Tutarı</div>
-               <div id="stats-total" style="font-size:26px;font-weight:700;text-align:center;margin-bottom:12px">₺0,00</div>
-               <div class="chart-container">
-                  <canvas id="stats-chart"></canvas>
+            <div id="stats-dagılım-panel">
+               <div class="card">
+                  <div style="font-size:11px;color:var(--text3);text-align:center;text-transform:uppercase;letter-spacing:0.5px">Toplam Dönem Tutarı</div>
+                  <div id="stats-total" style="font-size:26px;font-weight:700;text-align:center;margin-bottom:12px">₺0,00</div>
+                  <div class="chart-container">
+                     <canvas id="stats-chart"></canvas>
+                  </div>
+                  <div id="stats-list" style="margin-top:10px"></div>
                </div>
-               <div id="stats-list" style="margin-top:10px"></div>
+            </div>
+            <div id="stats-karsilastirma-panel" style="display:none">
+               <div class="card" style="margin-bottom:10px">
+                  <div style="font-size:12px;color:var(--text3);font-weight:600;margin-bottom:10px;text-transform:uppercase;letter-spacing:.4px">Son 6 Ay — Gelir & Gider</div>
+                  <div class="chart-container" style="height:200px">
+                     <canvas id="compare-bar-chart"></canvas>
+                  </div>
+               </div>
+               <div class="card">
+                  <div style="font-size:12px;color:var(--text3);font-weight:600;margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">Kategori Bazında Trend</div>
+                  <div style="font-size:11px;color:var(--text3);margin-bottom:10px">En çok harcanan 5 kategori • Son 6 ay</div>
+                  <div class="chart-container" style="height:220px">
+                     <canvas id="compare-trend-chart"></canvas>
+                  </div>
+                  <div id="compare-cat-summary" style="margin-top:12px"></div>
+               </div>
             </div>
          </div>
          <div class="page" id="page-debt">
@@ -370,6 +415,15 @@
                <div class="acc-info">
                   <div class="acc-name">Döviz & Altın Kurları</div>
                   <div class="acc-type" id="settings-rates-sub">Manuel kur girişi</div>
+               </div>
+               <div style="color:var(--text3);font-size:18px">›</div>
+            </div>
+            <div class="section-title">Raporlar</div>
+            <div class="acc-card" onclick="openReportModal()" style="margin-bottom:8px">
+               <div class="acc-icon" style="background:rgba(167,139,250,.12);color:var(--accent2)">📄</div>
+               <div class="acc-info">
+                  <div class="acc-name">Dönem Raporu (PDF)</div>
+                  <div class="acc-type">Seçili dönem için yazdır / PDF kaydet</div>
                </div>
                <div style="color:var(--text3);font-size:18px">›</div>
             </div>
@@ -471,6 +525,54 @@
             <div style="display:flex;gap:7px;margin-top:14px">
                <button class="btn btn-ghost btn-sm" style="flex:1" onclick="closeModal('modal-settings-rates')">İptal</button>
                <button class="btn btn-primary" style="flex:2" onclick="saveRates()">💾 Kaydet</button>
+            </div>
+         </div>
+      </div>
+      <!-- ── RAPOR AYAR MODALI ── -->
+      <div class="modal-overlay" id="modal-report">
+         <div class="modal">
+            <div class="modal-handle"></div>
+            <div class="modal-title">📄 Dönem Raporu</div>
+            <div class="form-row">
+               <div class="form-group">
+                  <label class="form-label">Başlangıç Tarihi</label>
+                  <input class="form-input" type="date" id="report-date-start">
+               </div>
+               <div class="form-group">
+                  <label class="form-label">Bitiş Tarihi</label>
+                  <input class="form-input" type="date" id="report-date-end">
+               </div>
+            </div>
+            <div class="form-group">
+               <label class="form-label">Hızlı Seçim</label>
+               <div style="display:flex;flex-wrap:wrap;gap:6px">
+                  <button class="chip" onclick="setReportPeriod('thismonth')">Bu Ay</button>
+                  <button class="chip" onclick="setReportPeriod('lastmonth')">Geçen Ay</button>
+                  <button class="chip" onclick="setReportPeriod('last3')">Son 3 Ay</button>
+                  <button class="chip" onclick="setReportPeriod('last6')">Son 6 Ay</button>
+                  <button class="chip" onclick="setReportPeriod('thisyear')">Bu Yıl</button>
+               </div>
+            </div>
+            <div class="form-group">
+               <label class="form-label">Rapora Dahil Et</label>
+               <div style="display:flex;flex-direction:column;gap:6px">
+                  <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+                     <input type="checkbox" id="rpt-summary" checked style="width:15px;height:15px;accent-color:var(--accent)"> Dönem Özeti
+                  </label>
+                  <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+                     <input type="checkbox" id="rpt-accounts" checked style="width:15px;height:15px;accent-color:var(--accent)"> Hesap Bakiyeleri
+                  </label>
+                  <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+                     <input type="checkbox" id="rpt-categories" checked style="width:15px;height:15px;accent-color:var(--accent)"> Kategori Dağılımı
+                  </label>
+                  <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+                     <input type="checkbox" id="rpt-transactions" checked style="width:15px;height:15px;accent-color:var(--accent)"> İşlem Listesi
+                  </label>
+               </div>
+            </div>
+            <div style="display:flex;gap:7px;margin-top:12px">
+               <button class="btn btn-ghost btn-sm" style="flex:1" onclick="closeModal('modal-report')">İptal</button>
+               <button class="btn btn-primary" style="flex:2" onclick="generateReport()">📄 Raporu Oluştur</button>
             </div>
          </div>
       </div>
@@ -1838,10 +1940,20 @@
            statsTab = tab;
            document.querySelectorAll('#page-stats .tab-btn').forEach(b => b.classList.remove('active'));
            btn.classList.add('active');
-           renderStats();
+           const isCompare = tab === 'karsilastirma';
+           document.getElementById('stats-dagılım-panel').style.display = isCompare ? 'none' : 'block';
+           document.getElementById('stats-karsilastirma-panel').style.display = isCompare ? 'block' : 'none';
+           document.getElementById('stats-month-nav').style.display = isCompare ? 'none' : 'flex';
+           if (isCompare) renderComparison();
+           else renderStats();
          }
          
          function renderStats() {
+           // Karşılaştırma sekmesi aktifse onu renderla
+           if (statsTab === 'karsilastirma') { renderComparison(); return; }
+           document.getElementById('stats-dagılım-panel').style.display = 'block';
+           document.getElementById('stats-karsilastirma-panel').style.display = 'none';
+           document.getElementById('stats-month-nav').style.display = 'flex';
            document.getElementById('stats-month-label').textContent = fmtMonthLong(statsMonth);
            
            let total = 0;
@@ -1960,6 +2072,173 @@
              }
            });
          }
+
+         // ── AYLIK KARŞILAŞTIRMA ──
+         let compareBarChartInstance = null;
+         let compareTrendChartInstance = null;
+
+         function getLast6Months() {
+           const months = [];
+           const now = new Date();
+           for (let i = 5; i >= 0; i--) {
+             const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+             months.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);
+           }
+           return months;
+         }
+
+         function getMonthTotal(ym, type) {
+           let total = 0;
+           DB.transactions.forEach(tx => {
+             if (tx.isTaksit) {
+               if (type !== 'gider') return;
+               getTaksitRows(tx).forEach(r => {
+                 if (r.date.startsWith(ym)) total += parseFloat(r.amount) || 0;
+               });
+             } else {
+               if (tx.type !== type) return;
+               if (tx.date && tx.date.startsWith(ym)) {
+                 const tryAmt = toTRY(parseFloat(tx.amount)||0, tx.currency);
+                 total += tryAmt !== null ? tryAmt : (parseFloat(tx.amount)||0);
+               }
+             }
+           });
+           return total;
+         }
+
+         function getMonthCatTotals(ym) {
+           const catTotals = {};
+           DB.transactions.forEach(tx => {
+             if (tx.isTaksit) {
+               getTaksitRows(tx).forEach(r => {
+                 if (r.date.startsWith(ym)) {
+                   const k = r.categoryId || '__none__';
+                   catTotals[k] = (catTotals[k]||0) + (parseFloat(r.amount)||0);
+                 }
+               });
+             } else {
+               if (tx.type !== 'gider') return;
+               if (tx.date && tx.date.startsWith(ym)) {
+                 const k = tx.categoryId || '__none__';
+                 const tryAmt = toTRY(parseFloat(tx.amount)||0, tx.currency);
+                 catTotals[k] = (catTotals[k]||0) + (tryAmt !== null ? tryAmt : (parseFloat(tx.amount)||0));
+               }
+             }
+           });
+           return catTotals;
+         }
+
+         function renderComparison() {
+           const months = getLast6Months();
+           const labels = months.map(m => fmtMonthLong(m).replace(' 20'," '"));
+           const gelirData = months.map(m => parseFloat(getMonthTotal(m,'gelir').toFixed(2)));
+           const giderData = months.map(m => parseFloat(getMonthTotal(m,'gider').toFixed(2)));
+           const isDark = !document.body.classList.contains('light');
+           const textColor = isDark ? '#94a3b8' : '#4a5580';
+           const gridColor = isDark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)';
+
+           // BAR GRAFİK
+           const barCanvas = document.getElementById('compare-bar-chart');
+           if (compareBarChartInstance) { compareBarChartInstance.destroy(); compareBarChartInstance = null; }
+           compareBarChartInstance = new Chart(barCanvas, {
+             type: 'bar',
+             data: {
+               labels,
+               datasets: [
+                 { label: 'Gelir', data: gelirData, backgroundColor: 'rgba(34,211,165,.75)', borderRadius: 5 },
+                 { label: 'Gider', data: giderData, backgroundColor: 'rgba(248,113,113,.75)', borderRadius: 5 }
+               ]
+             },
+             options: {
+               responsive: true, maintainAspectRatio: false,
+               plugins: {
+                 legend: { labels: { color: textColor, font:{size:11}, boxWidth:12, boxHeight:12 } },
+                 tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${fmt(ctx.parsed.y)}` } }
+               },
+               scales: {
+                 x: { ticks: { color: textColor, font:{size:10} }, grid: { color: gridColor } },
+                 y: { ticks: { color: textColor, font:{size:10}, callback: v => '₺'+Math.round(v/1000)+'K' }, grid: { color: gridColor } }
+               }
+             }
+           });
+
+           // EN ÇOK HARCANAN 5 KATEGORİ
+           const allCatTotals = {};
+           months.forEach(m => {
+             const ct = getMonthCatTotals(m);
+             Object.entries(ct).forEach(([k,v]) => { allCatTotals[k] = (allCatTotals[k]||0) + v; });
+           });
+           const top5 = Object.entries(allCatTotals).sort((a,b)=>b[1]-a[1]).slice(0,5);
+           const palette = ['#6c63ff','#f87171','#fbbf24','#60a5fa','#22d3a5'];
+
+           // TREND GRAFİK
+           const trendCanvas = document.getElementById('compare-trend-chart');
+           if (compareTrendChartInstance) { compareTrendChartInstance.destroy(); compareTrendChartInstance = null; }
+           if (top5.length === 0) {
+             trendCanvas.parentElement.style.display = 'none';
+           } else {
+             trendCanvas.parentElement.style.display = 'block';
+             compareTrendChartInstance = new Chart(trendCanvas, {
+               type: 'line',
+               data: {
+                 labels,
+                 datasets: top5.map(([catId], i) => {
+                   const cat = DB.categories.find(c => c.id === catId);
+                   return {
+                     label: cat ? `${cat.icon} ${cat.name}` : 'Kategorisiz',
+                     data: months.map(m => parseFloat((getMonthCatTotals(m)[catId]||0).toFixed(2))),
+                     borderColor: palette[i],
+                     backgroundColor: palette[i]+'33',
+                     borderWidth: 2, pointRadius: 3, tension: 0.35, fill: false
+                   };
+                 })
+               },
+               options: {
+                 responsive: true, maintainAspectRatio: false,
+                 plugins: {
+                   legend: { labels: { color: textColor, font:{size:10}, boxWidth:10, boxHeight:10, padding:8 } },
+                   tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${fmt(ctx.parsed.y)}` } }
+                 },
+                 scales: {
+                   x: { ticks: { color: textColor, font:{size:10} }, grid: { color: gridColor } },
+                   y: { ticks: { color: textColor, font:{size:10}, callback: v => '₺'+Math.round(v/1000)+'K' }, grid: { color: gridColor } }
+                 }
+               }
+             });
+           }
+
+           // KATEGORİ ÖZET TABLOSU — bu ay vs geçen ay
+           const curM = thisMonth();
+           const prevM = (() => {
+             const [y,m] = curM.split('-').map(Number);
+             const d = new Date(y, m-2, 1);
+             return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+           })();
+           const curCats  = getMonthCatTotals(curM);
+           const prevCats = getMonthCatTotals(prevM);
+           const sumEl = document.getElementById('compare-cat-summary');
+           sumEl.innerHTML = `<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Bu Ay vs Geçen Ay</div>` +
+             top5.map(([catId]) => {
+               const cat  = DB.categories.find(c=>c.id===catId);
+               const icon = cat ? cat.icon : '📦';
+               const name = cat ? escapeHTML(cat.name) : 'Kategorisiz';
+               const cur  = curCats[catId]  || 0;
+               const prev = prevCats[catId] || 0;
+               const diff = cur - prev;
+               const diffPct = prev > 0 ? ((diff/prev)*100).toFixed(0) : null;
+               const diffCol = diff > 0 ? 'var(--red)' : diff < 0 ? 'var(--green)' : 'var(--text3)';
+               const arrow   = diff > 0 ? '▲' : diff < 0 ? '▼' : '—';
+               const diffStr = diffPct !== null ? `${arrow} %${Math.abs(diffPct)}` : (diff !== 0 ? `${arrow} ${fmt(Math.abs(diff))}` : '—');
+               return `<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(50,54,96,.3)">
+                 <span style="font-size:15px">${icon}</span>
+                 <span style="flex:1;font-size:13px">${name}</span>
+                 <span style="font-size:12px;color:var(--text3)">${fmt(prev)}</span>
+                 <span style="font-size:11px;color:var(--text3)">→</span>
+                 <span style="font-size:12px;font-weight:700">${fmt(cur)}</span>
+                 <span style="font-size:11px;font-weight:700;color:${diffCol};min-width:52px;text-align:right">${diffStr}</span>
+               </div>`;
+             }).join('');
+         }
          
          // ── BORÇ/ALACAK ──
          function renderDebts(){
@@ -1970,14 +2249,16 @@
            el.innerHTML=debts.length?debts.map(d=>debtCardHTML(d)).join(''):`<div class="empty"><div class="empty-icon">🤝</div><p>Kayıt bulunamadı.</p></div>`;
          }
          function debtCardHTML(d){
+           const cur=d.currency||'TRY';
            const rem=(parseFloat(d.amount)||0)-(parseFloat(d.paid)||0);
            const pct=d.amount>0?Math.min(100,((parseFloat(d.paid)||0)/parseFloat(d.amount))*100):0;
            const isA=d.type==='alacak';const col=isA?'var(--green)':'var(--red)';
            const badge=isA?'<span class="badge badge-alacak">Alacak</span>':'<span class="badge badge-borc">Borç</span>';
+           const curBadge=cur!=='TRY'?` <span style="font-size:10px;background:var(--bg3);padding:1px 5px;border-radius:99px;color:var(--text3)">${cur}</span>`:'';
            return`<div class="ba-card" onclick="editDebt('${d.id}')">
              <div class="ba-header">
-               <div><div class="ba-name">${escapeHTML(d.person)} ${badge}</div><div class="ba-meta">${fmtDate(d.date)}${d.due?' • Vade: '+fmtDate(d.due):''}${rem<=0?' ✅':''}</div>${d.desc?`<div class="ba-meta">${escapeHTML(d.desc)}</div>`:''}</div>
-               <div><div class="ba-amount" style="color:${col}">${fmt(rem)}</div><div style="font-size:11px;color:var(--text3);text-align:right">/ ${fmt(d.amount)}</div></div>
+               <div><div class="ba-name">${escapeHTML(d.person)} ${badge}${curBadge}</div><div class="ba-meta">${fmtDate(d.date)}${d.due?' • Vade: '+fmtDate(d.due):''}${rem<=0?' ✅':''}</div>${d.desc?`<div class="ba-meta">${escapeHTML(d.desc)}</div>`:''}</div>
+               <div><div class="ba-amount" style="color:${col}">${fmtAmt(rem,cur)}</div><div style="font-size:11px;color:var(--text3);text-align:right">/ ${fmtAmt(d.amount,cur)}</div></div>
              </div>
              <div class="ba-progress"><div class="ba-fill" style="width:${pct}%;background:${col}"></div></div>
            </div>`;
@@ -2066,7 +2347,193 @@
            openModal('modal-settings-data');
          }
 
-         // ── DÖVİZ & ALTIN KURLARI ──
+         // ── DÖNEM RAPORU ──
+         function openReportModal() {
+           // Varsayılan: bu ay
+           const now = new Date();
+           const y = now.getFullYear();
+           const m = String(now.getMonth()+1).padStart(2,'0');
+           document.getElementById('report-date-start').value = `${y}-${m}-01`;
+           const lastDay = new Date(y, now.getMonth()+1, 0).getDate();
+           document.getElementById('report-date-end').value = `${y}-${m}-${String(lastDay).padStart(2,'0')}`;
+           openModal('modal-report');
+         }
+
+         function setReportPeriod(p) {
+           const now = new Date();
+           const y = now.getFullYear();
+           const m = now.getMonth();
+           let start, end;
+           if (p === 'thismonth') {
+             start = new Date(y, m, 1);
+             end   = new Date(y, m+1, 0);
+           } else if (p === 'lastmonth') {
+             start = new Date(y, m-1, 1);
+             end   = new Date(y, m, 0);
+           } else if (p === 'last3') {
+             start = new Date(y, m-2, 1);
+             end   = new Date(y, m+1, 0);
+           } else if (p === 'last6') {
+             start = new Date(y, m-5, 1);
+             end   = new Date(y, m+1, 0);
+           } else if (p === 'thisyear') {
+             start = new Date(y, 0, 1);
+             end   = new Date(y, 11, 31);
+           }
+           const fmt2 = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+           document.getElementById('report-date-start').value = fmt2(start);
+           document.getElementById('report-date-end').value   = fmt2(end);
+         }
+
+         function generateReport() {
+           const dateStart = document.getElementById('report-date-start').value;
+           const dateEnd   = document.getElementById('report-date-end').value;
+           if (!dateStart || !dateEnd) { snack('Tarih aralığı seçin'); return; }
+           if (dateStart > dateEnd)    { snack('Başlangıç tarihi bitiş tarihinden büyük olamaz'); return; }
+
+           const inclSummary  = document.getElementById('rpt-summary').checked;
+           const inclAccounts = document.getElementById('rpt-accounts').checked;
+           const inclCats     = document.getElementById('rpt-categories').checked;
+           const inclTx       = document.getElementById('rpt-transactions').checked;
+
+           // Dönemdeki tüm işlemleri topla
+           let allTx = [];
+           DB.transactions.forEach(tx => {
+             if (tx.isTaksit) {
+               getTaksitRows(tx).forEach(r => {
+                 if (r.date >= dateStart && r.date <= dateEnd) allTx.push(r);
+               });
+             } else {
+               if (tx.date && tx.date >= dateStart && tx.date <= dateEnd) allTx.push(tx);
+             }
+           });
+           allTx.sort((a,b) => new Date(a.date) - new Date(b.date));
+
+           let gelir=0, gider=0;
+           allTx.forEach(tx => {
+             if (tx.type==='gelir') gelir += parseFloat(tx.amount)||0;
+             if (tx.type==='gider') gider += parseFloat(tx.amount)||0;
+           });
+           const net = gelir - gider;
+
+           const periodLabel = `${fmtDate(dateStart)} — ${fmtDate(dateEnd)}`;
+           const printDate   = new Date().toLocaleDateString('tr-TR',{day:'2-digit',month:'long',year:'numeric'});
+
+           let html = `
+             <button class="rpt-close-btn" onclick="closeReport()">✕ Kapat</button>
+             <button class="rpt-print-btn" onclick="window.print()">🖨️ Yazdır / PDF</button>
+             <div class="rpt-header">
+               <div class="rpt-title">💰 BütçeTakip — Dönem Raporu</div>
+               <div class="rpt-period">📅 ${periodLabel} &nbsp;•&nbsp; Oluşturulma: ${printDate}</div>
+             </div>`;
+
+           // ÖZET
+           if (inclSummary) {
+             html += `<div class="rpt-section">
+               <div class="rpt-section-title">Dönem Özeti</div>
+               <div class="rpt-stat-grid">
+                 <div class="rpt-stat-box">
+                   <div class="rpt-stat-label">Toplam Gelir</div>
+                   <div class="rpt-stat-val" style="color:#22d3a5">${fmt(gelir)}</div>
+                 </div>
+                 <div class="rpt-stat-box">
+                   <div class="rpt-stat-label">Toplam Gider</div>
+                   <div class="rpt-stat-val" style="color:#f87171">${fmt(gider)}</div>
+                 </div>
+                 <div class="rpt-stat-box">
+                   <div class="rpt-stat-label">Net</div>
+                   <div class="rpt-stat-val" style="color:${net>=0?'#22d3a5':'#f87171'}">${fmt(net)}</div>
+                 </div>
+               </div>
+               <div style="font-size:12px;color:#64748b">Toplam ${allTx.length} işlem</div>
+             </div>`;
+           }
+
+           // HESAP BAKİYELERİ
+           if (inclAccounts && DB.accounts.length) {
+             html += `<div class="rpt-section">
+               <div class="rpt-section-title">Hesap Bakiyeleri (Güncel)</div>
+               <table class="rpt-table">
+                 <thead><tr><th>Hesap</th><th>Tür</th><th style="text-align:right">Bakiye</th></tr></thead>
+                 <tbody>`;
+             DB.accounts.forEach(a => {
+               const bal = getAccountBalance(a.id);
+               const isK = a.type === 'kredi';
+               const display = isK ? fmtAmt(Math.abs(bal), a.currency) : fmtAmt(bal, a.currency);
+               const col = isK ? (Math.abs(bal)>0?'#f87171':'#22d3a5') : (bal<0?'#f87171':'#1a2040');
+               html += `<tr><td>${escapeHTML(a.name)}</td><td style="color:#64748b">${ACC_LABELS[a.type]||a.type}</td><td style="text-align:right;font-weight:700;color:${col}">${isK?'-':''}${display}</td></tr>`;
+             });
+             html += `</tbody></table></div>`;
+           }
+
+           // KATEGORİ DAĞILIMI
+           if (inclCats) {
+             const catTotals = {};
+             allTx.filter(t=>t.type==='gider').forEach(t => {
+               const k = t.categoryId||'__none__';
+               catTotals[k] = (catTotals[k]||0) + (parseFloat(t.amount)||0);
+             });
+             const sorted = Object.entries(catTotals).sort((a,b)=>b[1]-a[1]);
+             const totalGider = sorted.reduce((s,[,v])=>s+v,0);
+             if (sorted.length) {
+               html += `<div class="rpt-section">
+                 <div class="rpt-section-title">Gider Kategori Dağılımı</div>
+                 <table class="rpt-table">
+                   <thead><tr><th>Kategori</th><th style="text-align:right">Tutar</th><th style="text-align:right">Pay</th></tr></thead>
+                   <tbody>`;
+               sorted.forEach(([catId, amt]) => {
+                 const cat  = DB.categories.find(c=>c.id===catId);
+                 const name = cat ? `${cat.icon} ${escapeHTML(cat.name)}` : 'Kategorisiz';
+                 const pct  = totalGider > 0 ? ((amt/totalGider)*100).toFixed(1) : '0.0';
+                 html += `<tr><td>${name}</td><td style="text-align:right">${fmt(amt)}</td><td style="text-align:right;color:#64748b">%${pct}</td></tr>`;
+               });
+               html += `</tbody></table></div>`;
+             }
+           }
+
+           // İŞLEM LİSTESİ
+           if (inclTx && allTx.length) {
+             // Tarihe göre grupla
+             const groups = {};
+             allTx.forEach(tx => {
+               const d = tx.date||'?';
+               if (!groups[d]) groups[d] = [];
+               groups[d].push(tx);
+             });
+             html += `<div class="rpt-section">
+               <div class="rpt-section-title">İşlem Listesi</div>
+               <table class="rpt-table">
+                 <thead><tr><th>Tarih</th><th>Açıklama</th><th>Kategori</th><th>Hesap</th><th style="text-align:right">Tutar</th></tr></thead>
+                 <tbody>`;
+             Object.entries(groups).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([date, txs]) => {
+               txs.forEach((tx, i) => {
+                 const cat  = DB.categories.find(c=>c.id===tx.categoryId);
+                 const acc  = DB.accounts.find(a=>a.id===tx.accountId);
+                 const name = escapeHTML(tx.firma||tx.desc||'İsimsiz');
+                 const catN = cat ? `${cat.icon} ${escapeHTML(cat.name)}` : '—';
+                 const accN = acc ? escapeHTML(acc.name) : '—';
+                 const pre  = tx.type==='gelir' ? '+' : tx.type==='transfer' ? '↔' : '-';
+                 const col  = tx.type==='gelir' ? '#22d3a5' : tx.type==='transfer' ? '#60a5fa' : '#f87171';
+                 const dateCell = i===0 ? `<td rowspan="${txs.length}" style="color:#64748b;white-space:nowrap">${fmtDate(date)}</td>` : '';
+                 html += `<tr>${dateCell}<td>${name}</td><td style="color:#64748b">${catN}</td><td style="color:#64748b">${accN}</td><td style="text-align:right;font-weight:700;color:${col}">${pre}${fmtAmt(tx.amount,tx.currency)}</td></tr>`;
+               });
+             });
+             html += `</tbody></table></div>`;
+           }
+
+           html += `<div style="text-align:center;font-size:11px;color:#94a3b8;margin-top:30px;padding-top:12px;border-top:1px solid #e8edf8">BütçeTakip — ${printDate}</div>`;
+
+           const area = document.getElementById('report-print-area');
+           area.innerHTML = html;
+           area.classList.add('visible');
+           closeModal('modal-report');
+         }
+
+         function closeReport() {
+           const area = document.getElementById('report-print-area');
+           area.classList.remove('visible');
+           area.innerHTML = '';
+         }
          const RATE_CURRENCIES = [
            {code:'USD', label:'Amerikan Doları', symbol:'$', icon:'🇺🇸'},
            {code:'EUR', label:'Euro', symbol:'€', icon:'🇪🇺'},
