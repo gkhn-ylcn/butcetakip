@@ -248,7 +248,7 @@
             <input type="text" id="search-input" placeholder="Firma/Açıklama ara" oninput="doSearch(this.value)" onblur="setTimeout(closeSearch,200)">
             <button style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer;padding:2px;" onclick="openAdvSearch()" title="Gelişmiş arama">⚙️</button>
          </div>
-         <button id="theme-toggle" onclick="toggleTheme()" title="Tema değiştir">🌙</button>
+         <button id="theme-toggle" onclick="toggleTheme()" title="Tema değiştir" style="display:none">🌙</button>
       </div>
       <div class="search-res" id="search-res"></div>
       <div id="main">
@@ -329,58 +329,36 @@
             <div id="debt-list"></div>
          </div>
          <div class="page" id="page-settings">
-            <div class="card">
-               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-                  <div class="section-title" style="margin:0">Kategoriler</div>
-                  <button class="btn btn-primary btn-sm" onclick="openAddCat()">+ Ekle</button>
+            <!-- Ayarlar Ana Menü: Sadece kartlar -->
+            <div class="section-title" style="margin-top:4px">Kategoriler</div>
+            <div class="acc-card" onclick="openSettingsCats()" style="margin-bottom:8px">
+               <div class="acc-icon" style="background:rgba(108,99,255,.15);color:var(--accent2)">🏷️</div>
+               <div class="acc-info">
+                  <div class="acc-name">Kategoriler</div>
+                  <div class="acc-type">Gelir &amp; gider kategorilerini yönet</div>
                </div>
-               <div id="cat-list"></div>
+               <div style="color:var(--text3);font-size:18px">›</div>
             </div>
-            <div class="card" style="margin-top:10px">
-               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-                  <div class="section-title" style="margin:0">🔁 Tekrarlayan İşlemler</div>
-                  <button class="btn btn-primary btn-sm" onclick="openAddRecur()">+ Ekle</button>
+            <div class="section-title">İşlemler</div>
+            <div class="acc-card" onclick="openSettingsRecur()" style="margin-bottom:8px">
+               <div class="acc-icon" style="background:rgba(34,211,165,.12);color:var(--green)">🔁</div>
+               <div class="acc-info">
+                  <div class="acc-name">Tekrarlayan İşlemler</div>
+                  <div class="acc-type" id="settings-recur-sub">Otomatik işlemleri yönet</div>
                </div>
-               <div id="recur-list">
-                  <div style="font-size:13px;color:var(--text3);text-align:center;padding:10px 0">Henüz tekrarlayan işlem yok.</div>
-               </div>
+               <div style="color:var(--text3);font-size:18px">›</div>
             </div>
-            <div class="card" style="margin-top:10px">
-               <div class="section-title" style="margin-top:0">Veri Yönetimi</div>
-               <div class="setting-row">
-                  <div>
-                     <div class="setting-label">📤 Yedek Al (JSON)</div>
-                     <div class="setting-sub">Tüm veri JSON formatında</div>
-                  </div>
-                  <button class="setting-action" onclick="exportData()">İndir</button>
+            <div class="section-title">Veri</div>
+            <div class="acc-card" onclick="openSettingsData()" style="margin-bottom:8px">
+               <div class="acc-icon" style="background:rgba(96,165,250,.12);color:var(--blue)">💾</div>
+               <div class="acc-info">
+                  <div class="acc-name">Veri Yönetimi</div>
+                  <div class="acc-type">Yedek al, yükle veya sıfırla</div>
                </div>
-               <div class="setting-row">
-                  <div>
-                     <div class="setting-label">📊 CSV Aktar</div>
-                     <div class="setting-sub">Excel uyumlu işlem tablosu</div>
-                  </div>
-                  <button class="setting-action" onclick="exportCSV()">İndir</button>
-               </div>
-               <div class="setting-row">
-                  <div>
-                     <div class="setting-label">📥 Yedek Yükle</div>
-                     <div class="setting-sub">JSON dosyasından</div>
-                  </div>
-                  <button class="setting-action" onclick="document.getElementById('import-file').click()">Yükle</button>
-               </div>
-               <div class="setting-row">
-                  <div>
-                     <div class="setting-label">🗑️ Tüm Verileri Sil</div>
-                     <div class="setting-sub">Geri alınamaz!</div>
-                  </div>
-                  <button class="setting-action" style="color:var(--red)" onclick="clearAllData()">Sil</button>
-               </div>
-               <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+               <div style="color:var(--text3);font-size:18px">›</div>
             </div>
-            <div class="card" style="margin-top:10px">
-               <div class="section-title" style="margin-top:0">Hakkında</div>
-               <div style="font-size:13px;color:var(--text3);line-height:1.6">BütçeTakip v2.0<br>Tüm veriler bu cihazda saklanır.<br>Düzenli yedek almayı unutmayın! 💾</div>
-            </div>
+            <div style="font-size:11px;color:var(--text3);text-align:center;margin-top:18px;line-height:1.7">BütçeTakip v2.0 • Tüm veriler bu cihazda saklanır 💾</div>
+            <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
          </div>
       </div>
       <div id="nav">
@@ -393,6 +371,69 @@
       </div>
       <button class="fab" id="fab-btn" onclick="openAddTx()">+</button>
       <div class="snack" id="snack"></div>
+      <!-- ── AYARLAR: KATEGORİLER MODALI ── -->
+      <div class="modal-overlay" id="modal-settings-cats">
+         <div class="modal">
+            <div class="modal-handle"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+               <div class="modal-title" style="margin:0">🏷️ Kategoriler</div>
+               <button class="btn btn-primary btn-sm" onclick="openAddCat()">+ Ekle</button>
+            </div>
+            <div id="cat-list"></div>
+            <button class="btn btn-ghost" style="margin-top:12px" onclick="closeModal('modal-settings-cats')">Kapat</button>
+         </div>
+      </div>
+      <!-- ── AYARLAR: TEKRARLAYAN İŞLEMLER MODALI ── -->
+      <div class="modal-overlay" id="modal-settings-recur">
+         <div class="modal">
+            <div class="modal-handle"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+               <div class="modal-title" style="margin:0">🔁 Tekrarlayan İşlemler</div>
+               <button class="btn btn-primary btn-sm" onclick="openAddRecur()">+ Ekle</button>
+            </div>
+            <div id="recur-list-info" style="background:var(--bg3);border-radius:var(--rsm);padding:8px 12px;margin-bottom:10px;font-size:12px;color:var(--text3)"></div>
+            <div id="recur-list">
+               <div style="font-size:13px;color:var(--text3);text-align:center;padding:10px 0">Henüz tekrarlayan işlem yok.</div>
+            </div>
+            <button class="btn btn-ghost" style="margin-top:12px" onclick="closeModal('modal-settings-recur')">Kapat</button>
+         </div>
+      </div>
+      <!-- ── AYARLAR: VERİ YÖNETİMİ MODALI ── -->
+      <div class="modal-overlay" id="modal-settings-data">
+         <div class="modal">
+            <div class="modal-handle"></div>
+            <div class="modal-title">💾 Veri Yönetimi</div>
+            <div class="setting-row">
+               <div>
+                  <div class="setting-label">📤 Yedek Al (JSON)</div>
+                  <div class="setting-sub">Tüm veri JSON formatında</div>
+               </div>
+               <button class="setting-action" onclick="exportData()">İndir</button>
+            </div>
+            <div class="setting-row">
+               <div>
+                  <div class="setting-label">📊 CSV Aktar</div>
+                  <div class="setting-sub">Excel uyumlu işlem tablosu</div>
+               </div>
+               <button class="setting-action" onclick="exportCSV()">İndir</button>
+            </div>
+            <div class="setting-row">
+               <div>
+                  <div class="setting-label">📥 Yedek Yükle</div>
+                  <div class="setting-sub">JSON dosyasından</div>
+               </div>
+               <button class="setting-action" onclick="document.getElementById('import-file').click()">Yükle</button>
+            </div>
+            <div class="setting-row">
+               <div>
+                  <div class="setting-label">🗑️ Tüm Verileri Sil</div>
+                  <div class="setting-sub">Geri alınamaz!</div>
+               </div>
+               <button class="setting-action" style="color:var(--red)" onclick="clearAllData()">Sil</button>
+            </div>
+            <button class="btn btn-ghost" style="margin-top:12px" onclick="closeModal('modal-settings-data')">Kapat</button>
+         </div>
+      </div>
       <div class="modal-overlay" id="modal-tx">
          <div class="modal">
             <div class="modal-handle"></div>
@@ -733,8 +774,9 @@
                <button class="calc-btn num" onclick="calcNum('2')">2</button>
                <button class="calc-btn num" onclick="calcNum('3')">3</button>
                <button class="calc-btn op" onclick="calcFn('+')">+</button>
-               <button class="calc-btn num zero" onclick="calcNum('0')">0</button>
+               <button class="calc-btn num" onclick="calcNum('0')">0</button>
                <button class="calc-btn num" onclick="calcNum('.')">.</button>
+               <button class="calc-btn fn" onclick="calcFn('⌫')">⌫</button>
                <button class="calc-btn eq" onclick="calcFn('=')">=</button>
             </div>
             <button class="calc-apply" onclick="calcApply()">✓ Tutarı Uygula</button>
@@ -886,11 +928,11 @@
            document.getElementById('header-title').textContent=titles[page]||'';
            const fab=document.getElementById('fab-btn');
            const hs=document.getElementById('hdr-search');
-           if(page==='dashboard'){fab.style.display='flex';fab.onclick=()=>openAddTx();hs.style.display='flex';}
-           else if(page==='accounts'){fab.style.display='flex';fab.onclick=()=>openAddAccount();hs.style.display='none';}
-           else if(page==='transactions'){fab.style.display='flex';fab.onclick=()=>openAddTx();hs.style.display='none';}
-           else if(page==='debt'){fab.style.display='flex';fab.onclick=()=>openAddDebt();hs.style.display='none';}
-           else{fab.style.display='none';hs.style.display='none';}
+           if(page==='dashboard'){fab.style.display='flex';fab.onclick=()=>openAddTx();hs.style.display='flex';document.getElementById('theme-toggle').style.display='flex';}
+           else if(page==='accounts'){fab.style.display='flex';fab.onclick=()=>openAddAccount();hs.style.display='none';document.getElementById('theme-toggle').style.display='none';}
+           else if(page==='transactions'){fab.style.display='flex';fab.onclick=()=>openAddTx();hs.style.display='none';document.getElementById('theme-toggle').style.display='none';}
+           else if(page==='debt'){fab.style.display='flex';fab.onclick=()=>openAddDebt();hs.style.display='none';document.getElementById('theme-toggle').style.display='none';}
+           else{fab.style.display='none';hs.style.display='none';document.getElementById('theme-toggle').style.display='none';}
            renderPage(page);
          }
 		 function renderPage(p) {
@@ -1015,6 +1057,12 @@
              case 'AC':
                calcCurrent = '0'; calcPrev = ''; calcOp = ''; calcExpr = '';
                calcNewNum = true; calcHasResult = false;
+               break;
+             case '⌫':
+               if (calcHasResult) { calcCurrent='0'; calcHasResult=false; calcNewNum=true; break; }
+               if (calcCurrent.length > 1) calcCurrent = calcCurrent.slice(0,-1);
+               else calcCurrent = '0';
+               calcNewNum = (calcCurrent === '0');
                break;
              case '+/-':
                calcCurrent = String(cur * -1);
@@ -1907,8 +1955,37 @@
            catSettingsTab = tab;
            renderSettings();
          }
+         function openSettingsCats() {
+           renderSettings();
+           openModal('modal-settings-cats');
+         }
+         function openSettingsRecur() {
+           renderRecurList();
+           // Ay özeti bilgisi
+           const now = new Date();
+           const tm = thisMonth();
+           const infoEl = document.getElementById('recur-list-info');
+           if (infoEl && DB.recurring.length) {
+             const monthName = now.toLocaleDateString('tr-TR',{month:'long',year:'numeric'});
+             const triggered = DB.transactions.filter(tx => tx.recurId && tx.date && tx.date.startsWith(tm)).length;
+             const total = DB.recurring.length;
+             infoEl.innerHTML = `📅 <strong>${monthName}</strong> — ${total} aktif tekrarlayan işlem • Bu ay <strong>${triggered}/${total}</strong> tetiklendi`;
+           } else if (infoEl) {
+             infoEl.innerHTML = '';
+           }
+           openModal('modal-settings-recur');
+         }
+         function openSettingsData() {
+           openModal('modal-settings-data');
+         }
          function renderSettingsExtra() {
            renderRecurList();
+           // Ayarlar ana sayfasındaki tekrarlayan özet alt başlığını güncelle
+           const subEl = document.getElementById('settings-recur-sub');
+           if (subEl) {
+             const count = DB.recurring ? DB.recurring.length : 0;
+             subEl.textContent = count > 0 ? `${count} aktif işlem` : 'Otomatik işlemleri yönet';
+           }
          }
          
          function toggleCatGroup(grp) {
