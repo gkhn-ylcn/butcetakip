@@ -1139,7 +1139,7 @@
          function applyTheme() {
            const t = localStorage.getItem('btTheme');
            if (t === 'light') { document.body.classList.add('light'); document.getElementById('theme-toggle').textContent = '☀️'; }
-         }
+		 }
          
          // ── CSV EXPORT ──
          function exportCSV() {
@@ -2424,16 +2424,12 @@
 		 // ── BAŞLAT ──
 		 function init() {
 			load();
-			// Tarih alanlarını bugünün tarihiyle doldurur
 			const txDate = document.getElementById('tx-date');
 			const debtDate = document.getElementById('debt-date');
 			if (txDate) txDate.value = today();
 			if (debtDate) debtDate.value = today();
-
 			applyTheme();
 			applyRecurring();
-
-			// Açılış ekranını (Splash Screen) gizleme işlemi
 			setTimeout(() => {
 				const s = document.getElementById('splash');
 				if (s) {
@@ -2441,17 +2437,13 @@
 					setTimeout(() => s.style.display = 'none', 500);
 				}
 			}, 1300);
-
-			// KRİTİK NOKTA: Sadece dashboard'u değil, arama kutusunu da yöneten renderPage'i çağırıyoruz
-			// Bu sayede uygulama açılır açılmaz arama kutusu görünür olacak
 			renderPage('dashboard');
-
-			// Bildirim izinleri ve borç kontrollerini biraz gecikmeli başlatıyoruz
+			document.getElementById('theme-toggle').style.display = 'flex';
 			setTimeout(() => {
 				if (typeof checkDebtNotifications === 'function') checkDebtNotifications();
 				if (typeof requestNotifPermission === 'function') requestNotifPermission();
 			}, 2000);
-		}
+		 }
 
 		// Uygulama yüklendiğinde başlatma fonksiyonunu tetikler
 		window.onload = () => {
