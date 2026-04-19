@@ -10,6 +10,7 @@
 <title>BütçeTakip</title>
 <style>
 :root{--bg:#0f1117;--bg2:#181c27;--bg3:#1e2335;--card:#242840;--card2:#2a2f4a;--border:#323660;--accent:#6c63ff;--accent2:#a78bfa;--green:#22d3a5;--red:#f87171;--yellow:#fbbf24;--blue:#60a5fa;--text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;--radius:16px;--rsm:10px;}
+body.light{--bg:#f0f4ff;--bg2:#ffffff;--bg3:#e8edf8;--card:#ffffff;--card2:#e0e8f8;--border:#c8d4f0;--text:#1a2040;--text2:#4a5580;--text3:#8090b0;--accent:#5b52ee;--accent2:#8b7ef8;}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;min-height:100vh;overflow-x:hidden;}
 #splash{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s;}
@@ -188,6 +189,55 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .cat-opt:last-child{border-bottom:none;}
 .cat-opt:hover,.cat-opt.highlighted{background:var(--card2);}
 .cat-opt .cg{font-size:10px;color:var(--text3);margin-left:auto;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* ── TEMA BUTONU ── */
+#theme-toggle{background:var(--card2);border:1px solid var(--border);color:var(--text2);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:17px;flex-shrink:0;transition:background .2s;}
+#theme-toggle:active{opacity:.7;}
+
+/* ── GELİŞMİŞ ARAMA FİLTRELERİ ── */
+.adv-search-bar{background:var(--bg3);border-radius:var(--rsm);padding:10px 12px;margin-bottom:10px;display:none;}
+.adv-search-bar.open{display:block;}
+.adv-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.adv-row:last-child{margin-bottom:0;}
+
+/* ── TEKRARLAYANlar ── */
+.recur-card{background:var(--card);border-radius:var(--rsm);padding:12px;border:1px solid var(--border);margin-bottom:7px;display:flex;align-items:center;gap:10px;}
+.recur-info{flex:1;min-width:0;}
+.recur-name{font-size:13px;font-weight:600;}
+.recur-meta{font-size:11px;color:var(--text3);margin-top:2px;}
+.recur-del{background:none;border:none;color:var(--text3);font-size:17px;cursor:pointer;padding:4px;}
+.recur-del:active{color:var(--red);}
+
+/* ── BİLDİRİM ROZET ── */
+.notif-banner{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);border-radius:var(--rsm);padding:10px 13px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px;cursor:pointer;}
+.notif-banner:active{opacity:.8;}
+.notif-icon{font-size:20px;flex-shrink:0;}
+.notif-text{font-size:12px;color:var(--text2);line-height:1.5;}
+
+/* ── GRAFİK CANVAS ── */
+.chart-container{position:relative;height:220px;margin:10px 0;}
+
+/* ── HESAP MAKİNESİ ── */
+#modal-calc .modal{padding:16px 13px 28px;border-radius:28px 28px 0 0;}
+.calc-display{background:#0a0d14;border-radius:16px;padding:14px 18px;margin-bottom:14px;min-height:82px;display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-end;border:1px solid rgba(108,99,255,.25);position:relative;}
+.calc-expr{font-size:12px;color:var(--text3);min-height:18px;word-break:break-all;text-align:right;margin-bottom:4px;}
+.calc-val{font-size:34px;font-weight:700;color:#fff;letter-spacing:-1px;word-break:break-all;text-align:right;line-height:1.1;}
+.calc-val.has-result{color:var(--accent2);}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;}
+.calc-btn{border:none;border-radius:14px;font-family:inherit;font-size:18px;font-weight:600;cursor:pointer;padding:0;height:62px;display:flex;align-items:center;justify-content:center;transition:transform .1s,opacity .15s;-webkit-tap-highlight-color:transparent;user-select:none;}
+.calc-btn:active{transform:scale(.93);opacity:.8;}
+.calc-btn.num{background:var(--card2);color:var(--text);}
+.calc-btn.op{background:rgba(108,99,255,.18);color:var(--accent2);font-size:20px;}
+.calc-btn.eq{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:22px;}
+.calc-btn.fn{background:var(--bg3);color:var(--text2);font-size:15px;}
+.calc-btn.clr{background:rgba(248,113,113,.18);color:var(--red);}
+.calc-btn.zero{grid-column:span 2;}
+.calc-apply{width:100%;margin-top:11px;padding:13px;background:var(--green);color:#fff;border:none;border-radius:14px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .15s;}
+.calc-apply:active{opacity:.8;}
+.calc-input-row{display:flex;align-items:center;gap:6px;margin-bottom:4px;}
+.calc-input-row input{flex:1;}
+.calc-open-btn{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rsm);color:var(--text3);font-size:17px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background .15s;}
+.calc-open-btn:active{background:var(--card2);}
 </style>
 </head>
 <body>
@@ -199,7 +249,9 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   <div class="hdr-search" id="hdr-search" style="display:none">
     <span class="si">🔍</span>
     <input type="text" id="search-input" placeholder="Firma veya açıklama ara..." oninput="doSearch(this.value)" onblur="setTimeout(closeSearch,200)">
+    <button style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer;padding:2px;" onclick="openAdvSearch()" title="Gelişmiş arama">⚙️</button>
   </div>
+  <button id="theme-toggle" onclick="toggleTheme()" title="Tema değiştir">🌙</button>
 </div>
 <div class="search-res" id="search-res"></div>
 
@@ -214,6 +266,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       <div class="stat-card income"><div class="stat-icon">📈</div><div class="stat-label">Bu Ay Gelir</div><div class="stat-val" id="dash-income">₺0,00</div></div>
       <div class="stat-card expense"><div class="stat-icon">📉</div><div class="stat-label">Bu Ay Gider</div><div class="stat-val" id="dash-expense">₺0,00</div></div>
     </div>
+    <div id="notif-banner" class="notif-banner" style="display:none"><div class="notif-icon">⏰</div><div class="notif-text"></div></div>
     <div class="section-title">Varlık Özeti</div>
     <div class="card" id="dash-summary"></div>
     <div class="section-title">Son İşlemler</div><div class="card" id="dash-recent"></div>
@@ -255,8 +308,9 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     </div>
     <div class="card">
        <div style="font-size:11px;color:var(--text3);text-align:center;text-transform:uppercase;letter-spacing:0.5px">Toplam Dönem Tutarı</div>
-       <div id="stats-total" style="font-size:26px;font-weight:700;text-align:center;margin-bottom:18px">₺0,00</div>
-       <div id="stats-list"></div>
+       <div id="stats-total" style="font-size:26px;font-weight:700;text-align:center;margin-bottom:12px">₺0,00</div>
+       <div class="chart-container"><canvas id="stats-chart"></canvas></div>
+       <div id="stats-list" style="margin-top:10px"></div>
     </div>
   </div>
 
@@ -278,8 +332,16 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       <div id="cat-list"></div>
     </div>
     <div class="card" style="margin-top:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div class="section-title" style="margin:0">🔁 Tekrarlayan İşlemler</div>
+        <button class="btn btn-primary btn-sm" onclick="openAddRecur()">+ Ekle</button>
+      </div>
+      <div id="recur-list"><div style="font-size:13px;color:var(--text3);text-align:center;padding:10px 0">Henüz tekrarlayan işlem yok.</div></div>
+    </div>
+    <div class="card" style="margin-top:10px">
       <div class="section-title" style="margin-top:0">Veri Yönetimi</div>
-      <div class="setting-row"><div><div class="setting-label">📤 Yedek Al</div><div class="setting-sub">JSON dosyası</div></div><button class="setting-action" onclick="exportData()">İndir</button></div>
+      <div class="setting-row"><div><div class="setting-label">📤 Yedek Al (JSON)</div><div class="setting-sub">Tüm veri JSON formatında</div></div><button class="setting-action" onclick="exportData()">İndir</button></div>
+      <div class="setting-row"><div><div class="setting-label">📊 CSV Aktar</div><div class="setting-sub">Excel uyumlu işlem tablosu</div></div><button class="setting-action" onclick="exportCSV()">İndir</button></div>
       <div class="setting-row"><div><div class="setting-label">📥 Yedek Yükle</div><div class="setting-sub">JSON dosyasından</div></div><button class="setting-action" onclick="document.getElementById('import-file').click()">Yükle</button></div>
       <div class="setting-row"><div><div class="setting-label">🗑️ Tüm Verileri Sil</div><div class="setting-sub">Geri alınamaz!</div></div><button class="setting-action" style="color:var(--red)" onclick="clearAllData()">Sil</button></div>
       <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
@@ -323,7 +385,12 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 
     <div class="form-row">
       <div class="form-group"><label class="form-label">Firma / Mağaza</label><input class="form-input" type="text" id="tx-firma" placeholder="Örn: Migros" list="firma-list"><datalist id="firma-list"></datalist></div>
-      <div class="form-group"><label class="form-label">Tutar</label><input class="form-input" type="number" id="tx-amount" placeholder="0,00" step="0.01"></div>
+      <div class="form-group"><label class="form-label">Tutar</label>
+        <div class="calc-input-row">
+          <input class="form-input" type="number" id="tx-amount" placeholder="0,00" step="0.01" readonly onfocus="openCalc('tx-amount')">
+          <div class="calc-open-btn" onclick="openCalc('tx-amount')" title="Hesap makinesi">🧮</div>
+        </div>
+      </div>
     </div>
     
     <div class="form-group" id="cat-form-group">
@@ -370,8 +437,18 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       <div class="form-group"><label class="form-label">Para Birimi</label><select class="form-input" id="acc-currency-input"><option value="TRY">₺ TRY</option><option value="USD">$ USD</option><option value="EUR">€ EUR</option><option value="GBP">£ GBP</option><option value="ALTIN">🥇 Altın (gr)</option></select></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Başlangıç Bakiyesi</label><input class="form-input" type="number" id="acc-balance-input" placeholder="0,00" step="0.01"></div>
-      <div class="form-group" id="acc-limit-group" style="display:none"><label class="form-label">Kredi Limiti</label><input class="form-input" type="number" id="acc-limit-input" placeholder="0,00" step="0.01"></div>
+      <div class="form-group"><label class="form-label">Başlangıç Bakiyesi</label>
+        <div class="calc-input-row">
+          <input class="form-input" type="number" id="acc-balance-input" placeholder="0,00" step="0.01" readonly onfocus="openCalc('acc-balance-input')">
+          <div class="calc-open-btn" onclick="openCalc('acc-balance-input')">🧮</div>
+        </div>
+      </div>
+      <div class="form-group" id="acc-limit-group" style="display:none"><label class="form-label">Kredi Limiti</label>
+        <div class="calc-input-row">
+          <input class="form-input" type="number" id="acc-limit-input" placeholder="0,00" step="0.01" readonly onfocus="openCalc('acc-limit-input')">
+          <div class="calc-open-btn" onclick="openCalc('acc-limit-input')">🧮</div>
+        </div>
+      </div>
     </div>
     <div id="acc-kredi-group" style="display:none">
       <div class="form-row">
@@ -413,12 +490,22 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     </div>
     <div class="form-group"><label class="form-label">Kişi Adı</label><input class="form-input" type="text" id="debt-person" placeholder="Örn: Ahmet Bey"></div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Tutar (₺)</label><input class="form-input" type="number" id="debt-amount" placeholder="0,00" step="0.01"></div>
+      <div class="form-group"><label class="form-label">Tutar (₺)</label>
+        <div class="calc-input-row">
+          <input class="form-input" type="number" id="debt-amount" placeholder="0,00" step="0.01" readonly onfocus="openCalc('debt-amount')">
+          <div class="calc-open-btn" onclick="openCalc('debt-amount')">🧮</div>
+        </div>
+      </div>
       <div class="form-group"><label class="form-label">Tarih</label><input class="form-input" type="date" id="debt-date"></div>
     </div>
     <div class="form-row">
       <div class="form-group"><label class="form-label">Vade Tarihi</label><input class="form-input" type="date" id="debt-due"></div>
-      <div class="form-group"><label class="form-label">Ödenen Tutar</label><input class="form-input" type="number" id="debt-paid" placeholder="0,00" step="0.01" value="0"></div>
+      <div class="form-group"><label class="form-label">Ödenen Tutar</label>
+        <div class="calc-input-row">
+          <input class="form-input" type="number" id="debt-paid" placeholder="0,00" step="0.01" value="0" readonly onfocus="openCalc('debt-paid')">
+          <div class="calc-open-btn" onclick="openCalc('debt-paid')">🧮</div>
+        </div>
+      </div>
     </div>
     <div class="form-group"><label class="form-label">Açıklama</label><input class="form-input" type="text" id="debt-desc" placeholder="Konu, not..."></div>
     <input type="hidden" id="debt-edit-id">
@@ -446,9 +533,111 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-recur">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-recur-title">Tekrarlayan İşlem Ekle</div>
+    <div class="form-group"><label class="form-label">Açıklama / Firma</label><input class="form-input" type="text" id="recur-name" placeholder="Örn: Netflix, Kira"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Tutar</label>
+        <div class="calc-input-row">
+          <input class="form-input" type="number" id="recur-amount" placeholder="0,00" step="0.01" readonly onfocus="openCalc('recur-amount')">
+          <div class="calc-open-btn" onclick="openCalc('recur-amount')">🧮</div>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Para Birimi</label><select class="form-input" id="recur-currency"><option value="TRY">₺ TRY</option><option value="USD">$ USD</option><option value="EUR">€ EUR</option></select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Hesap</label><select class="form-input" id="recur-account"></select></div>
+      <div class="form-group"><label class="form-label">Tür</label><select class="form-input" id="recur-type"><option value="gider">📉 Gider</option><option value="gelir">📈 Gelir</option></select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Tekrar</label><select class="form-input" id="recur-freq"><option value="monthly">Her Ay</option><option value="weekly">Her Hafta</option><option value="yearly">Her Yıl</option></select></div>
+      <div class="form-group"><label class="form-label">Başlangıç Günü</label><input class="form-input" type="number" id="recur-day" placeholder="1-31" min="1" max="31"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Kategori (isteğe bağlı)</label>
+      <select class="form-input" id="recur-category"><option value="">— Seçiniz —</option></select>
+    </div>
+    <input type="hidden" id="recur-edit-id">
+    <div style="display:flex;gap:7px;margin-top:10px">
+      <button id="recur-del-btn" class="btn btn-danger btn-sm" style="display:none;flex:1" onclick="deleteRecurConfirm()">🗑️</button>
+      <button class="btn btn-ghost btn-sm" style="flex:1" onclick="closeModal('modal-recur')">İptal</button>
+      <button class="btn btn-primary" style="flex:2" onclick="saveRecur()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-adv-search">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🔍 Gelişmiş Arama</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Başlangıç Tarihi</label><input class="form-input" type="date" id="adv-date-start"></div>
+      <div class="form-group"><label class="form-label">Bitiş Tarihi</label><input class="form-input" type="date" id="adv-date-end"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Min. Tutar (₺)</label><input class="form-input" type="number" id="adv-amt-min" placeholder="0"></div>
+      <div class="form-group"><label class="form-label">Maks. Tutar (₺)</label><input class="form-input" type="number" id="adv-amt-max" placeholder=""></div>
+    </div>
+    <div class="form-group"><label class="form-label">Firma / Açıklama</label><input class="form-input" type="text" id="adv-text" placeholder="Arama terimi..."></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">İşlem Türü</label><select class="form-input" id="adv-type"><option value="">Hepsi</option><option value="gider">Gider</option><option value="gelir">Gelir</option><option value="transfer">Transfer</option></select></div>
+      <div class="form-group"><label class="form-label">Hesap</label><select class="form-input" id="adv-account"><option value="">Tüm Hesaplar</option></select></div>
+    </div>
+    <div style="display:flex;gap:7px;margin-top:10px">
+      <button class="btn btn-ghost btn-sm" style="flex:1" onclick="closeModal('modal-adv-search')">İptal</button>
+      <button class="btn btn-primary" style="flex:2" onclick="runAdvSearch()">Ara</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-adv-results">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div class="modal-title" style="margin:0">Arama Sonuçları</div>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-adv-results')">Kapat</button>
+    </div>
+    <div id="adv-results-list"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-calc">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="calc-display">
+      <div class="calc-expr" id="calc-expr"></div>
+      <div class="calc-val" id="calc-val">0</div>
+    </div>
+    <div class="calc-grid">
+      <button class="calc-btn fn clr" onclick="calcFn('AC')">AC</button>
+      <button class="calc-btn fn" onclick="calcFn('+/-')">+/-</button>
+      <button class="calc-btn fn" onclick="calcFn('%')">%</button>
+      <button class="calc-btn op" onclick="calcFn('÷')">÷</button>
+      <button class="calc-btn num" onclick="calcNum('7')">7</button>
+      <button class="calc-btn num" onclick="calcNum('8')">8</button>
+      <button class="calc-btn num" onclick="calcNum('9')">9</button>
+      <button class="calc-btn op" onclick="calcFn('×')">×</button>
+      <button class="calc-btn num" onclick="calcNum('4')">4</button>
+      <button class="calc-btn num" onclick="calcNum('5')">5</button>
+      <button class="calc-btn num" onclick="calcNum('6')">6</button>
+      <button class="calc-btn op" onclick="calcFn('−')">−</button>
+      <button class="calc-btn num" onclick="calcNum('1')">1</button>
+      <button class="calc-btn num" onclick="calcNum('2')">2</button>
+      <button class="calc-btn num" onclick="calcNum('3')">3</button>
+      <button class="calc-btn op" onclick="calcFn('+')">+</button>
+      <button class="calc-btn num zero" onclick="calcNum('0')">0</button>
+      <button class="calc-btn num" onclick="calcNum('.')">.</button>
+      <button class="calc-btn eq" onclick="calcFn('=')">=</button>
+    </div>
+    <button class="calc-apply" onclick="calcApply()">✓ Tutarı Uygula</button>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modal-acc-detail"><div class="modal"><div class="modal-handle"></div><div id="acc-detail-content"></div></div></div>
 <div class="modal-overlay" id="modal-taksit-detail"><div class="modal"><div class="modal-handle"></div><div id="taksit-detail-content"></div></div></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
 const DEFAULT_CATS = [
   {id:'g01',name:'Aylık Maaş',icon:'💼',type:'gelir',parent:'Maaş & Ücret'},
@@ -489,7 +678,7 @@ const ACC_LABELS={nakit:'Nakit',banka:'Banka',yatirim:'Yatırım',kredi:'Kredi K
 const CURRENCY_SYMBOLS={TRY:'₺',USD:'$',EUR:'€',GBP:'£',ALTIN:'gr'};
 const CAT_ICONS_LIST=['🛒','🍽️','🚗','🏠','💊','🎬','🏋️','📚','✈️','👗','💼','🎮','🐾','💡','🔧','🎁','💰','📱','🎓','⚽','🎵','🌿','🍕','☕','🛍️','⛽','🔥','💧','🛋️','🛡️','🏘️','📊','🎯','💄','👶','🧾','📺','❤️','🏥','📑','🔒','🏗️','❓','🔄','🏢','📈'];
 
-let DB={accounts:[],transactions:[],debts:[],categories:[]};
+let DB={accounts:[],transactions:[],debts:[],categories:[],recurring:[]};
 let currentTxType='gider',currentDebtType='alacak',selectedCatIcon='📦';
 let txFilter='hepsi',debtFilter='hepsi',selectedAccColor=COLORS[0],currentPage='dashboard';
 let selectedCatId='';
@@ -504,7 +693,7 @@ let statsTab = 'gider';
 function save(){localStorage.setItem('butcetakip_v2',JSON.stringify(DB));}
 function load(){
   const raw=localStorage.getItem('butcetakip_v2')||localStorage.getItem('butcetakip_v1');
-  if(raw){DB=JSON.parse(raw);if(!DB.debts)DB.debts=[];if(!DB.categories||!DB.categories.length)DB.categories=JSON.parse(JSON.stringify(DEFAULT_CATS));}
+  if(raw){DB=JSON.parse(raw);if(!DB.debts)DB.debts=[];if(!DB.recurring)DB.recurring=[];if(!DB.categories||!DB.categories.length)DB.categories=JSON.parse(JSON.stringify(DEFAULT_CATS));}
   else{DB.categories=JSON.parse(JSON.stringify(DEFAULT_CATS));save();}
 }
 
@@ -595,7 +784,7 @@ function renderPage(p){
   else if(p==='transactions')renderTransactions();
   else if(p==='stats')renderStats();
   else if(p==='debt')renderDebts();
-  else if(p==='settings')renderSettings();
+  else if(p==='settings'){renderSettings();renderRecurList();}
 }
 
 function doSearch(val){
@@ -619,11 +808,390 @@ function doSearch(val){
 }
 function closeSearch(){document.getElementById('search-res').classList.remove('open');}
 
-// YENİ: FİRMA / MAĞAZA OTOMATİK TAMAMLAMA GÜNCELLEYİCİSİ
-function updateFirmaList() {
-  const firmas = [...new Set(DB.transactions.map(t => t.firma).filter(f => f && f.trim() !== ''))];
-  document.getElementById('firma-list').innerHTML = firmas.map(f => `<option value="${escapeHTML(f)}">`).join('');
+// ── HESAP MAKİNESİ ──
+let calcTargetId = '';       // hangi input'a yazılacak
+let calcCurrent  = '0';     // ekrandaki değer
+let calcPrev     = '';      // önceki değer
+let calcOp       = '';      // bekleyen işlem
+let calcExpr     = '';      // üst satır ifade
+let calcNewNum   = true;    // yeni sayı girişi bekleniyor mu
+let calcHasResult = false;  // = tuşuna basıldı mı
+
+function openCalc(targetId) {
+  calcTargetId = targetId;
+  // Mevcut değeri al
+  const el = document.getElementById(targetId);
+  const existing = el ? parseFloat(el.value) : 0;
+  calcCurrent   = (existing && !isNaN(existing)) ? String(existing) : '0';
+  calcPrev      = '';
+  calcOp        = '';
+  calcExpr      = '';
+  calcNewNum    = true;
+  calcHasResult = false;
+  updateCalcDisplay();
+  openModal('modal-calc');
 }
+
+function updateCalcDisplay() {
+  const valEl  = document.getElementById('calc-val');
+  const exprEl = document.getElementById('calc-expr');
+  // Görüntüleme: binlik ayraç ve virgüllü
+  let display = calcCurrent;
+  const num = parseFloat(calcCurrent);
+  if (!isNaN(num) && !calcCurrent.endsWith('.') && !calcCurrent.endsWith('.0')) {
+    // Virgülden sonra kaç basamak varsa koru
+    const parts = calcCurrent.split('.');
+    const intPart = parseInt(parts[0]).toLocaleString('tr-TR');
+    display = parts.length > 1 ? intPart + ',' + parts[1] : intPart;
+  }
+  valEl.textContent  = display;
+  exprEl.textContent = calcExpr;
+  valEl.className = 'calc-val' + (calcHasResult ? ' has-result' : '');
+}
+
+function calcNum(ch) {
+  if (calcHasResult) {
+    // = sonrası yeni sayı girişi - sıfırla
+    calcCurrent = '0'; calcPrev = ''; calcOp = ''; calcExpr = '';
+    calcHasResult = false;
+  }
+  if (ch === '.') {
+    if (calcNewNum) { calcCurrent = '0.'; calcNewNum = false; }
+    else if (!calcCurrent.includes('.')) calcCurrent += '.';
+    updateCalcDisplay(); return;
+  }
+  if (calcNewNum) {
+    calcCurrent = ch; calcNewNum = false;
+  } else {
+    if (calcCurrent === '0') calcCurrent = ch;
+    else calcCurrent += ch;
+  }
+  // Max 15 karakter
+  if (calcCurrent.length > 15) calcCurrent = calcCurrent.slice(0, 15);
+  updateCalcDisplay();
+}
+
+function calcFn(fn) {
+  const cur = parseFloat(calcCurrent) || 0;
+  switch (fn) {
+    case 'AC':
+      calcCurrent = '0'; calcPrev = ''; calcOp = ''; calcExpr = '';
+      calcNewNum = true; calcHasResult = false;
+      break;
+    case '+/-':
+      calcCurrent = String(cur * -1);
+      calcNewNum = false;
+      break;
+    case '%':
+      if (calcOp && calcPrev !== '') {
+        // İkinci operand olarak yüzde: 1000 + 10% = 1000 + (1000*10/100)
+        calcCurrent = String((parseFloat(calcPrev) * cur) / 100);
+      } else {
+        calcCurrent = String(cur / 100);
+      }
+      calcNewNum = false;
+      break;
+    case '=':
+      if (!calcOp || calcPrev === '') { calcHasResult = true; break; }
+      const result = calcCompute(parseFloat(calcPrev), cur, calcOp);
+      calcExpr = calcPrev + ' ' + calcOp + ' ' + calcCurrent + ' =';
+      calcCurrent = calcRound(result);
+      calcPrev = ''; calcOp = '';
+      calcNewNum = true; calcHasResult = true;
+      break;
+    default: // +, −, ×, ÷
+      if (!calcNewNum && calcOp && calcPrev !== '') {
+        // Zincir hesap: 5 + 3 × → önce 5+3 hesapla
+        const chainResult = calcCompute(parseFloat(calcPrev), cur, calcOp);
+        calcCurrent = calcRound(chainResult);
+        calcExpr = calcCurrent + ' ' + fn;
+      } else {
+        calcExpr = calcCurrent + ' ' + fn;
+      }
+      calcPrev = calcCurrent;
+      calcOp = fn;
+      calcNewNum = true;
+      calcHasResult = false;
+      break;
+  }
+  updateCalcDisplay();
+}
+
+function calcCompute(a, b, op) {
+  switch (op) {
+    case '+': return a + b;
+    case '−': return a - b;
+    case '×': return a * b;
+    case '÷': return b !== 0 ? a / b : 0;
+    default:  return b;
+  }
+}
+
+function calcRound(n) {
+  // Kayan nokta hatalarını önle (ör: 0.1+0.2=0.30000000004)
+  return String(Math.round(n * 1e10) / 1e10);
+}
+
+function calcApply() {
+  const el = document.getElementById(calcTargetId);
+  if (!el) { closeModal('modal-calc'); return; }
+  const val = parseFloat(calcCurrent);
+  if (!isNaN(val)) {
+    el.value = Math.round(val * 100) / 100; // max 2 ondalık
+  }
+  closeModal('modal-calc');
+}
+
+// ── TEMA ──
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  document.getElementById('theme-toggle').textContent = isLight ? '☀️' : '🌙';
+  localStorage.setItem('btTheme', isLight ? 'light' : 'dark');
+  // Chart varsa yenile
+  if (currentPage === 'stats') renderStats();
+}
+function applyTheme() {
+  const t = localStorage.getItem('btTheme');
+  if (t === 'light') { document.body.classList.add('light'); document.getElementById('theme-toggle').textContent = '☀️'; }
+}
+
+// ── CSV EXPORT ──
+function exportCSV() {
+  const rows = [['Tarih','Tür','Firma','Açıklama','Tutar','Para Birimi','Hesap','Kategori']];
+  DB.transactions.forEach(tx => {
+    const acc = DB.accounts.find(a => a.id === tx.accountId);
+    const cat = DB.categories.find(c => c.id === tx.categoryId);
+    rows.push([
+      tx.date||'',
+      tx.type==='gelir'?'Gelir':tx.type==='gider'?'Gider':'Transfer',
+      (tx.firma||'').replace(/,/g,' '),
+      (tx.desc||'').replace(/,/g,' '),
+      tx.amount||0,
+      tx.currency||'TRY',
+      acc?acc.name.replace(/,/g,' '):'',
+      cat?cat.name.replace(/,/g,' '):'Kategorisiz'
+    ]);
+  });
+  const csv = rows.map(r => r.join(',')).join('\n'); // <--- DÜZELTİLEN SATIR BURASI
+  const bom = '\uFEFF'; // Excel için UTF-8 BOM
+  const blob = new Blob([bom+csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `butcetakip_${today()}.csv`; a.click();
+  URL.revokeObjectURL(url);
+  snack('CSV indirildi ✓');
+}
+
+// ── GELİŞMİŞ ARAMA ──
+function openAdvSearch() {
+  // Hesap listesini doldur
+  const sel = document.getElementById('adv-account');
+  sel.innerHTML = '<option value="">Tüm Hesaplar</option>' + DB.accounts.map(a=>`<option value="${a.id}">${escapeHTML(a.name)}</option>`).join('');
+  openModal('modal-adv-search');
+}
+function runAdvSearch() {
+  const dateStart = document.getElementById('adv-date-start').value;
+  const dateEnd   = document.getElementById('adv-date-end').value;
+  const amtMin    = parseFloat(document.getElementById('adv-amt-min').value) || 0;
+  const amtMax    = parseFloat(document.getElementById('adv-amt-max').value) || Infinity;
+  const text      = document.getElementById('adv-text').value.toLowerCase().trim();
+  const type      = document.getElementById('adv-type').value;
+  const accId     = document.getElementById('adv-account').value;
+
+  let results = DB.transactions.filter(tx => {
+    if(dateStart && tx.date < dateStart) return false;
+    if(dateEnd   && tx.date > dateEnd)   return false;
+    const amt = parseFloat(tx.amount)||0;
+    if(amt < amtMin || amt > amtMax) return false;
+    if(text && !((tx.firma||'')+(tx.desc||'')).toLowerCase().includes(text)) return false;
+    if(type && tx.type !== type) return false;
+    if(accId && tx.accountId !== accId && tx.accountId2 !== accId) return false;
+    return true;
+  }).sort((a,b)=>new Date(b.date)-new Date(a.date));
+
+  const listEl = document.getElementById('adv-results-list');
+  if (!results.length) {
+    listEl.innerHTML = '<div class="empty"><div class="empty-icon">🔍</div><p>Sonuç bulunamadı.</p></div>';
+  } else {
+    // Toplam
+    let totalGider=0, totalGelir=0;
+    results.forEach(tx=>{ if(tx.type==='gider')totalGider+=parseFloat(tx.amount)||0; else if(tx.type==='gelir')totalGelir+=parseFloat(tx.amount)||0; });
+    listEl.innerHTML =
+      `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+        <div class="card-sm" style="text-align:center"><div style="font-size:10px;color:var(--text3)">Bulunan</div><div style="font-weight:700">${results.length} işlem</div></div>
+        <div class="card-sm" style="text-align:center"><div style="font-size:10px;color:var(--red)">Toplam Gider</div><div style="font-weight:700;color:var(--red)">${fmt(totalGider)}</div></div>
+       </div>` +
+      results.map(tx => txCardHTML(tx)).join('');
+  }
+  closeModal('modal-adv-search');
+  openModal('modal-adv-results');
+}
+
+// ── TEKRARLAYANlar ──
+function renderRecurList() {
+  const el = document.getElementById('recur-list');
+  if (!el) return;
+  if (!DB.recurring.length) {
+    el.innerHTML = '<div style="font-size:13px;color:var(--text3);text-align:center;padding:10px 0">Henüz tekrarlayan işlem yok.</div>';
+    return;
+  }
+  el.innerHTML = DB.recurring.map(r => {
+    const acc = DB.accounts.find(a=>a.id===r.accountId);
+    const cat = DB.categories.find(c=>c.id===r.categoryId);
+    const freqLabel = {monthly:'Her Ay',weekly:'Her Hafta',yearly:'Her Yıl'}[r.freq]||r.freq;
+    return `<div class="recur-card">
+      <div style="font-size:22px">${r.type==='gelir'?'📈':'📉'}</div>
+      <div class="recur-info">
+        <div class="recur-name">${escapeHTML(r.name)}</div>
+        <div class="recur-meta">${fmtAmt(r.amount,r.currency)} • ${freqLabel} • ${acc?escapeHTML(acc.name):''}</div>
+        <div class="recur-meta">${cat?cat.icon+' '+escapeHTML(cat.name):''}</div>
+      </div>
+      <button class="recur-del" onclick="openEditRecur('${r.id}')">✏️</button>
+      <button class="recur-del" onclick="deleteRecurDirect('${r.id}')">🗑️</button>
+    </div>`;
+  }).join('');
+}
+
+function openAddRecur() {
+  document.getElementById('recur-edit-id').value = '';
+  document.getElementById('modal-recur-title').textContent = 'Tekrarlayan İşlem Ekle';
+  document.getElementById('recur-name').value = '';
+  document.getElementById('recur-amount').value = '';
+  document.getElementById('recur-currency').value = 'TRY';
+  document.getElementById('recur-type').value = 'gider';
+  document.getElementById('recur-freq').value = 'monthly';
+  document.getElementById('recur-day').value = '';
+  document.getElementById('recur-del-btn').style.display = 'none';
+  // Hesap ve kategori listelerini doldur
+  const accSel = document.getElementById('recur-account');
+  accSel.innerHTML = DB.accounts.map(a=>`<option value="${a.id}">${ACC_ICONS[a.type]} ${escapeHTML(a.name)}</option>`).join('') || '<option value="">Hesap yok</option>';
+  const catSel = document.getElementById('recur-category');
+  catSel.innerHTML = '<option value="">— Seçiniz —</option>' + DB.categories.map(c=>`<option value="${c.id}">${c.icon} ${escapeHTML(c.name)}</option>`).join('');
+  openModal('modal-recur');
+}
+
+function openEditRecur(id) {
+  const r = DB.recurring.find(x=>x.id===id); if(!r) return;
+  document.getElementById('recur-edit-id').value = id;
+  document.getElementById('modal-recur-title').textContent = 'Tekrarlayan Düzenle';
+  document.getElementById('recur-name').value = r.name||'';
+  document.getElementById('recur-amount').value = r.amount||'';
+  document.getElementById('recur-currency').value = r.currency||'TRY';
+  document.getElementById('recur-type').value = r.type||'gider';
+  document.getElementById('recur-freq').value = r.freq||'monthly';
+  document.getElementById('recur-day').value = r.day||'';
+  document.getElementById('recur-del-btn').style.display = 'inline-block';
+  const accSel = document.getElementById('recur-account');
+  accSel.innerHTML = DB.accounts.map(a=>`<option value="${a.id}" ${a.id===r.accountId?'selected':''}>${ACC_ICONS[a.type]} ${escapeHTML(a.name)}</option>`).join('');
+  const catSel = document.getElementById('recur-category');
+  catSel.innerHTML = '<option value="">— Seçiniz —</option>' + DB.categories.map(c=>`<option value="${c.id}" ${c.id===r.categoryId?'selected':''}>${c.icon} ${escapeHTML(c.name)}</option>`).join('');
+  openModal('modal-recur');
+}
+
+function saveRecur() {
+  const name = document.getElementById('recur-name').value.trim();
+  const amount = parseFloat(document.getElementById('recur-amount').value);
+  const currency = document.getElementById('recur-currency').value||'TRY';
+  const type = document.getElementById('recur-type').value;
+  const freq = document.getElementById('recur-freq').value;
+  const day = parseInt(document.getElementById('recur-day').value)||1;
+  const accountId = document.getElementById('recur-account').value;
+  const categoryId = document.getElementById('recur-category').value;
+  const editId = document.getElementById('recur-edit-id').value;
+  if(!name){snack('Açıklama girin');return;}
+  if(!amount||amount<=0){snack('Geçerli tutar girin');return;}
+  if(!accountId){snack('Hesap seçin');return;}
+  const r = {id:editId||uid(), name, amount, currency, type, freq, day, accountId, categoryId, lastRun:''};
+  if(editId){const i=DB.recurring.findIndex(x=>x.id===editId);if(i!==-1)DB.recurring[i]=r;}
+  else DB.recurring.push(r);
+  save(); closeModal('modal-recur'); snack('Kaydedildi ✓'); renderRecurList();
+}
+
+function deleteRecurConfirm() {
+  const id = document.getElementById('recur-edit-id').value; if(!id)return;
+  if(!confirm('Bu tekrarlayan işlemi silmek istediğinize emin misiniz?'))return;
+  deleteRecurDirect(id); closeModal('modal-recur');
+}
+function deleteRecurDirect(id) {
+  DB.recurring = DB.recurring.filter(r=>r.id!==id);
+  save(); snack('Silindi'); renderRecurList();
+}
+
+// Tekrarlayan işlemleri kontrol et ve uygula (her açılışta)
+function applyRecurring() {
+  const todayD = today();
+  const thisM = thisMonth();
+  let added = 0;
+  DB.recurring.forEach(r => {
+    if (!r.accountId) return;
+    // Bu ayda zaten eklenmiş mi?
+    const alreadyThisMonth = DB.transactions.some(tx =>
+      tx.recurId === r.id && tx.date && tx.date.startsWith(thisM)
+    );
+    if (alreadyThisMonth) return;
+    // Bugün tetikleme günü mü?
+    const todayDay = new Date().getDate();
+    let trigger = false;
+    if (r.freq === 'monthly' && todayDay >= (r.day||1)) trigger = true;
+    if (r.freq === 'weekly') {
+      // Haftanın perşembesi ile çarşamba arası (her hafta tetikle - basit yaklaşım)
+      const daysSince = (new Date() - new Date(r.lastRun||'2000-01-01')) / 86400000;
+      if (daysSince >= 7) trigger = true;
+    }
+    if (r.freq === 'yearly') {
+      const d = new Date(); const run = new Date(r.lastRun||'2000-01-01');
+      if (d.getMonth() === new Date(todayD+'T00:00:00').getMonth() && todayDay >= (r.day||1) && d.getFullYear() > run.getFullYear()) trigger = true;
+    }
+    if (!trigger) return;
+    // İşlem ekle
+    const tx = {
+      id: uid(), type: r.type, firma: r.name, desc: 'Otomatik tekrarlayan',
+      amount: r.amount, currency: r.currency, date: todayD,
+      accountId: r.accountId, categoryId: r.categoryId||'',
+      recurId: r.id, isTaksit: false, taksitSayi: 0, taksitOdenen: 0
+    };
+    DB.transactions.push(tx);
+    r.lastRun = todayD;
+    added++;
+  });
+  if (added > 0) { save(); snack(`${added} tekrarlayan işlem eklendi ✓`); }
+}
+
+// ── BİLDİRİM (Vade Yaklaşan Borçlar) ──
+function checkDebtNotifications() {
+  const todayD = today();
+  const in7 = new Date(); in7.setDate(in7.getDate()+7);
+  const in7Str = in7.toISOString().split('T')[0];
+  const dueDebts = DB.debts.filter(d => {
+    if(!d.due) return false;
+    const rem = (parseFloat(d.amount)||0) - (parseFloat(d.paid)||0);
+    if(rem <= 0) return false; // kapandı
+    return d.due >= todayD && d.due <= in7Str;
+  });
+  const banner = document.getElementById('notif-banner');
+  if (!banner) return;
+  if (dueDebts.length) {
+    const names = dueDebts.map(d=>escapeHTML(d.person)).join(', ');
+    banner.style.display = 'flex';
+    banner.querySelector('.notif-text').innerHTML = `<strong>${dueDebts.length} borç/alacak</strong> için vade 7 gün içinde dolacak!<br><small>${names}</small>`;
+    banner.onclick = () => { showPage('debt', document.querySelectorAll('.nav-btn')[4]); banner.style.display='none'; };
+  } else {
+    banner.style.display = 'none';
+  }
+  // PWA bildirim (izin varsa)
+  if (dueDebts.length && 'Notification' in window && Notification.permission === 'granted') {
+    new Notification('BütçeTakip', { body: `${dueDebts.length} borç/alacak için vade yaklaşıyor!`, icon: 'icon-192.png' });
+  }
+}
+
+function requestNotifPermission() {
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
+}
+
+// updateFirmaList — datalist kaldırıldı, boş bırakıldı (geriye dönük uyumluluk)
+function updateFirmaList() {}
 
 // ── DASHBOARD ──
 function renderDashboard(){
@@ -1003,10 +1571,9 @@ function renderStats() {
       const cName = cat ? escapeHTML(cat.name) : 'Kategorisiz';
       const cIcon = cat ? cat.icon : '📦';
       const pct = ((amt / total) * 100).toFixed(1);
-      
       return `
-      <div style="margin-bottom:12px">
-          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px">
+      <div style="margin-bottom:11px">
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
               <span>${cIcon} ${cName}</span>
               <span style="font-weight:700">${fmt(amt)} <span style="font-size:10px;color:var(--text3);font-weight:normal">(${pct}%)</span></span>
           </div>
@@ -1015,6 +1582,70 @@ function renderStats() {
           </div>
       </div>`;
   }).join('');
+
+  // Chart.js doughnut
+  renderStatsChart(sortedCats, total);
+}
+
+let statsChartInstance = null;
+function renderStatsChart(sortedCats, total) {
+  const canvas = document.getElementById('stats-chart');
+  if (!canvas) return;
+  if (!window.Chart) { canvas.parentElement.style.display='none'; return; }
+  if (statsChartInstance) { statsChartInstance.destroy(); statsChartInstance = null; }
+  if (!sortedCats.length) { canvas.parentElement.style.display='none'; return; }
+  canvas.parentElement.style.display = 'block';
+
+  const top8 = sortedCats.slice(0, 8);
+  const otherAmt = sortedCats.slice(8).reduce((s,[,a]) => s+a, 0);
+  if (otherAmt > 0) top8.push(['other', otherAmt]);
+
+  const labels = top8.map(([catId]) => {
+    if (catId === 'other') return 'Diğer';
+    const cat = DB.categories.find(c => c.id === catId);
+    return cat ? cat.name : 'Kategorisiz';
+  });
+  const data = top8.map(([,amt]) => parseFloat(amt.toFixed(2)));
+  const palette = ['#6c63ff','#22d3a5','#f87171','#fbbf24','#60a5fa','#f472b6','#a78bfa','#34d399','#fb923c'];
+
+  const isDark = !document.body.classList.contains('light');
+  const textColor = isDark ? '#94a3b8' : '#4a5580';
+
+  statsChartInstance = new Chart(canvas, {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{
+        data,
+        backgroundColor: palette.slice(0, data.length),
+        borderColor: isDark ? '#181c27' : '#ffffff',
+        borderWidth: 2,
+        hoverOffset: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '62%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            color: textColor,
+            font: { size: 11, family: "'Segoe UI', sans-serif" },
+            padding: 10,
+            boxWidth: 12,
+            boxHeight: 12
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.label}: ₺${ctx.parsed.toLocaleString('tr-TR',{minimumFractionDigits:2})} (${((ctx.parsed/total)*100).toFixed(1)}%)`
+          }
+        }
+      }
+    }
+  });
 }
 
 // ── BORÇ/ALACAK ──
@@ -1097,6 +1728,9 @@ function renderSettings(){
 function setCatTab(tab) {
   catSettingsTab = tab;
   renderSettings();
+}
+function renderSettingsExtra() {
+  renderRecurList();
 }
 
 function toggleCatGroup(grp) {
@@ -1537,9 +2171,18 @@ function init(){
   load();
   document.getElementById('tx-date').value=today();
   document.getElementById('debt-date').value=today();
-  updateFirmaList(); // Firma önerilerini yükle
-  setTimeout(()=>{const s=document.getElementById('splash');s.style.opacity='0';setTimeout(()=>s.style.display='none',500);},1300);
+  applyTheme();
+  applyRecurring();
+  setTimeout(()=>{
+    const s=document.getElementById('splash');
+    s.style.opacity='0';
+    setTimeout(()=>s.style.display='none',500);
+  },1300);
   renderDashboard();
+  setTimeout(()=>{
+    checkDebtNotifications();
+    requestNotifPermission();
+  }, 2000);
 }
 init();
 </script>
@@ -1548,5 +2191,6 @@ init();
     navigator.serviceWorker.register('sw.js');
   }
 </script>
+
 </body>
 </html>
