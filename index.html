@@ -245,7 +245,7 @@
          <h2 id="header-title">Ana Sayfa</h2>
          <div class="hdr-search" id="hdr-search" style="display:none">
             <span class="si">🔍</span>
-            <input type="text" id="search-input" placeholder="Firma / Açıklama ara" oninput="doSearch(this.value)" onblur="setTimeout(closeSearch,200)">
+            <input type="text" id="search-input" placeholder="Firma/Açıklama ara" oninput="doSearch(this.value)" onblur="setTimeout(closeSearch,200)">
             <button style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer;padding:2px;" onclick="openAdvSearch()" title="Gelişmiş arama">⚙️</button>
          </div>
          <button id="theme-toggle" onclick="toggleTheme()" title="Tema değiştir">🌙</button>
@@ -893,14 +893,37 @@
            else{fab.style.display='none';hs.style.display='none';}
            renderPage(page);
          }
-         function renderPage(p){
-           if(p==='dashboard')renderDashboard();
-           else if(p==='accounts')renderAccounts();
-           else if(p==='transactions')renderTransactions();
-           else if(p==='stats')renderStats();
-           else if(p==='debt')renderDebts();
-           else if(p==='settings'){renderSettings();renderRecurList();}
-         }
+		 function renderPage(p) {
+			const searchArea = document.getElementById('hdr-search');
+
+			if (p === 'dashboard') {
+			renderDashboard();
+			// Ana Sayfada (Dashboard) GÖSTER
+			if (searchArea) searchArea.style.display = 'flex';
+			} 
+			else if (p === 'accounts') {
+			renderAccounts();
+			if (searchArea) searchArea.style.display = 'none'; // GİZLE
+			} 
+			else if (p === 'transactions') {
+			renderTransactions();
+			// İşlemler Sayfasında GÖSTER
+			if (searchArea) searchArea.style.display = 'flex';
+			} 
+			else if (p === 'stats') {
+			renderStats();
+			if (searchArea) searchArea.style.display = 'none'; // GİZLE
+			} 
+			else if (p === 'debt') {
+			renderDebts();
+			if (searchArea) searchArea.style.display = 'none'; // GİZLE
+			} 
+			else if (p === 'settings') {
+			renderSettings();
+			renderRecurList();
+			if (searchArea) searchArea.style.display = 'none'; // GİZLE
+			}
+		 }
          
          function doSearch(val){
            const res=document.getElementById('search-res');
@@ -2321,30 +2344,52 @@
          // ── SNACK ──
          function snack(msg){const el=document.getElementById('snack');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500);}
          
-         // ── BAŞLAT ──
-         function init(){
-           load();
-           document.getElementById('tx-date').value=today();
-           document.getElementById('debt-date').value=today();
-           applyTheme();
-           applyRecurring();
-           setTimeout(()=>{
-             const s=document.getElementById('splash');
-             s.style.opacity='0';
-             setTimeout(()=>s.style.display='none',500);
-           },1300);
-           renderDashboard();
-           setTimeout(()=>{
-             checkDebtNotifications();
-             requestNotifPermission();
-           }, 2000);
-         }
-         init();
-      </script>
-      <script>
-         if ('serviceWorker' in navigator) {
-           navigator.serviceWorker.register('sw.js');
-         }
-      </script>
-   </body>
-</html>
+		 // ── BAŞLAT ──
+		 function init() {
+			load();
+			// Tarih alanlarını bugünün tarihiyle doldurur
+			const txDate = document.getElementById('tx-date');
+			const debtDate = document.getElementById('debt-date');
+			if (txDate) txDate.value = today();
+			if (debtDate) debtDate.value = today();
+
+			applyTheme();
+			applyRecurring();
+
+			// Açılış ekranını (Splash Screen) gizleme işlemi
+			setTimeout(() => {
+				const s = document.getElementById('splash');
+				if (s) {
+					s.style.opacity = '0';
+					setTimeout(() => s.style.display = 'none', 500);
+				}
+			}, 1300);
+
+			// KRİTİK NOKTA: Sadece dashboard'u değil, arama kutusunu da yöneten renderPage'i çağırıyoruz
+			// Bu sayede uygulama açılır açılmaz arama kutusu görünür olacak
+			renderPage('dashboard');
+
+			// Bildirim izinleri ve borç kontrollerini biraz gecikmeli başlatıyoruz
+			setTimeout(() => {
+				if (typeof checkDebtNotifications === 'function') checkDebtNotifications();
+				if (typeof requestNotifPermission === 'function') requestNotifPermission();
+			}, 2000);
+		}
+
+		// Uygulama yüklendiğinde başlatma fonksiyonunu tetikler
+		window.onload = () => {
+			init();
+		};
+		</script>
+
+		<script>
+			// Progressive Web App (PWA) çevrimdışı çalışma desteği için Service Worker kaydı
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker.register('sw.js').catch(function(err) {
+					console.log('Service Worker kaydı başarısız:', err);
+				});
+			}
+		</script>
+
+		</body>
+		</html>
