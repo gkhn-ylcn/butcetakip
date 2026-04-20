@@ -708,6 +708,17 @@
                   <div class="form-group"><label class="form-label">Son Ödeme Günü</label><input class="form-input" type="number" id="acc-odeme-gun" placeholder="5" min="1" max="31"></div>
                </div>
             </div>
+            <div id="acc-yatirim-group" style="display:none">
+               <div class="form-group">
+                  <label class="form-label">Yatırım Alt Türü</label>
+                  <select class="form-input" id="acc-yatirim-tur">
+                     <option value="">— Seçiniz —</option>
+                     <option value="hisse">📈 Hisse Senedi Portföyü</option>
+                     <option value="fon">📦 Fon Portföyü</option>
+                     <option value="genel">💼 Genel Yatırım</option>
+                  </select>
+               </div>
+            </div>
             <div class="form-group">
                <label class="form-label">Renk</label>
                <div class="color-picker-row" id="acc-color-picker"></div>
@@ -726,6 +737,92 @@
             <div style="display:flex;gap:7px;margin-top:10px">
                <button class="btn btn-ghost btn-sm" style="flex:1" onclick="closeModal('modal-account')">İptal</button>
                <button class="btn btn-primary" style="flex:2" onclick="saveAccount()">Kaydet</button>
+            </div>
+         </div>
+      </div>
+      <!-- ── YATIRIM İŞLEM MODALI ── -->
+      <div class="modal-overlay" id="modal-yatirim-islem">
+         <div class="modal">
+            <div class="modal-handle"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+               <div class="modal-title" id="modal-yatirim-title" style="margin:0">Yatırım İşlemi</div>
+               <button id="yatirim-del-btn" class="btn btn-danger btn-sm" style="display:none" onclick="deleteYatirimIslem()">🗑️</button>
+            </div>
+            <!-- Hisse / Fon tab -->
+            <div class="tab-bar" id="yatirim-tip-tab">
+               <button class="tab-btn active" id="ytab-hisse" onclick="setYatirimTip('hisse',this)">📈 Hisse Senedi</button>
+               <button class="tab-btn" id="ytab-fon" onclick="setYatirimTip('fon',this)">📦 Fon</button>
+            </div>
+            <!-- Alış / Satış toggle -->
+            <div class="type-toggle" style="grid-template-columns:1fr 1fr;margin-bottom:12px">
+               <button class="type-btn active-gelir" id="yislem-alis" onclick="setYatirimIslem('alis',this)">📥 Alış</button>
+               <button class="type-btn" id="yislem-satis" onclick="setYatirimIslem('satis',this)">📤 Satış</button>
+            </div>
+            <!-- Hisse alanları -->
+            <div id="yatirim-hisse-form">
+               <div class="form-row">
+                  <div class="form-group"><label class="form-label">Hisse Adı / Sembol</label><input class="form-input" type="text" id="yi-hisse-ad" placeholder="Örn: THYAO"></div>
+                  <div class="form-group"><label class="form-label">Tarih</label><input class="form-input" type="date" id="yi-tarih"></div>
+               </div>
+               <div class="form-row">
+                  <div class="form-group"><label class="form-label">Adet</label><input class="form-input" type="number" id="yi-adet" placeholder="0" step="1" min="0" oninput="calcYatirimToplam()"></div>
+                  <div class="form-group"><label class="form-label">Birim Fiyat (₺)</label>
+                     <div class="calc-input-row">
+                        <input class="form-input" type="number" id="yi-fiyat" placeholder="0,00" step="0.0001" readonly onfocus="openCalc('yi-fiyat')" oninput="calcYatirimToplam()">
+                        <div class="calc-open-btn" onclick="openCalc('yi-fiyat')">🧮</div>
+                     </div>
+                  </div>
+               </div>
+               <div class="form-row">
+                  <div class="form-group"><label class="form-label">Komisyon (₺)</label>
+                     <div class="calc-input-row">
+                        <input class="form-input" type="number" id="yi-komisyon" placeholder="0,00" step="0.01" readonly onfocus="openCalc('yi-komisyon')" oninput="calcYatirimToplam()">
+                        <div class="calc-open-btn" onclick="openCalc('yi-komisyon')">🧮</div>
+                     </div>
+                  </div>
+                  <div class="form-group" id="yi-stopaj-group">
+                     <label class="form-label">Stopaj Vergisi (₺)</label>
+                     <div class="calc-input-row">
+                        <input class="form-input" type="number" id="yi-stopaj" placeholder="0,00" step="0.01" readonly onfocus="openCalc('yi-stopaj')" oninput="calcYatirimToplam()">
+                        <div class="calc-open-btn" onclick="openCalc('yi-stopaj')">🧮</div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-- Fon alanları -->
+            <div id="yatirim-fon-form" style="display:none">
+               <div class="form-row">
+                  <div class="form-group"><label class="form-label">Fon Adı / Kodu</label><input class="form-input" type="text" id="yi-fon-ad" placeholder="Örn: TI2, AK3"></div>
+                  <div class="form-group"><label class="form-label">Tarih</label><input class="form-input" type="date" id="yi-fon-tarih"></div>
+               </div>
+               <div class="form-row">
+                  <div class="form-group"><label class="form-label">Pay Sayısı</label><input class="form-input" type="number" id="yi-pay" placeholder="0" step="0.000001" min="0" oninput="calcYatirimToplam()"></div>
+                  <div class="form-group"><label class="form-label">Birim Pay Fiyatı (₺)</label>
+                     <div class="calc-input-row">
+                        <input class="form-input" type="number" id="yi-fon-fiyat" placeholder="0,00" step="0.000001" readonly onfocus="openCalc('yi-fon-fiyat')" oninput="calcYatirimToplam()">
+                        <div class="calc-open-btn" onclick="openCalc('yi-fon-fiyat')">🧮</div>
+                     </div>
+                  </div>
+               </div>
+               <div class="form-group"><label class="form-label">Yönetim Ücreti (₺, isteğe bağlı)</label>
+                  <div class="calc-input-row">
+                     <input class="form-input" type="number" id="yi-fon-ucret" placeholder="0,00" step="0.01" readonly onfocus="openCalc('yi-fon-ucret')" oninput="calcYatirimToplam()">
+                     <div class="calc-open-btn" onclick="openCalc('yi-fon-ucret')">🧮</div>
+                  </div>
+               </div>
+            </div>
+            <!-- Ortak alanlar -->
+            <div style="background:var(--bg3);border-radius:var(--rsm);padding:10px 12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
+               <span style="font-size:12px;color:var(--text3)">Toplam Tutar</span>
+               <span id="yi-toplam-display" style="font-size:16px;font-weight:700;color:var(--accent2)">₺0,00</span>
+            </div>
+            <div class="form-group"><label class="form-label">Kaynak / Hedef Hesap</label><select class="form-input" id="yi-hesap"></select></div>
+            <div class="form-group"><label class="form-label">Portföy Hesabı</label><select class="form-input" id="yi-portfolyo-hesap"></select></div>
+            <div class="form-group"><label class="form-label">Not (isteğe bağlı)</label><input class="form-input" type="text" id="yi-not" placeholder="Ek açıklama..."></div>
+            <input type="hidden" id="yi-edit-id">
+            <div style="display:flex;gap:7px;margin-top:10px">
+               <button class="btn btn-ghost btn-sm" style="flex:1" onclick="closeModal('modal-yatirim-islem')">İptal</button>
+               <button class="btn btn-primary" style="flex:2" onclick="saveYatirimIslem()">Kaydet</button>
             </div>
          </div>
       </div>
@@ -1013,10 +1110,12 @@
          const COLORS=['#6c63ff','#22d3a5','#f87171','#fbbf24','#60a5fa','#f472b6','#a78bfa','#34d399','#fb923c','#e879f9'];
          const ACC_ICONS={nakit:'💵',banka:'🏦',yatirim:'📊',kredi:'💳',tasarruf:'💰'};
          const ACC_LABELS={nakit:'Nakit',banka:'Banka',yatirim:'Yatırım',kredi:'Kredi Kartı',tasarruf:'Tasarruf'};
+         const YATIRIM_TUR_LABELS={hisse:'Hisse Senedi',fon:'Fon Portföyü',genel:'Genel Yatırım'};
+         const YATIRIM_TUR_ICONS={hisse:'📈',fon:'📦',genel:'💼'};
          const CURRENCY_SYMBOLS={TRY:'₺',USD:'$',EUR:'€',GBP:'£',ALTIN:'gr'};
          const CAT_ICONS_LIST=['🛒','🍽️','🚗','🏠','💊','🎬','🏋️','📚','✈️','👗','💼','🎮','🐾','💡','🔧','🎁','💰','📱','🎓','⚽','🎵','🌿','🍕','☕','🛍️','⛽','🔥','💧','🛋️','🛡️','🏘️','📊','🎯','💄','👶','🧾','📺','❤️','🏥','📑','🔒','🏗️','❓','🔄','🏢','📈'];
          
-         let DB={accounts:[],transactions:[],debts:[],categories:[],recurring:[],rates:{USD:0,EUR:0,GBP:0,ALTIN:0,ratesUpdated:''},favorites:[]};
+         let DB={accounts:[],transactions:[],debts:[],categories:[],recurring:[],rates:{USD:0,EUR:0,GBP:0,ALTIN:0,ratesUpdated:''},favorites:[],yatirimlar:[]};
          let currentTxType='gider',currentDebtType='alacak',selectedCatIcon='📦';
          let txFilter='hepsi',debtFilter='hepsi',selectedAccColor=COLORS[0],currentPage='dashboard';
          let selectedCatId='';
@@ -1029,11 +1128,58 @@
          
          // ── STORAGE ──
          function save(){localStorage.setItem('butcetakip_v2',JSON.stringify(DB));}
-         function load(){
-           const raw=localStorage.getItem('butcetakip_v2')||localStorage.getItem('butcetakip_v1');
-           if(raw){DB=JSON.parse(raw);if(!DB.debts)DB.debts=[];if(!DB.recurring)DB.recurring=[];if(!DB.categories||!DB.categories.length)DB.categories=JSON.parse(JSON.stringify(DEFAULT_CATS));if(!DB.rates)DB.rates={USD:0,EUR:0,GBP:0,ALTIN:0,ratesUpdated:''};if(!DB.favorites)DB.favorites=[];}
-           else{DB.categories=JSON.parse(JSON.stringify(DEFAULT_CATS));save();}
-         }
+         function load() {
+			try {
+				// Eski veya yeni versiyon veriyi çek
+				const raw = localStorage.getItem('butcetakip_v2') || localStorage.getItem('butcetakip_v1');
+        
+				if (raw) {
+					// KRİTİK: JSON ayrıştırma işlemini hata kontrolüne alıyoruz
+					DB = JSON.parse(raw);
+            
+					// Veri yapısı doğrulaması ve eksik alan tamamlama
+					if (!DB.debts) DB.debts = [];
+					if (!DB.recurring) DB.recurring = [];
+					if (!DB.categories || !DB.categories.length) {
+						DB.categories = JSON.parse(JSON.stringify(DEFAULT_CATS));
+					}
+					if (!DB.rates) {
+						DB.rates = { USD: 0, EUR: 0, GBP: 0, ALTIN: 0, ratesUpdated: '' };
+					}
+					if (!DB.favorites) DB.favorites = [];
+					if (!DB.yatirimlar) DB.yatirimlar = [];
+            
+					// Eğer v1'den veri geldiyse otomatik olarak v2 formatına yükseltmek için:
+					if (localStorage.getItem('butcetakip_v1') && !localStorage.getItem('butcetakip_v2')) {
+						save(); // Mevcut veriyi butcetakip_v2 olarak kaydeder
+					}
+
+				} else {
+					// Hiç veri yoksa varsayılan yapıyı kur
+					DB.categories = JSON.parse(JSON.stringify(DEFAULT_CATS));
+					save();
+				}
+			} catch (error) {
+				// Eğer localStorage verisi bozulmuşsa uygulama buraya düşer
+				console.error("Veritabanı okuma hatası:", error);
+        
+				// Kullanıcıya bilgi ver (snack fonksiyonunu kullandığını varsayıyorum)
+				if (typeof snack === 'function') {
+					snack("Veriler yüklenirken bir sorun oluştu, güvenli modda başlatıldı.");
+				}
+        
+				// Uygulamanın bembeyaz kalmaması için DB'yi sıfırla/başlat
+				DB = {
+					transactions: [],
+					debts: [],
+					recurring: [],
+					categories: JSON.parse(JSON.stringify(DEFAULT_CATS)),
+					rates: { USD: 0, EUR: 0, GBP: 0, ALTIN: 0, ratesUpdated: '' },
+					favorites: [],
+					yatirimlar: []
+				};
+			}
+		 }
          
          // ── FORMAT ──
          function escapeHTML(str) {
@@ -1838,17 +1984,32 @@
            }
          
            const cb=a.currency&&a.currency!=='TRY'?` (${a.currency})`:'';
+           const turLabel = a.type==='yatirim' && a.yatirimTur ? (YATIRIM_TUR_LABELS[a.yatirimTur]||'Yatırım') : (ACC_LABELS[a.type]||a.type);
+           const turIcon  = a.type==='yatirim' && a.yatirimTur ? (YATIRIM_TUR_ICONS[a.yatirimTur]||'📊') : (ACC_ICONS[a.type]||'🏦');
+
+           // Yatırım hesabı için portföy özeti
+           let portfolyoHTML = '';
+           if (a.type === 'yatirim' && (a.yatirimTur === 'hisse' || a.yatirimTur === 'fon')) {
+             portfolyoHTML = buildPortfoyHTML(id, a.yatirimTur);
+           }
+
+           // Yatırım hesabı için ekstra buton
+           const extraBtn = a.type==='yatirim' && a.yatirimTur && a.yatirimTur !== 'genel'
+             ? `<button class="btn btn-success btn-sm" style="flex:1" onclick="openYatirimIslem(null,'${id}')">+ İşlem</button>`
+             : '';
+
            document.getElementById('acc-detail-content').innerHTML=`
              <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
-               <div style="width:46px;height:46px;border-radius:12px;background:${color}22;color:${color};display:flex;align-items:center;justify-content:center;font-size:23px">${ACC_ICONS[a.type]||'🏦'}</div>
-               <div><div style="font-size:18px;font-weight:700">${a.name}${cb}</div><div style="font-size:12px;color:var(--text3)">${ACC_LABELS[a.type]||a.type}</div></div>
+               <div style="width:46px;height:46px;border-radius:12px;background:${color}22;color:${color};display:flex;align-items:center;justify-content:center;font-size:23px">${turIcon}</div>
+               <div><div style="font-size:18px;font-weight:700">${a.name}${cb}</div><div style="font-size:12px;color:var(--text3)">${turLabel}</div></div>
              </div>
              <div style="text-align:center;padding:14px;background:var(--bg3);border-radius:var(--rsm)">
                <div style="font-size:12px;color:var(--text3);margin-bottom:3px">${a.type==='kredi'?'Toplam Borç':'Güncel Bakiye'}</div>
                <div style="font-size:26px;font-weight:700;color:${a.type==='kredi'?'var(--red)':(bal<0?'var(--red)':'var(--green)')}">${a.type==='kredi'?fmtAmt(Math.abs(bal), a.currency):fmtAmt(bal, a.currency)}</div>
              </div>
-             ${limitHTML}${donemHTML}
+             ${limitHTML}${donemHTML}${portfolyoHTML}
              <div style="display:flex;gap:7px;margin:12px 0 8px">
+               ${extraBtn}
                <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openAddAccount('${id}')">✏️ Düzenle</button>
                <button class="btn btn-danger btn-sm" style="flex:1" onclick="deleteAccount('${id}')">🗑️ Sil</button>
              </div>
@@ -2982,15 +3143,24 @@
            document.getElementById('acc-odeme-gun').value=acc?(acc.odemeGun||''):'';
            selectedAccColor=acc?(acc.color||COLORS[0]):COLORS[0];
            const isK=(acc?acc.type:'banka')==='kredi';
+           const isY=(acc?acc.type:'banka')==='yatirim';
            document.getElementById('acc-limit-group').style.display=isK?'block':'none';
            document.getElementById('acc-kredi-group').style.display=isK?'block':'none';
+           document.getElementById('acc-yatirim-group').style.display=isY?'block':'none';
+           document.getElementById('acc-yatirim-tur').value=acc?(acc.yatirimTur||'genel'):'genel';
            document.getElementById('acc-color-picker').innerHTML=COLORS.map(c=>`<div class="color-dot ${c===selectedAccColor?'selected':''}" style="background:${c}" onclick="selectAccColor('${c}',this)"></div>`).join('');
            document.getElementById('acc-net-dahil').checked = acc ? acc.netDahil!==false : true;
            document.getElementById('acc-ozet-dahil').checked = acc ? acc.ozetDahil!==false : true;
            openModal('modal-account');
          }
          function selectAccColor(c,el){selectedAccColor=c;document.querySelectorAll('.color-dot').forEach(d=>d.classList.remove('selected'));el.classList.add('selected');}
-         function onAccTypeChange(type){const k=type==='kredi';document.getElementById('acc-limit-group').style.display=k?'block':'none';document.getElementById('acc-kredi-group').style.display=k?'block':'none';}
+         function onAccTypeChange(type){
+           const isK=type==='kredi';
+           const isY=type==='yatirim';
+           document.getElementById('acc-limit-group').style.display=isK?'block':'none';
+           document.getElementById('acc-kredi-group').style.display=isK?'block':'none';
+           document.getElementById('acc-yatirim-group').style.display=isY?'block':'none';
+         }
          function saveAccount(){
            const name=document.getElementById('acc-name-input').value.trim();
            const type=document.getElementById('acc-type-input').value;
@@ -2999,11 +3169,12 @@
            const limit=parseFloat(document.getElementById('acc-limit-input').value)||0;
            const kesimGun=parseInt(document.getElementById('acc-kesim-gun').value)||0;
            const odemeGun=parseInt(document.getElementById('acc-odeme-gun').value)||0;
+           const yatirimTur=type==='yatirim'?(document.getElementById('acc-yatirim-tur').value||'genel'):'';
            const editId=document.getElementById('acc-edit-id').value;
            if(!name){snack('Hesap adı girin');return;}
            const netDahil=document.getElementById('acc-net-dahil').checked;
            const ozetDahil=document.getElementById('acc-ozet-dahil').checked;
-           const acc={id:editId||uid(),name,type,currency,initialBalance,limit,kesimGun,odemeGun,color:selectedAccColor,netDahil,ozetDahil};
+           const acc={id:editId||uid(),name,type,currency,initialBalance,limit,kesimGun,odemeGun,color:selectedAccColor,netDahil,ozetDahil,yatirimTur};
            if(editId){const i=DB.accounts.findIndex(a=>a.id===editId);if(i!==-1)DB.accounts[i]=acc;}
            else DB.accounts.push(acc);
            save();closeModal('modal-account');snack('Hesap kaydedildi ✓');renderPage(currentPage);
@@ -3012,7 +3183,226 @@
            if(!confirm('Bu hesabı silmek istediğinize emin misiniz?'))return;
            DB.accounts=DB.accounts.filter(a=>a.id!==id);
            DB.transactions=DB.transactions.filter(t=>t.accountId!==id&&t.accountId2!==id);
+           // Yatırım işlemlerini de temizle
+           if(DB.yatirimlar) DB.yatirimlar=DB.yatirimlar.filter(y=>y.portfolyoHesapId!==id);
            save();closeModal('modal-acc-detail');snack('Hesap silindi');renderPage(currentPage);
+         }
+
+         // ── YATIRIM İŞLEMLERİ ──
+         let currentYatirimTip = 'hisse';   // hisse | fon
+         let currentYatirimIslem = 'alis';  // alis | satis
+
+         function setYatirimTip(tip, btn) {
+           currentYatirimTip = tip;
+           document.querySelectorAll('#yatirim-tip-tab .tab-btn').forEach(b=>b.classList.remove('active'));
+           btn.classList.add('active');
+           document.getElementById('yatirim-hisse-form').style.display = tip==='hisse' ? 'block' : 'none';
+           document.getElementById('yatirim-fon-form').style.display   = tip==='fon'   ? 'block' : 'none';
+           calcYatirimToplam();
+         }
+
+         function setYatirimIslem(islem, btn) {
+           currentYatirimIslem = islem;
+           document.getElementById('yislem-alis').className  = 'type-btn' + (islem==='alis'  ? ' active-gelir' : '');
+           document.getElementById('yislem-satis').className = 'type-btn' + (islem==='satis' ? ' active-gider' : '');
+           // Stopaj sadece satışta göster
+           const sg = document.getElementById('yi-stopaj-group');
+           if(sg) sg.style.display = islem==='satis' ? 'block' : 'none';
+         }
+
+         function calcYatirimToplam() {
+           let toplam = 0;
+           if (currentYatirimTip === 'hisse') {
+             const adet   = parseFloat(document.getElementById('yi-adet').value) || 0;
+             const fiyat  = parseFloat(document.getElementById('yi-fiyat').value) || 0;
+             const kom    = parseFloat(document.getElementById('yi-komisyon').value) || 0;
+             const stopaj = parseFloat(document.getElementById('yi-stopaj').value) || 0;
+             toplam = adet * fiyat + kom + stopaj;
+           } else {
+             const pay    = parseFloat(document.getElementById('yi-pay').value) || 0;
+             const fiyat  = parseFloat(document.getElementById('yi-fon-fiyat').value) || 0;
+             const ucret  = parseFloat(document.getElementById('yi-fon-ucret').value) || 0;
+             toplam = pay * fiyat + ucret;
+           }
+           const el = document.getElementById('yi-toplam-display');
+           if(el) el.textContent = fmt(toplam);
+         }
+
+         function openYatirimIslem(editId, portfolyoHesapId) {
+           if(!DB.yatirimlar) DB.yatirimlar = [];
+           const yi = editId ? DB.yatirimlar.find(y=>y.id===editId) : null;
+
+           // Portföy hesabı belirleme
+           const acc = portfolyoHesapId ? DB.accounts.find(a=>a.id===portfolyoHesapId) : null;
+           const tip = yi ? yi.tip : (acc ? (acc.yatirimTur==='fon'?'fon':'hisse') : 'hisse');
+
+           document.getElementById('modal-yatirim-title').textContent = yi ? 'Yatırım İşlemini Düzenle' : 'Yatırım İşlemi Ekle';
+           document.getElementById('yi-edit-id').value = yi ? yi.id : '';
+           document.getElementById('yatirim-del-btn').style.display = yi ? 'inline-block' : 'none';
+
+           // Tab seç
+           currentYatirimTip = tip;
+           document.getElementById('ytab-hisse').classList.toggle('active', tip==='hisse');
+           document.getElementById('ytab-fon').classList.toggle('active', tip==='fon');
+           document.getElementById('yatirim-hisse-form').style.display = tip==='hisse' ? 'block' : 'none';
+           document.getElementById('yatirim-fon-form').style.display   = tip==='fon'   ? 'block' : 'none';
+
+           // İşlem türü
+           const islem = yi ? yi.islem : 'alis';
+           currentYatirimIslem = islem;
+           setYatirimIslem(islem, document.getElementById('yislem-'+islem));
+
+           // Hisse alanları
+           document.getElementById('yi-tarih').value = yi ? yi.tarih : today();
+           document.getElementById('yi-hisse-ad').value = yi ? (yi.sembol||'') : '';
+           document.getElementById('yi-adet').value = yi ? (yi.adet||'') : '';
+           document.getElementById('yi-fiyat').value = yi ? (yi.birimFiyat||'') : '';
+           document.getElementById('yi-komisyon').value = yi ? (yi.komisyon||'') : '';
+           document.getElementById('yi-stopaj').value = yi ? (yi.stopaj||'') : '';
+
+           // Fon alanları
+           document.getElementById('yi-fon-tarih').value = yi ? yi.tarih : today();
+           document.getElementById('yi-fon-ad').value = yi ? (yi.sembol||'') : '';
+           document.getElementById('yi-pay').value = yi ? (yi.adet||'') : '';
+           document.getElementById('yi-fon-fiyat').value = yi ? (yi.birimFiyat||'') : '';
+           document.getElementById('yi-fon-ucret').value = yi ? (yi.komisyon||'') : '';
+
+           // Hesap listeleri
+           const bankAccs = DB.accounts.filter(a=>a.type!=='kredi');
+           const yAccs    = DB.accounts.filter(a=>a.type==='yatirim');
+           document.getElementById('yi-hesap').innerHTML =
+             bankAccs.map(a=>`<option value="${a.id}" ${yi&&yi.kaynakHesapId===a.id?'selected':''}>${ACC_ICONS[a.type]} ${escapeHTML(a.name)}</option>`).join('') || '<option value="">Hesap yok</option>';
+           document.getElementById('yi-portfolyo-hesap').innerHTML =
+             yAccs.map(a=>`<option value="${a.id}" ${(yi?yi.portfolyoHesapId:portfolyoHesapId)===a.id?'selected':''}>${escapeHTML(a.name)}</option>`).join('') || '<option value="">Yatırım hesabı yok</option>';
+
+           document.getElementById('yi-not').value = yi ? (yi.not||'') : '';
+           calcYatirimToplam();
+           openModal('modal-yatirim-islem');
+         }
+
+         function saveYatirimIslem() {
+           if(!DB.yatirimlar) DB.yatirimlar = [];
+           const tip   = currentYatirimTip;
+           const islem = currentYatirimIslem;
+           const editId = document.getElementById('yi-edit-id').value;
+
+           let sembol, tarih, adet, birimFiyat, komisyon, stopaj, toplam;
+           if (tip === 'hisse') {
+             sembol     = document.getElementById('yi-hisse-ad').value.trim().toUpperCase();
+             tarih      = document.getElementById('yi-tarih').value;
+             adet       = parseFloat(document.getElementById('yi-adet').value) || 0;
+             birimFiyat = parseFloat(document.getElementById('yi-fiyat').value) || 0;
+             komisyon   = parseFloat(document.getElementById('yi-komisyon').value) || 0;
+             stopaj     = parseFloat(document.getElementById('yi-stopaj').value) || 0;
+             toplam     = adet * birimFiyat + komisyon + stopaj;
+           } else {
+             sembol     = document.getElementById('yi-fon-ad').value.trim().toUpperCase();
+             tarih      = document.getElementById('yi-fon-tarih').value;
+             adet       = parseFloat(document.getElementById('yi-pay').value) || 0;
+             birimFiyat = parseFloat(document.getElementById('yi-fon-fiyat').value) || 0;
+             komisyon   = parseFloat(document.getElementById('yi-fon-ucret').value) || 0;
+             stopaj     = 0;
+             toplam     = adet * birimFiyat + komisyon;
+           }
+
+           if (!sembol) { snack(tip==='hisse'?'Hisse sembolü girin':'Fon kodu girin'); return; }
+           if (!adet || adet <= 0) { snack('Adet/pay giriniz'); return; }
+           if (!birimFiyat || birimFiyat <= 0) { snack('Birim fiyat giriniz'); return; }
+           if (!tarih) { snack('Tarih seçin'); return; }
+
+           const kaynakHesapId    = document.getElementById('yi-hesap').value;
+           const portfolyoHesapId = document.getElementById('yi-portfolyo-hesap').value;
+           const not = document.getElementById('yi-not').value.trim();
+
+           if (!portfolyoHesapId) { snack('Portföy hesabı seçin'); return; }
+
+           const yi = { id: editId||uid(), tip, islem, sembol, tarih, adet, birimFiyat, komisyon, stopaj, toplam, kaynakHesapId, portfolyoHesapId, not };
+
+           if (editId) {
+             const i = DB.yatirimlar.findIndex(y=>y.id===editId);
+             if(i!==-1) DB.yatirimlar[i] = yi;
+           } else {
+             DB.yatirimlar.push(yi);
+           }
+
+           // Portföy hesabı bakiyesini etkile: alışta para çıkar, satışta para girer
+           // Bunu normal işlem olarak da kaydet (hesap bakiyesi doğru hesaplansın)
+           if (kaynakHesapId) {
+             const txType = islem === 'alis' ? 'gider' : 'gelir';
+             const txDesc = `${islem==='alis'?'Alış':'Satış'}: ${sembol} ${adet} ${tip==='hisse'?'adet':'pay'} @ ${fmt(birimFiyat)}`;
+             // Eski ilişkili işlemi sil, yenisini ekle
+             if (editId) DB.transactions = DB.transactions.filter(t=>t.yatirimId!==editId);
+             DB.transactions.push({
+               id: uid(), type: txType, firma: sembol, desc: txDesc,
+               amount: toplam, currency: 'TRY', date: tarih,
+               accountId: kaynakHesapId, categoryId: '', yatirimId: yi.id,
+               isTaksit: false, taksitSayi: 0, taksitOdenen: 0
+             });
+           }
+
+           save();
+           closeModal('modal-yatirim-islem');
+           snack('Yatırım işlemi kaydedildi ✓');
+           renderPage(currentPage);
+         }
+
+         function deleteYatirimIslem() {
+           const editId = document.getElementById('yi-edit-id').value;
+           if(!editId) return;
+           if(!confirm('Bu yatırım işlemini silmek istediğinize emin misiniz?')) return;
+           DB.yatirimlar = (DB.yatirimlar||[]).filter(y=>y.id!==editId);
+           DB.transactions = DB.transactions.filter(t=>t.yatirimId!==editId);
+           save();
+           closeModal('modal-yatirim-islem');
+           snack('Silindi');
+           renderPage(currentPage);
+         }
+
+         // Portföy özeti HTML'i oluştur (hesap detayında gösterilir)
+         function buildPortfoyHTML(hesapId, tur) {
+           if(!DB.yatirimlar) return '';
+           const islemler = DB.yatirimlar.filter(y=>y.portfolyoHesapId===hesapId);
+           if(!islemler.length) return `<div style="background:var(--bg3);border-radius:var(--rsm);padding:12px;margin-top:10px;text-align:center;font-size:13px;color:var(--text3)">Henüz yatırım işlemi yok. "+ İşlem" ile ekleyin.</div>`;
+
+           // Sembol bazında pozisyon hesapla
+           const pozisyonlar = {};
+           islemler.sort((a,b)=>a.tarih.localeCompare(b.tarih)).forEach(y=>{
+             if(!pozisyonlar[y.sembol]) pozisyonlar[y.sembol]={sembol:y.sembol,adet:0,toplamMaliyet:0};
+             const p = pozisyonlar[y.sembol];
+             if(y.islem==='alis'){
+               p.toplamMaliyet += y.adet * y.birimFiyat + (y.komisyon||0);
+               p.adet += y.adet;
+             } else {
+               // Satışta ortalama maliyeti orantılı düşür
+               if(p.adet>0){ const ort=p.toplamMaliyet/p.adet; p.toplamMaliyet-=ort*y.adet; }
+               p.adet -= y.adet;
+             }
+           });
+
+           const aktif = Object.values(pozisyonlar).filter(p=>p.adet>0.0001);
+           if(!aktif.length) return `<div style="background:var(--bg3);border-radius:var(--rsm);padding:12px;margin-top:10px;text-align:center;font-size:13px;color:var(--text3)">Açık pozisyon yok.</div>`;
+
+           const baslik = tur==='hisse' ? '📈 Hisse Pozisyonları' : '📦 Fon Pozisyonları';
+           const adetLabel = tur==='hisse' ? 'adet' : 'pay';
+
+           let rows = aktif.map(p=>{
+             const ortMaliyet = p.adet>0 ? p.toplamMaliyet/p.adet : 0;
+             return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(50,54,96,.3)">
+               <div>
+                 <div style="font-size:13px;font-weight:700">${escapeHTML(p.sembol)}</div>
+                 <div style="font-size:11px;color:var(--text3)">${p.adet.toLocaleString('tr-TR',{maximumFractionDigits:6})} ${adetLabel} • Ort: ${fmt(ortMaliyet)}</div>
+               </div>
+               <div style="text-align:right">
+                 <div style="font-size:13px;font-weight:700">${fmt(p.toplamMaliyet)}</div>
+                 <div style="font-size:11px;color:var(--text3)">toplam maliyet</div>
+               </div>
+             </div>`;
+           }).join('');
+
+           return `<div style="margin-top:12px">
+             <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">${baslik}</div>
+             ${rows}
+           </div>`;
          }
          
          // ── BORÇ/ALACAK ──
