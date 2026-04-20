@@ -3,13 +3,15 @@
   "name": "Kişisel Bütçe Takip Sistemi",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/2910/2910311.png",
+      "src": "icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
   "start_url": "./index.html",
   "display": "standalone",
   "theme_color": "#0f1117",
-  "background_color": "#0f1117"
+  "background_color": "#0f1117",
+  "orientation": "portrait"
 }
