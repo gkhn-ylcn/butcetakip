@@ -3182,22 +3182,24 @@
 				});
 			}
 		function sadeceIslemleriTemizle() {
-    if (confirm('Tüm harcamalar silinecek ve hesap bakiyeleri sıfırlanacak. Kategorileriniz ve hesap isimleriniz kalacak. Emin misiniz?')) {
-        // 1. Tüm harcama geçmişini uçurur
+    if (confirm('DİKKAT: Tüm harcamalar silinecek, hesapların başlangıç bakiyeleri ve mevcut paraları sıfırlanacaktır. Kategoriler ve hesap isimleri kalacaktır. Onaylıyor musunuz?')) {
+        
+        // 1. Tüm harcama geçmişini (işlemleri) siler
         DB.transactions = []; 
         
-        // 2. Tüm hesapların mevcut bakiyesini 0 yapar (İstediğin bu)
+        // 2. Hesapların hem güncel hem de başlangıç bakiyelerini sıfırlar
         if (DB.accounts && DB.accounts.length > 0) {
             DB.accounts.forEach(acc => {
-                acc.balance = 0;
+                acc.balance = 0;         // Mevcut bakiyeyi sıfırla
+                acc.initialBalance = 0;  // Hesabı açarken girdiğin o başlangıç tutarını sıfırla
             });
         }
 
-        // 3. Borçlar listesini de sıfırlamak istersen:
+        // 3. Borçları da sıfırla
         DB.debts = []; 
 
         save(); 
-        snack('İşlemler ve bakiyeler sıfırlandı.'); 
+        snack('İşlemler ve tüm bakiyeler sıfırlandı.'); 
         renderPage(currentPage);
     }
 }
