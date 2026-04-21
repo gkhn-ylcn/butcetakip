@@ -503,13 +503,21 @@
                </div>
                <button class="setting-action" onclick="document.getElementById('import-file').click()">Yükle</button>
             </div>
-            <div class="setting-row">
-               <div>
-                  <div class="setting-label">🗑️ Tüm Verileri Sil</div>
-                  <div class="setting-sub">Geri alınamaz!</div>
-               </div>
-               <button class="setting-action" style="color:var(--red)" onclick="clearAllData()">Sil</button>
-            </div>
+<div class="setting-row">
+   <div>
+      <div class="setting-label">🧹 İşlemleri Temizle</div>
+      <div class="setting-sub">Kategoriler ve hesap isimleri kalır, bakiyeler sıfırlanır.</div>
+   </div>
+   <button class="setting-action" style="color:var(--text2)" onclick="sadeceIslemleriTemizle()">Temizle</button>
+</div>
+
+<div class="setting-row">
+   <div>
+      <div class="setting-label">🗑️ Tüm Verileri Sil</div>
+      <div class="setting-sub">Geri alınamaz! Her şey silinir.</div>
+   </div>
+   <button class="setting-action" style="color:var(--red)" onclick="clearAllData()">Sıfırla</button>
+</div>
             <button class="btn btn-ghost" style="margin-top:12px" onclick="closeModal('modal-settings-data')">Kapat</button>
          </div>
       </div>
@@ -3173,6 +3181,24 @@
 					console.log('Service Worker kaydı başarısız:', err);
 				});
 			}
+		function sadeceIslemleriTemizle() {
+    if (confirm('Tüm harcamalar silinecek ve hesap bakiyeleri sıfırlanacak. Hesap isimleriniz ve kategorileriniz kalacak. Emin misiniz?')) {
+        // 1. Tüm harcamaları sil
+        DB.transactions = []; 
+        
+        // 2. Tüm hesapların bakiyesini 0 yap
+        DB.accounts.forEach(acc => {
+            acc.balance = 0;
+        });
+
+        // 3. Varsa borçları da temizle (opsiyonel, istersen bu satırı silebilirsin)
+        DB.debts = []; 
+
+        save(); 
+        snack('İşlemler ve bakiyeler sıfırlandı.'); 
+        renderPage(currentPage);
+    }
+}
 		</script>
 
 		</body>
