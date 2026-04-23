@@ -1,4 +1,4 @@
-const CACHE_NAME = 'butce-takip-v15';
+const CACHE_NAME = 'butce-takip-v16';
 // Önbelleğe alınacak dosyalar (Uygulamanın çalışması için şart olanlar)
 const ASSETS_TO_CACHE = [
   './',
