@@ -1,11 +1,14 @@
 {
   "short_name": "BütçeTakip",
   "name": "Kişisel Bütçe Takip Sistemi",
+  "description": "Çoklu para birimi destekli kişisel bütçe ve finans takip uygulaması",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "theme_color": "#0f1117",
   "background_color": "#0f1117",
   "orientation": "portrait",
+  "lang": "tr",
   "icons": [
     {
       "src": "icons/icon-192.png",
